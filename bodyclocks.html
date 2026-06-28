@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>body clocks</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&family=Noto+Sans+JP:wght@400;700&display=swap');
+
+:root {
+    --sky-0: #e9fbff;
+    --sky-1: #92dcff;
+    --sky-2: #46b9f0;
+    --aqua: #22f0dc;
+    --deep-aqua: #008ec8;
+    --leaf: #8ee94f;
+    --lime: #caff5a;
+    --sun: #fff68a;
+    --pink: #ff98d8;
+    --violet: #8d7cff;
+    --text-color: #073f5d;
+    --soft-text: #3f7f94;
+    --glass: rgba(255, 255, 255, .48);
+    --glass-strong: rgba(255, 255, 255, .72);
+    --glass-line: rgba(255, 255, 255, .85);
+    --shadow-blue: rgba(0, 112, 190, .24);
+    --shadow-green: rgba(48, 176, 68, .18);
+    --accent-color: #00a6d6;
+    --highlight-bg: rgba(255, 255, 255, .54);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+    background: #92dcff;
+}
+
+body {
+    font-family: 'Nunito', 'Trebuchet MS', Verdana, sans-serif;
+    background:
+        radial-gradient(circle at 18% 16%, rgba(255, 255, 255, .96) 0 5%, transparent 17%),
+        radial-gradient(circle at 78% 12%, rgba(255, 246, 138, .76) 0 4%, transparent 16%),
+        radial-gradient(circle at 82% 38%, rgba(34, 240, 220, .45) 0 7%, transparent 22%),
+        radial-gradient(circle at 12% 70%, rgba(142, 233, 79, .5) 0 10%, transparent 26%),
+        linear-gradient(180deg, #f8ffff 0%, var(--sky-0) 13%, var(--sky-1) 43%, #72d7f2 62%, #a5f17b 100%);
+    color: var(--text-color);
+    margin: 0;
+    min-height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+/* Aero bubbles / lens beads */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+        radial-gradient(circle at 8% 20%, rgba(255,255,255,.76) 0 1.6rem, rgba(255,255,255,.25) 1.75rem, transparent 3.2rem),
+        radial-gradient(circle at 92% 18%, rgba(255,255,255,.7) 0 1.1rem, rgba(255,255,255,.18) 1.25rem, transparent 2.5rem),
+        radial-gradient(circle at 18% 88%, rgba(255,255,255,.72) 0 2rem, rgba(255,255,255,.18) 2.2rem, transparent 4rem),
+        radial-gradient(circle at 78% 78%, rgba(255,255,255,.54) 0 1.5rem, rgba(255,255,255,.14) 1.7rem, transparent 3.5rem),
+        radial-gradient(circle at 50% 52%, rgba(255,255,255,.3) 0 9rem, transparent 19rem);
+    filter: blur(.15px);
+}
+
+/* Green aero horizon */
+body::after {
+    content: "";
+    position: fixed;
+    left: -8vw;
+    right: -8vw;
+    bottom: -18vh;
+    height: 44vh;
+    pointer-events: none;
+    z-index: 0;
+    background:
+        radial-gradient(ellipse at 28% 0%, rgba(255,255,255,.75) 0 6%, transparent 24%),
+        radial-gradient(ellipse at 74% 10%, rgba(202,255,90,.75) 0 10%, transparent 34%),
+        linear-gradient(180deg, rgba(255,255,255,.25), transparent 34%),
+        linear-gradient(135deg, #6fdf56, #28c5a2 48%, #20a8e4);
+    border-radius: 56% 44% 0 0 / 32% 38% 0 0;
+    box-shadow: 0 -22px 90px rgba(255,255,255,.5);
+    opacity: .72;
+}
+
+/* Main scroll rail */
+#microseason-timeline {
+    width: 100%;
+    max-width: 1180px;
+    height: 100vh;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    padding: 43vh 1rem;
+    box-sizing: border-box;
+    cursor: grab;
+    user-select: none;
+    position: relative;
+    z-index: 2;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 17%, black 83%, transparent 100%);
+}
+
+#microseason-timeline.is-dragging {
+    cursor: grabbing;
+    scroll-snap-type: none;
+}
+
+#microseason-timeline::-webkit-scrollbar {
+    display: none;
+}
+
+#microseason-timeline {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.microseason-item {
+    scroll-snap-align: center;
+    text-align: center;
+    padding: 1.3rem;
+    margin: 1.15rem auto;
+    opacity: .33;
+    transform: scale(.9);
+    transition:
+        opacity .45s ease,
+        transform .45s ease,
+        filter .45s ease,
+        box-shadow .45s ease;
+    border-radius: 34px;
+    position: relative;
+    overflow: hidden;
+    filter: saturate(.78) blur(.2px);
+}
+
+.microseason-item::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.6), rgba(255,255,255,.1) 42%, rgba(255,255,255,.32)),
+        radial-gradient(circle at 16% 12%, rgba(255,255,255,.82), transparent 22%),
+        radial-gradient(circle at 88% 88%, rgba(34,240,220,.22), transparent 32%);
+    opacity: .35;
+    pointer-events: none;
+}
+
+.microseason-item.current {
+    opacity: 1;
+    transform: scale(1);
+    filter: saturate(1.15) blur(0);
+    background:
+        linear-gradient(145deg, rgba(255,255,255,.72), rgba(218,252,255,.42) 48%, rgba(185,244,255,.34)),
+        radial-gradient(circle at 12% 0%, rgba(255,255,255,.95), transparent 38%),
+        radial-gradient(circle at 100% 100%, rgba(142,233,79,.25), transparent 42%);
+    border: 1px solid rgba(255,255,255,.86);
+    box-shadow:
+        0 26px 70px rgba(0, 101, 168, .28),
+        0 10px 26px rgba(48, 176, 68, .15),
+        inset 0 1px 0 rgba(255,255,255,.95),
+        inset 0 -18px 42px rgba(0, 174, 217, .08);
+}
+
+.ko-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .4rem;
+    font-size: .86rem;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #ffffff;
+    margin-bottom: 1.1rem;
+    padding: .48rem .9rem;
+    border-radius: 999px;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,.05) 38%),
+        linear-gradient(135deg, #00a9ef, #00d3cf 50%, #65d948);
+    border: 1px solid rgba(255,255,255,.8);
+    box-shadow:
+        0 8px 18px rgba(0, 126, 180, .22),
+        inset 0 1px 0 rgba(255,255,255,.95);
+    text-shadow: 0 1px 2px rgba(0,69,105,.35);
+}
+
+.sets-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: stretch;
+    gap: 1rem;
+    text-align: left;
+    position: relative;
+    z-index: 1;
+}
+
+.season-set {
+    flex: 1;
+    padding: 1rem 1rem 1.1rem;
+    border-radius: 26px;
+    position: relative;
+    overflow: hidden;
+    min-height: 12.5rem;
+    border: 1px solid rgba(255,255,255,.72);
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.36)),
+        radial-gradient(circle at 25% 5%, rgba(255,255,255,.82), transparent 38%);
+    box-shadow:
+        0 14px 32px rgba(0, 105, 180, .16),
+        inset 0 1px 0 rgba(255,255,255,.92),
+        inset 0 -18px 30px rgba(0, 180, 220, .06);
+    backdrop-filter: blur(16px) saturate(1.28);
+    -webkit-backdrop-filter: blur(16px) saturate(1.28);
+}
+
+.season-set::before {
+    content: "";
+    position: absolute;
+    top: .55rem;
+    left: .65rem;
+    right: .65rem;
+    height: 34%;
+    border-radius: 22px 22px 40% 40%;
+    background: linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.08));
+    pointer-events: none;
+}
+
+.season-set::after {
+    content: "";
+    position: absolute;
+    width: 4.5rem;
+    height: 4.5rem;
+    right: -1.5rem;
+    bottom: -1.4rem;
+    border-radius: 50%;
+    background: radial-gradient(circle at 32% 26%, rgba(255,255,255,.9), rgba(255,255,255,.18) 30%, transparent 68%);
+    opacity: .72;
+    pointer-events: none;
+}
+
+.season-set.philippines {
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.78), rgba(231,255,219,.42)),
+        radial-gradient(circle at 10% 0%, rgba(202,255,90,.48), transparent 42%),
+        linear-gradient(135deg, rgba(0,211,207,.18), rgba(142,233,79,.22));
+}
+
+.season-set.japan {
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.78), rgba(237,248,255,.42)),
+        radial-gradient(circle at 18% 0%, rgba(255,152,216,.34), transparent 40%),
+        linear-gradient(135deg, rgba(141,124,255,.18), rgba(0,211,207,.18));
+}
+
+.season-set.internet {
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.8), rgba(234,242,255,.44)),
+        radial-gradient(circle at 18% 0%, rgba(255,246,138,.36), transparent 38%),
+        linear-gradient(135deg, rgba(0,169,239,.2), rgba(141,124,255,.22));
+}
+
+.season-set h3 {
+    display: inline-block;
+    font-size: .72rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    margin: 0 0 .85rem 0;
+    color: #ffffff;
+    padding: .34rem .66rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.75);
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.5), rgba(255,255,255,.05) 44%),
+        linear-gradient(135deg, #008ed8, #00d3cf);
+    box-shadow:
+        0 5px 12px rgba(0,100,160,.18),
+        inset 0 1px 0 rgba(255,255,255,.85);
+    text-shadow: 0 1px 2px rgba(0,62,93,.34);
+    position: relative;
+    z-index: 1;
+}
+
+.season-set.philippines h3 {
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.5), rgba(255,255,255,.05) 44%),
+        linear-gradient(135deg, #09a5a9, #78d94f);
+}
+
+.season-set.japan h3 {
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.5), rgba(255,255,255,.05) 44%),
+        linear-gradient(135deg, #5caeff, #ff8bd6);
+}
+
+.season-set.internet h3 {
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.5), rgba(255,255,255,.05) 44%),
+        linear-gradient(135deg, #16b9ff, #8d7cff);
+}
+
+.season-set h2 {
+    font-size: clamp(1rem, 1.3vw, 1.28rem);
+    font-weight: 900;
+    margin: 0 0 .45rem 0;
+    line-height: 1.24;
+    color: #006fa6;
+    text-shadow:
+        0 1px 0 rgba(255,255,255,.9),
+        0 8px 18px rgba(0,144,202,.14);
+    position: relative;
+    z-index: 1;
+}
+
+.season-set.philippines h2 {
+    color: #14833f;
+}
+
+.season-set.japan h2 {
+    font-family: 'Noto Sans JP', 'Nunito', sans-serif;
+    color: #3e79bd;
+}
+
+.season-set.internet h2 {
+    color: #565dd7;
+}
+
+.season-set p {
+    font-size: .92rem;
+    font-weight: 500;
+    margin: 0;
+    line-height: 1.5;
+    color: rgba(7, 63, 93, .78);
+    text-shadow: 0 1px 0 rgba(255,255,255,.65);
+    position: relative;
+    z-index: 1;
+}
+
+.sources-container {
+    margin-top: .9rem;
+    font-size: .8rem;
+    color: rgba(7, 63, 93, .58);
+    position: relative;
+    z-index: 1;
+}
+
+.sources-container a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.45rem;
+    height: 1.45rem;
+    margin: .12rem;
+    color: #0079b8;
+    text-decoration: none;
+    font-weight: 900;
+    border-radius: 999px;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.9), rgba(204,244,255,.5));
+    border: 1px solid rgba(255,255,255,.8);
+    box-shadow:
+        0 4px 10px rgba(0,100,160,.14),
+        inset 0 1px 0 rgba(255,255,255,.95);
+}
+
+.sources-container a:hover {
+    color: #ffffff;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.45), rgba(255,255,255,.08)),
+        linear-gradient(135deg, #00a9ef, #3ddc83);
+    text-shadow: 0 1px 2px rgba(0,58,88,.45);
+}
+
+/* Title glass bar */
+#main-title {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    padding: 22px 0 38px;
+    z-index: 10;
+    pointer-events: none;
+    background:
+        linear-gradient(to bottom, rgba(255,255,255,.82), rgba(255,255,255,.42) 58%, transparent),
+        radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.9), transparent 62%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+#main-title h1 {
+    display: inline-block;
+    font-size: clamp(2.2rem, 5vw, 4.2rem);
+    font-weight: 900;
+    letter-spacing: -.055em;
+    margin: 0;
+    line-height: .92;
+    color: transparent;
+    background:
+        linear-gradient(180deg, #ffffff 0%, #d8fbff 28%, #00a9ef 52%, #0077be 72%, #065a8a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    filter: drop-shadow(0 2px 0 rgba(255,255,255,.75)) drop-shadow(0 14px 22px rgba(0,110,175,.28));
+}
+
+/* Center scanner / active-zone glow */
+#center-marker {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(96%, 1240px);
+    height: 22vh;
+    z-index: 1;
+    pointer-events: none;
+    opacity: .55;
+    background:
+        linear-gradient(to right, transparent, rgba(255,255,255,.72) 18%, rgba(255,255,255,.72) 82%, transparent),
+        linear-gradient(to bottom, transparent, rgba(0,211,207,.18) 45%, rgba(255,255,255,.55) 50%, rgba(0,169,239,.16) 55%, transparent);
+    border-top: 1px solid rgba(255,255,255,.55);
+    border-bottom: 1px solid rgba(255,255,255,.55);
+    box-shadow:
+        0 0 48px rgba(255,255,255,.65),
+        0 0 90px rgba(0,211,207,.2);
+}
+
+/* Aero navigation buttons */
+.nav-arrow {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 11;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+    border: 1px solid rgba(255,255,255,.86);
+    background:
+        radial-gradient(circle at 35% 22%, rgba(255,255,255,.92), rgba(255,255,255,.18) 24%, transparent 38%),
+        linear-gradient(180deg, rgba(255,255,255,.48), rgba(255,255,255,.04) 42%),
+        linear-gradient(135deg, #00a9ef, #00d3cf 55%, #77dd4b);
+    box-shadow:
+        0 13px 26px rgba(0,96,160,.28),
+        inset 0 1px 0 rgba(255,255,255,.9),
+        inset 0 -10px 18px rgba(0,64,132,.18);
+    text-shadow: 0 1px 3px rgba(0,64,96,.55);
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        filter .2s ease;
+    backdrop-filter: blur(12px) saturate(1.3);
+    -webkit-backdrop-filter: blur(12px) saturate(1.3);
+}
+
+.nav-arrow:hover {
+    transform: translateX(-50%) scale(1.1);
+    filter: brightness(1.08) saturate(1.14);
+    box-shadow:
+        0 16px 34px rgba(0,96,160,.34),
+        0 0 28px rgba(255,255,255,.62),
+        inset 0 1px 0 rgba(255,255,255,.95),
+        inset 0 -10px 18px rgba(0,64,132,.14);
+}
+
+.nav-arrow:active {
+    transform: translateX(-50%) scale(.96);
+}
+
+#nav-up {
+    top: 92px;
+}
+
+#nav-down {
+    bottom: 22px;
+}
+
+/* Tablet / mobile */
+@media (max-width: 850px) {
+    #microseason-timeline {
+        padding: 38vh .7rem;
+        mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+    }
+
+    .microseason-item {
+        padding: .85rem;
+        border-radius: 28px;
+    }
+
+    .sets-container {
+        flex-direction: column;
+        gap: .75rem;
+    }
+
+    .season-set {
+        min-height: unset;
+        border-radius: 22px;
+        padding: .9rem;
+    }
+
+    #main-title {
+        padding-top: 16px;
+    }
+
+    #nav-up {
+        top: 76px;
+    }
+
+    .nav-arrow {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 520px) {
+    #main-title h1 {
+        font-size: 2.15rem;
+    }
+
+    .ko-number {
+        font-size: .72rem;
+        letter-spacing: .06em;
+    }
+
+    .season-set h2 {
+        font-size: 1rem;
+    }
+
+    .season-set p {
+        font-size: .86rem;
+    }
+}
+</style>
+</head>
+<body>
+  <div id="main-title">
+        <h1>body clocks</h1>
+    </div>
+    <div id="center-marker"></div>
+    <div id="microseason-timeline">
+        </div>
+
+    <button id="nav-up" class="nav-arrow" aria-label="Previous microseason">&#9650;</button>
+    <button id="nav-down" class="nav-arrow" aria-label="Next microseason">&#9660;</button>
+
+<script>
+    // --- NEW: Combined data structure for all microseason sets ---
+    const timeline = [
+        {ko:1,dates:"Feb 4–8",sets:{philippines:{title:"Ang Damo'y Naninilaw sa Ilalim ng Araw",subtitle:"The Grass Browns Under the Sun",sources:["https://www.ana.co.jp/en/jp/japan-travel-planner/suggesters/season/","https://www.dlsu.edu.ph/wp-content/uploads/pdf/registrar/schedules/enroll_ta.pdf","https://www.dlsu.edu.ph/wp-content/uploads/pdf/registrar/schedules/enroll_ug.pdf"]},japan:{title:"東風解凍 Harukaze kōri o toku",subtitle:"East wind melts the ice"}}},
+        {ko:2,dates:"Feb 9–13",sets:{philippines:{title:"Nagsisimulang Magsabog ng Binhi ang mga Koral",subtitle:"The Corals Begin their Mass Spawning",sources:["https://www.nippon.com/en/features/h00124/","https://www.pna.gov.ph/articles/1171837","https://www.sciencedaily.com/releases/2022/03/220329171731.htm"]},japan:{title:"黄鶯睍睆 Kōō kenkan su",subtitle:"Bush warblers start singing in the mountains"}}},
+        {ko:3,dates:"Feb 14–18",sets:{philippines:{title:"Ang Bango ng Sampaguita'y Sumasabog sa Kalye",subtitle:"The Scent of Sampaguita Fills the City Streets",sources:["https://www.officialgazette.gov.ph/2013/05/29/proclamation-no-579-s-2013/","https://www.nparks.gov.sg/florafaunaweb/flora/2/8/2856","https://www.pagasa.dost.gov.ph/information/heat-index"]},japan:{title:"魚上氷 Uo kōri o izuru",subtitle:"Fish emerge from the ice"}}},
+        {ko:4,dates:"Feb 19–23",sets:{philippines:{title:"Pantay ang Araw at Gabi sa Ekinoks",subtitle:"The Sun and Sky are Balanced at the Equinox",sources:["https://www.loc.gov/everyday-mysteries/zoology/item/how-long-do-butterflies-live/","https://www.pagasa.dost.gov.ph/astronomy/astronomical-diary"]},japan:{title:"土脉潤起 Tsuchi no shō uruoi okoru",subtitle:"Rain moistens the soil"}}},
+        {ko:5,dates:"Feb 24–28",sets:{philippines:{title:"Mga Pipit-Maya'y Nagpupugad",subtitle:"The Maya Sparrows Build Their Nests",sources:["https://www.cabi.org/isc/datasheet/38804","https://singaporebirds.com/species/eurasian-tree-sparrow/"]},japan:{title:"霞始靆 Kasumi hajimete tanabiku",subtitle:"Mist starts to linger"}}},
+        {ko:6,dates:"Mar 1–5",sets:{philippines:{title:"Nalalaglag ang Puting Talulot ng Katmon",subtitle:"The White Petals of the Katmon Tree Fall",sources:["https://www.nparks.gov.sg/florafaunaweb/flora/2/5/2539","https://www.pna.gov.ph/articles/1170505","https://hort.purdue.edu/newcrop/morton/langsat.html"]},japan:{title:"草木萌動 Sōmoku mebae izuru",subtitle:"Grass sprouts, trees bud"}}},
+        {ko:7,dates:"Mar 6–10",sets:{philippines:{title:"Isang Dakilang Katahimikan ang Bumabalot sa Lungsod",subtitle:"A Great Stillness Falls Over the City",sources:["https://www.nippon.com/en/features/h00124/","https://www.philippines.travel/en/events"]},japan:{title:"蟄虫啓戸 Sugomori mushito o hiraku",subtitle:"Hibernating insects surface"}}},
+        {ko:8,dates:"Mar 11–15",sets:{philippines:{title:"Inaalagaan ng Agila ang Kanyang mga Sisiw",subtitle:"The Great Philippine Eagle Cares for its Young",sources:["https://www.ana.co.jp/en/jp/japan-travel-planner/suggesters/season/","https://www.pna.gov.ph/articles/1164336","https://www.officialgazette.gov.ph/nationwide-holidays/"]},japan:{title:"桃始笑 Momo hajimete saku",subtitle:"First peach blossoms"}}},
+        {ko:9,dates:"Mar 16–20",sets:{philippines:{title:"Dumarating ang Rurok ng Tag-init",subtitle:"The Peak of the Dry Season's Heat Arrives",sources:["https://www.pagasa.dost.gov.ph/climate/climatological-normals","https://www.pagasa.dost.gov.ph/information/uv-index","https://www.pagasa.dost.gov.ph/astronomy/astronomical-diary"]},japan:{title:"菜虫化蝶 Namushi chō to naru",subtitle:"Caterpillars become butterflies"}}},
+        {ko:10,dates:"Mar 21–25",sets:{philippines:{title:"Namumulaklak ng Lila ang Punong Banaba",subtitle:"The Banaba Tree Blooms in Purple",sources:["https://www.ana.co.jp/en/jp/japan-travel-planner/suggesters/season/","https://www.nparks.gov.sg/florafaunaweb/flora/2/9/2921"]},japan:{title:"雀始巣 Suzume hajimete sukū",subtitle:"Sparrows start to nest"}}},
+        {ko:11,dates:"Mar 26–30",sets:{philippines:{title:"Alikabok ay Umaakyat sa Gitna ng Init",subtitle:"Dust Rises in the Afternoon Heat",sources:[]},japan:{title:"櫻始開 Sakura hajimete saku",subtitle:"First cherry blossoms"}}},
+        {ko:12,dates:"Mar 31–Apr 4",sets:{philippines:{title:"Ang mga Puno ng Apoy ay Nagbabadya ng Ulan",subtitle:"The Fire Trees Herald the Coming Rains",sources:["https://www.nparks.gov.sg/florafaunaweb/flora/2/5/2528","https://newsinfo.inquirer.net/1435853/fire-trees-in-bloom-signal-start-of-rainy-season","https://www.philippines.travel/en/events"]},japan:{title:"雷乃発声 Kaminari sunawachi koe o hassu",subtitle:"Distant thunder"}}},
+        {ko:13,dates:"Apr 5–9",sets:{philippines:{title:"Kasagsagan ng Tamis ng Manggang Kalabaw",subtitle:"The Philippine Mango is at its Sweetest",sources:["https://www.ana.co.jp/en/jp/japan-travel-planner/suggesters/season/","https://www.pagasa.dost.gov.ph/information/heat-index","https://www.guinnessworldrecords.com/world-records/sweetest-fruit"]},japan:{title:"玄鳥至 Tsubame kitaru",subtitle:"Swallows return"}}},
+        {ko:14,dates:"Apr 10–14",sets:{philippines:{title:"Nagsisimula ang mga Pista ng Mayo",subtitle:"The Month of May Festivals Begins",sources:["https://www.philippines.travel/en/events","https://www.pagasa.dost.gov.ph/astronomy/astronomical-diary"]},japan:{title:"鴻雁北 Kōgan kaeru",subtitle:"Wild geese fly north"}}},
+        {ko:15,dates:"Apr 15–19",sets:{philippines:{title:"Ang Pistang Pahiyas ay Nagbibihis ng Ani sa Bayan",subtitle:"The Pahiyas Festival Adorns the Town in Harvest",sources:["https://www.nippon.com/en/features/h00124/","https://guidetothephilippines.ph/articles/history-and-culture/best-festivals-philippines"]},japan:{title:"虹始見 Niji hajimete arawaru",subtitle:"First rainbows"}}},
+        {ko:16,dates:"Apr 20–24",sets:{philippines:{title:"Ginising ng Unang Kulog ang mga Palaka",subtitle:"The First Thunderstorms Awaken the Frogs",sources:["https://www.ana.co.jp/en/jp/japan-travel-planner/suggesters/season/","https://www.nationalgeographic.com/animals/amphibians/facts/tree-frog"]},japan:{title:"葭始生 Ashi hajimete shōzu",subtitle:"First reeds sprout"}}},
+        {ko:17,dates:"Apr 25–29",sets:{philippines:{title:"Rurok ng Panahon ng mga Butanding",subtitle:"The Whale Shark Season Peaks",sources:["https://www.nippon.com/en/features/h00124/","https://www.discoverdonsol.com/whale-sharks-and-manta-rays.html","https://www.philippines.travel/en/events"]},japan:{title:"霜止出苗 Shimo yami nae izuru",subtitle:"Last frost, rice seedlings grow"}}},
+        {ko:18,dates:"Apr 30–May 4",sets:{philippines:{title:"Ang Halimuyak ng Lupa'y Sumisingaw",subtitle:"The Scent of Petrichor Fills the Air",sources:["https://www.pagasa.dost.gov.ph/press-release/39","https://www.pagasa.dost.gov.ph/information/rainy-season"]},japan:{title:"牡丹華 Botan hana saku",subtitle:"Peonies bloom"}}},
+        {ko:19,dates:"May 5–9",sets:{philippines:{title:"Sinusubok ng Unang Baha ang Lungsod",subtitle:"The First Flash Floods Test the City",sources:["https://www.nippon.com/en/features/h00124/","https://www.nparks.gov.sg/florafaunaweb/flora/2/9/2921"]},japan:{title:"蛙始鳴 Kawazu hajimete naku",subtitle:"Frogs start singing"}}},
+        {ko:20,dates:"May 10–14",sets:{philippines:{title:"Inihahanda ang Bukid para sa Panananim",subtitle:"The Fields are Prepared for the Wet-Season Crop",sources:["https://www.officialgazette.gov.ph/2024/05/22/deped-issues-order-on-gradual-return-to-june-july-school-year-opening/","https://www.pna.gov.ph/articles/1174388"]},japan:{title:"蚯蚓出 Mimizu izuru",subtitle:"Worms surface"}}},
+        {ko:21,dates:"May 15–20",sets:{philippines:{title:"Dagsaan ang mga Pagsulpot ng Kulisap",subtitle:"A Surge of Insect Life Emerges",sources:["https://www.nippon.com/en/features/h00124/","https://www.philippines.travel/en/events","https://www.officialgazette.gov.ph/nationwide-holidays/"]},japan:{title:"竹笋生 Takenoko shōzu",subtitle:"Bamboo shoots sprout"}}},
+        {ko:22,dates:"May 21–25",sets:{philippines:{title:"Namumukadkad ang mga Katutubong Orkidya",subtitle:"The Native Orchids Begin to Bloom",sources:["https://www.nippon.com/en/features/h00124/","https://www.pna.gov.ph/articles/1176412"]},japan:{title:"蚕起食桑 Kaiko okite kuwa o hamu",subtitle:"Silkworms start feasting on mulberry leaves"}}},
+        {ko:23,dates:"May 26–30",sets:{philippines:{title:"Ang mga Gamu-gamo'y Dumadagsa sa Ilaw",subtitle:"Winged Termites Swarm the Lights",sources:[]},japan:{title:"紅花栄 Benibana sakau",subtitle:"Safflowers bloom"}}},
+        {ko:24,dates:"May 31–June 5",sets:{philippines:{title:"Simula ng Ani ng Rambutan",subtitle:"The Rambutan Harvest Begins",sources:["https://hort.purdue.edu/newcrop/morton/rambutan.html","https://www.thephilippines.com/fruits.html","https://www.pagasa.dost.gov.ph/astronomy/astronomical-diary"]},japan:{title:"麦秋至 Mugi no toki itaru",subtitle:"Wheat ripens"}}},
+        {ko:25,dates:"June 6–10",sets:{philippines:{title:"Luntiang-luntian ang Kapaligiran",subtitle:"The Landscape is at its Most Verdant",sources:["https://www.nippon.com/en/features/h00124/","https://www.philippines.travel/en/events"]},japan:{title:"螳螂生 Kamakiri shōzu",subtitle:"Praying mantises hatch"}}},
+        {ko:26,dates:"June 11–15",sets:{philippines:{title:"Umaahon ang mga Bulaklak ng Lotus sa Tubig",subtitle:"The Lotus Flowers Rise from the Water",sources:["https://www.nippon.com/en/features/h00124/","https://www.cabi.org/isc/datasheet/70599","https://thefishsite.com/articles/a-guide-to-tilapia-breeding"]},japan:{title:"腐草為螢 Kusaretaru kusa hotaru to naru",subtitle:"Rotten grass becomes fireflies"}}},
+        {ko:27,dates:"June 16–20",sets:{philippines:{title:"Simula ng Rurok ng Panahon ng Bagyo",subtitle:"The Peak Typhoon Season Begins",sources:["https://www.nippon.com/en/features/h00124/","https://www.pagasa.dost.gov.ph/information/about-tropical-cyclones","https://www.pagasa.dost.gov.ph/climate/climate-philippines"]},japan:{title:"梅子黄 Ume no mi kibamu",subtitle:"Plums turn yellow"}}},
+        {ko:28,dates:"June 21–26",sets:{philippines:{title:"Dumarating ang Walang-Tigil na Ulan",subtitle:"The Monotonous Rains Arrive",sources:["https://www.pagasa.dost.gov.ph/information/about-habagat","https://www.pagasa.dost.gov.ph/climate/climate-philippines"]},japan:{title:"乃東枯 Natsukarekusa karuru",subtitle:"Self-heal sprouts wither"}}},
+        {ko:29,dates:"June 27–July 1",sets:{philippines:{title:"Nagsisimula ang Ani ng Durian sa Mindanao",subtitle:"The Durian Harvest Begins in Mindanao",sources:["https://www.nippon.com/en/features/h00124/","https://www.thephilippines.com/fruits.html","https://www.pna.gov.ph/articles/1181161"]},japan:{title:"菖蒲華 Ayame hana saku",subtitle:"Irises bloom"}}},
+        {ko:30,dates:"July 2–6",sets:{philippines:{title:"Nakikinig ang Bansa sa Talumpati ng Pangulo",subtitle:"The Nation Listens to the State of the Nation Address",sources:["https://www.nippon.com/en/features/h00124/"]},japan:{title:"半夏生 Hange shōzu",subtitle:"Crow-dipper sprouts"}}},
+        {ko:31,dates:"July 7–11",sets:{philippines:{title:"Kumakalat ang mga Pakpak na Binhi ng Narra",subtitle:"The Winged Seeds of the Narra are Dispersed",sources:["https://www.ana.co.jp/en/jp/japan-travel-planner/suggesters/season/","https://www.nparks.gov.sg/florafaunaweb/flora/3/1/3144","https://www.philippines.travel/en/events"]},japan:{title:"温風至 Atsukaze itaru",subtitle:"Warm winds blow"}}},
+        {ko:32,dates:"July 12–16",sets:{philippines:{title:"Nananahan ang Malalim na Halumigmig",subtitle:"The Deep, Pervasive Dampness Sets In",sources:["https://www.ana.co.jp/en/jp/japan-travel-planner/suggesters/season/","https://www.pagasa.dost.gov.ph/information/heat-index","https://www.pagasa.dost.gov.ph/astronomy/astronomical-diary"]},japan:{title:"蓮始開 Hasu hajimete hiraku",subtitle:"First lotus blossoms"}}},
+        {ko:33,dates:"July 17–22",sets:{philippines:{title:"Pinaparalisa ng Ilang Araw na Ulan ang Kapital",subtitle:"Multi-Day Rains Paralyze the Capital",sources:["https://www.pagasa.dost.gov.ph/climate/climatological-normals"]},japan:{title:"鷹乃学習 Taka sunawachi waza o narau",subtitle:"Hawks learn to fly"}}},
+        {ko:34,dates:"July 23–28",sets:{philippines:{title:"Ang Buwan ng mga Multo'y Nagsisimula",subtitle:"The Ghost Month Begins",sources:[]},japan:{title:"桐始結花 Kiri hajimete hana o musubu",subtitle:"Paulownia trees produce seeds"}}},
+        {ko:35,dates:"July 29–Aug 2",sets:{philippines:{title:"Ipinagdiriwang ng Davao ang Kadayawan",subtitle:"Davao Celebrates the Kadayawan Harvest",sources:["https://www.ana.co.jp/en/jp/japan-travel-planner/suggesters/season/","https://www.philippines.travel/en/events","https://guidetothephilippines.ph/articles/history-and-culture/best-festivals-philippines"]},japan:{title:"土潤溽暑 Tsuchi uruoute mushi atsushi",subtitle:"Earth is damp, air is humid"}}},
+        {ko:36,dates:"Aug 3–7",sets:{philippines:{title:"Mga Perseid ay Tinatago ng Ulap",subtitle:"The Perseid Meteors are Hidden by Clouds",sources:["https://www.ana.co.jp/en/jp/japan-travel-planner/suggesters/season/","https://www.pagasa.dost.gov.ph/astronomy/astronomical-diary","https://www.japan-guide.com/e/e2286.html"]},japan:{title:"大雨時行 Taiu tokidoki furu",subtitle:"Heavy rains fall"}}},
+        {ko:37,dates:"Aug 8–12",sets:{philippines:{title:"Lubos na Namumulaklak ang Waling-waling",subtitle:"The Waling-waling Orchid is in Full Bloom",sources:["https://www.ana.co.jp/en/jp/japan-travel-planner/suggesters/season/","https://www.officialgazette.gov.ph/2013/05/29/proclamation-no-579-s-2013/","https://www.pna.gov.ph/articles/1181161"]},japan:{title:"涼風至 Suzukaze itaru",subtitle:"Cool winds blow"}}},
+        {ko:38,dates:"Aug 13–17",sets:{philippines:{title:"Ang mga Palayan ay Nagiging Ginto mula sa Luntian",subtitle:"The Rice Paddies Turn from Green to Gold",sources:["https://www.dlsu.edu.ph/wp-content/uploads/pdf/registrar/schedules/enroll_ug.pdf"]},japan:{title:"寒蝉鳴 Higurashi naku",subtitle:"Evening cicadas sing"}}},
+        {ko:39,dates:"Aug 18–22",sets:{philippines:{title:"Naririnig ang mga Unang Pamaskong Awitin",subtitle:"The First Christmas Carols are Heard",sources:["https://www.nippon.com/en/features/h00124/","https://www.esquiremag.ph/long-reads/features/paskong-pinoy-a2212-20201216-lfrm","https://www.nytimes.com/2022/12/23/world/asia/philippines-christmas.html"]},japan:{title:"蒙霧升降 Fukaki kiri matō",subtitle:"Thick fog descends"}}},
+        {ko:40,dates:"Aug 23–27",sets:{philippines:{title:"Naghihintay ng Tuyo ang Bukid para sa Ani",subtitle:"The Fields Await a Dry Spell for Harvest",sources:["https://www.nippon.com/en/features/h00124/","https://ebonph.wordpress.com/2014/09/24/the-philippine-bird-migration-primer/"]},japan:{title:"綿柎開 Wata no hana shibe hiraku",subtitle:"Cotton flowers bloom"}}},
+        {ko:41,dates:"Aug 28–Sep 1",sets:{philippines:{title:"Nagsisimula ang Taunang Klase",subtitle:"The Academic Year Begins",sources:[]},japan:{title:"天地始粛 Tenchi hajimete samushi",subtitle:"Heat starts to die down"}}},
+        {ko:42,dates:"Sep 2–7",sets:{philippines:{title:"Hamog sa Umaga, Hudyat ng Paghupa ng Habagat",subtitle:"Morning Dew Signals the Waning Habagat",sources:["https://www.nippon.com/en/features/h00124/","https://www.philippines.travel/en/events"]},japan:{title:"禾乃登 Kokumono sunawachi minoru",subtitle:"Rice ripens"}}},
+        {ko:43,dates:"Sep 8–12",sets:{philippines:{title:"Dumarating ang mga Unang Dayong Tilis",subtitle:"The First Migrant Wagtails Arrive",sources:["https://www.nippon.com/en/features/h00124/","https://www.thephilippines.com/fruits.html","https://www.pna.gov.ph/articles/1181161"]},japan:{title:"草露白 Kusa no tsuyu shiroshi",subtitle:"Dew glistens on the grass"}}},
+        {ko:44,dates:"Sep 13–17",sets:{philippines:{title:"Mga Paruparong Papilio ay Nangingitlog",subtitle:"The Papilio Butterflies Lay Their Eggs",sources:[]},japan:{title:"鶺鴒鳴 Sekirei naku",subtitle:"Wagtails sing"}}},
+        {ko:45,dates:"Sep 18–22",sets:{philippines:{title:"Ang Birhen ng Peñafrancia'y Naglalayag sa Ilog",subtitle:"The Virgin of Peñafrancia Sails the River",sources:["https://www.nippon.com/en/features/h00124/","https://www.philippines.travel/en/events"]},japan:{title:"玄鳥去 Tsubame saru",subtitle:"Swallows leave"}}},
+        {ko:46,dates:"Sep 23–27",sets:{philippines:{title:"Nagsisimulang Humupa ang mga Dumadagundong na Kulog",subtitle:"The Crashing Thunderstorms Begin to Fade",sources:["https://www.ana.co.jp/en/jp/japan-travel-planner/suggesters/season/0004.html","https://www.nippon.com/en/features/h00124/"]},japan:{title:"雷乃収声 Kaminari sunawachi koe o osamu",subtitle:"Thunder ceases"}}},
+        {ko:47,dates:"Sep 28–Oct 2",sets:{philippines:{title:"Nagdiriwang ang Lungsod ng mga Ngiti",subtitle:"The City of Smiles Holds its Festival",sources:["https://www.ana.co.jp/en/jp/japan-travel-planner/suggesters/season/0004.html","https://www.philippines.travel/en/events","https://guidetothephilippines.ph/articles/history-and-culture/best-festivals-philippines"]},japan:{title:"蟄虫坏戸 Mushi kakurete to o fusagu",subtitle:"Insects hole up underground"}}},
+        {ko:48,dates:"Oct 3–7",sets:{philippines:{title:"Ang mga Palayan ay Pinatutuyo at Pinagpapahinga",subtitle:"The Rice Paddies are Drained and Rested",sources:["https://www.nippon.com/en/features/h00124/","https://www.pagasa.dost.gov.ph/press-release/23"]},japan:{title:"水始涸 Mizu hajimete karuru",subtitle:"Farmers drain the fields"}}},
+        {ko:49,dates:"Oct 8–12",sets:{philippines:{title:"Nagbabalik ang Ariwanas sa Gabi",subtitle:"The Milky Way Returns to the Night Sky",sources:["https://www.nippon.com/en/japan-topics/g00273/"]},japan:{title:"鴻雁来 Kōgan kitaru",subtitle:"Wild geese return"}}},
+        {ko:50,dates:"Oct 13–17",sets:{philippines:{title:"Ipinagdiriwang ng Camiguin ang Ani ng Lansones",subtitle:"Camiguin Celebrates the Lanzones Harvest",sources:["https://www.nippon.com/en/features/h00124/","https://www.philippines.travel/en/events"]},japan:{title:"菊花開 Kiku no hana hiraku",subtitle:"Chrysanthemums bloom"}}},
+        {ko:51,dates:"Oct 18–22",sets:{philippines:{title:"Huni ng Kuliglig ang Pumapalit sa Kokak ng Palaka",subtitle:"The Chirping of Crickets Replaces the Croaking of Frogs",sources:["https://www.nippon.com/en/features/h00124/","https://www.pagasa.dost.gov.ph/astronomy/astronomical-diary"]},japan:{title:"蟋蟀在戸 Kirigirisu to ni ari",subtitle:"Crickets chirp around the door"}}},
+        {ko:52,dates:"Oct 23–27",sets:{philippines:{title:"Halimuyak ng Dita sa Gabi",subtitle:"The Scent of Dita Fills the Night Air",sources:["https://www.pagasa.dost.gov.ph/press-release/23","https://www.projectnoah.org/spottings/7382685","https://www.pagasa.dost.gov.ph/astronomy/astronomical-diary"]},japan:{title:"霜始降 Shimo hajimete furu",subtitle:"First frost"}}},
+        {ko:53,dates:"Oct 28–Nov 1",sets:{philippines:{title:"Mga Kandila'y Sinasariwa para sa mga Yumao",subtitle:"Candles are Lit for the Departed",sources:["https://www.pagasa.dost.gov.ph/press-release/23","https://www.pagasa.dost.gov.ph/astronomy/astronomical-diary"]},japan:{title:"霎時施 Kosame tokidoki furu",subtitle:"Light rains sometimes fall"}}},
+        {ko:54,dates:"Nov 2–6",sets:{philippines:{title:"Mga Latia'y Napupuno ng mga Dayong Ibon",subtitle:"The Wetlands Teem with Migrants",sources:["https://ebonph.wordpress.com/2014/09/24/the-philippine-bird-migration-primer/","https://www.birdlife.org/news/2022/10/21/the-philippines-a-paradise-and-a-refuge-for-migratory-birds/"]},japan:{title:"楓蔦黄 Momiji tsuta kibamu",subtitle:"Maple leaves and ivy turn yellow"}}},
+        {ko:55,dates:"Nov 7–11",sets:{philippines:{title:"Nagsisimulang Bumigat ang Trapiko ng Pasko",subtitle:"The Christmas Traffic Begins to Build",sources:["https://www.ana.co.jp/en/jp/japan-travel-planner/suggesters/season/","https://www.numbeo.com/traffic/in/Manila"]},japan:{title:"山茶始開 Tsubaki hajimete hiraku",subtitle:"Camellias bloom"}}},
+        {ko:56,dates:"Nov 12–16",sets:{philippines:{title:"Pagsisiping ng mga Mamu",subtitle:"The Tarsiers Begin their Mating",sources:["https://www.ana.co.jp/en/jp/japan-travel-planner/suggesters/season/","https://animalia.bio/spectral-tarsier","https://allabouttarsier.weebly.com/reproduction.html"]},japan:{title:"地始凍 Chi hajimete kōru",subtitle:"Land starts to freeze"}}},
+        {ko:57,dates:"Nov 17–21",sets:{philippines:{title:"Yumayabong ang mga Gumamela",subtitle:"The Hibiscus Flowers Flourish",sources:["https://www.ana.co.jp/en/jp/japan-travel-planner/suggesters/season/","https://www.nparks.gov.sg/florafaunaweb/flora/2/7/2713","https://www.pagasa.dost.gov.ph/astronomy/astronomical-diary"]},japan:{title:"金盞香 Kinsenka saku",subtitle:"Daffodils bloom"}}},
+        {ko:58,dates:"Nov 22–26",sets:{philippines:{title:"Ang Bituing Baha'y Nagbabadya ng Tag-araw",subtitle:"The Baha Constellation Signals the Dry Season",sources:["https://www.ana.co.jp/en/jp/japan-travel-planner/suggesters/season/","https://www.facebook.com/PAGASA.DOST.GOV.PH/posts/pfbid022qg9L9y6sQxU1M11n3t1Y2p88n8Y7g7kvyiWpGz2S1b9S2w2a1zT4g5c8tL12K4l"]},japan:{title:"虹蔵不見 Niji kakurete miezu",subtitle:"Rainbows hide"}}},
+        {ko:59,dates:"Nov 27–Dec 1",sets:{philippines:{title:"Hanging Amihan ay Nagpapahinog ng Palay",subtitle:"The North Wind Ripens the Grain",sources:["https://www.ana.co.jp/en/jp/japan-travel-planner/suggesters/season/","https://www.officialgazette.gov.ph/nationwide-holidays/","https://www.gmanetwork.com/news/topstories/nation/890098/nlex-sees-10-15-increase-in-traffic-volume-this-long-weekend/story/"]},japan:{title:"朔風払葉 Kitakaze konoha o harau",subtitle:"North wind blows the leaves from the trees"}}},
+        {ko:60,dates:"Dec 2–6",sets:{philippines:{title:"Panahon ng Ani ng Kalamansi at Dalandan",subtitle:"Calamansi and Dalandan are Harvested",sources:["https://www.ana.co.jp/en/jp/japan-travel-planner/suggesters/season/","https://www.thephilippines.com/fruits.html"]},japan:{title:"橘始黄 Tachibana hajimete kibamu",subtitle:"Tachibana citrus tree leaves start to turn yellow"}}},
+        {ko:61,dates:"Dec 7–11",sets:{philippines:{title:"Dumarating ang Rurok ng Ginaw",subtitle:"The Deepest Chill of the Year Arrives",sources:["https://www.pagasa.dost.gov.ph/climate/climatological-normals","https://www.officialgazette.gov.ph/nationwide-holidays/","https://www.discoverdonsol.com/whale-sharks-and-manta-rays.html"]},japan:{title:"閉塞成冬 Sora samuku fuyu to naru",subtitle:"Cold sets in, winter begins"}}},
+        {ko:62,dates:"Dec 12–16",sets:{philippines:{title:"Kasagsagan ng mga Geminid",subtitle:"The Geminid Meteors Peak",sources:["https://www.ana.co.jp/en/jp/japan-travel-planner/suggesters/season/","https://www.dlsu.edu.ph/wp-content/uploads/pdf/registrar/schedules/enroll_ug.pdf","https://www.pagasa.dost.gov.ph/astronomy/astronomical-diary"]},japan:{title:"熊蟄穴 Kuma ana ni komoru",subtitle:"Bears start hibernating in their dens"}}},
+        {ko:63,dates:"Dec 17–21",sets:{philippines:{title:"Nagsisimula ang Dakilang Uwian",subtitle:"The Great Provincial Homecoming Begins",sources:["https://www.ana.co.jp/en/jp/japan-travel-planner/suggesters/season/","https://www.catholic.sg/advent-a-season-of-hope-joy/simbang-gabi-a-cherished-philippines-christmas-tradition/"]},japan:{title:"鱖魚群 Sake no uo muragaru",subtitle:"Salmon gather and swim upstream"}}},
+        {ko:64,dates:"Dec 22–26",sets:{philippines:{title:"Halimuyak ng Noche Buena sa Tahanan",subtitle:"The Scent of Noche Buena Fills the Home",sources:["https://www.ana.co.jp/en/jp/japan-travel-planner/suggesters/season/","https://www.catholic.sg/advent-a-season-of-hope-joy/simbang-gabi-a-cherished-philippines-christmas-tradition/","https://www.philippines.travel/en/events"]},japan:{title:"乃東生 Natsukarekusa shōzu",subtitle:"Self-heal sprouts"}}},
+        {ko:65,dates:"Dec 27–31",sets:{philippines:{title:"Mga Bakawa'y Nagniningning sa Alitaptap",subtitle:"The Mangroves Glimmer with Fireflies",sources:["https://www.lonelyplanet.com/philippines/bohol/activities/firefly-kayaking-tour-on-the-abatan-river/a/pa-act/v-91489P2/357283","https://www.tarsiertravel.com/bohol-tours/bohol-firefly-tour/"]},japan:{title:"麋角解 Ōshika no tsuno otsuru",subtitle:"Deer shed antlers"}}},
+        {ko:66,dates:"Jan 1–4",sets:{philippines:{title:"Ang Bagong Taon ay Sumisikat sa Usok",subtitle:"The New Year Begins in a Haze of Smoke",sources:["https://www.ana.co.jp/en/jp/japan-travel-planner/suggesters/season/","https://www.timeanddate.com/astronomy/meteor-shower/quadrantids.html"]},japan:{title:"雪下出麦 Yuki watarite mugi nobiru",subtitle:"Wheat sprouts under the snow"}}},
+        {ko:67,dates:"Jan 5–9",sets:{philippines:{title:"Milyon-milyong Dumadagsa sa Poong Nazareno",subtitle:"Millions Throng for the Black Nazarene",sources:["https://www.ana.co.jp/en/jp/japan-travel-planner/suggesters/season/","https://www.philippines.travel/en/events"]},japan:{title:"芹乃栄 Seri sunawachi sakau",subtitle:"Parsley flourishes"}}},
+        {ko:68,dates:"Jan 10–14",sets:{philippines:{title:"Dumarating ang Kanais-nais na Panahon",subtitle:"The Perfect Weather Arrives",sources:["https://www.ana.co.jp/en/jp/japan-travel-planner/suggesters/season/","https://www.thephilippines.com/fruits.html","https://www.philippines.travel/en/events"]},japan:{title:"水泉動 Shimizu atataka o fukumu",subtitle:"Springs thaw"}}},
+        {ko:69,dates:"Jan 15–19",sets:{philippines:{title:"Kasagsagan ng mga Pista ng Santo Niño",subtitle:"The Great Festivals of the Santo Niño Peak",sources:["https://www.ana.co.jp/en/jp/japan-travel-planner/suggesters/season/","https://guidetothephilippines.ph/articles/history-and-culture/best-festivals-philippines","https://www.philippines.travel/en/events"]},japan:{title:"雉始雊 Kiji hajimete naku",subtitle:"Pheasants start to call"}}},
+        {ko:70,dates:"Jan 20–24",sets:{philippines:{title:"Ang Bituing Balatik ay Sumisikat, Hudyat ng Pagtatanim",subtitle:"Balatik Rises, Signaling the Planting Season",sources:["https://www.facebook.com/PAGASA.DOST.GOV.PH/posts/pfbid022qg9L9y6sQxU1M11n3t1Y2p88n8Y7g7kvyiWpGz2S1b9S2w2a1zT4g5c8tL12K4l","https://www.pna.gov.ph/articles/1091562","https://www.nationalmuseum.gov.ph/2021/05/28/balatik-and-moroporo-stars-of-the-philippine-sky/"]},japan:{title:"款冬華 Fuki no hana saku",subtitle:"Butterburs bud"}}},
+        {ko:71,dates:"Jan 25–29",sets:{philippines:{title:"Gintong Alpombra ng mga Bulaklak ng Narra",subtitle:"A Golden Carpet of Narra Blossoms Falls",sources:["https://www.pna.gov.ph/articles/1172931","https://www.officialgazette.gov.ph/2014/06/01/the-narra-tree-our-national-tree/","https://www.nparks.gov.sg/florafaunaweb/flora/3/1/3144"]},japan:{title:"水沢腹堅 Sawamizu kōri tsumeru",subtitle:"Ice thickens on streams"}}},
+        {ko:72,dates:"Jan 30–Feb 3",sets:{philippines:{title:"Ang Hangin ay Nagiging Malamig at Tuyo",subtitle:"The Air Turns Crisp and Dry",sources:[]},japan:{title:"鶏始乳 Niwatori hajimete toya ni tsuku",subtitle:"Hens start to lay eggs"}}}
+    ];
+
+const internetMicroseasons = [
+    { title: '', subtitle: 'Safer Internet Day prompts platform PSAs.' },
+    { title: 'Super Bowl is Televised', subtitle: 'Super Bowl ads are dissected and memed in real time.' },
+    { title: '', subtitle: 'Valentine\'s Day posts flood social platforms.' },
+    { title: '', subtitle: 'A major cybersecurity breach makes headlines.' },
+    { title: '', subtitle: 'A long-awaited video game is released.' },
+    { title: '', subtitle: 'Gym selfies become less frequent.' },
+    { title: '', subtitle: 'A polarizing film or show divides fandoms.' },
+    { title: '', subtitle: 'Leaks of upcoming tech products circulate.' },
+    { title: '', subtitle: 'March Madness pools move online.' },
+    { title: 'The Spring Thaw of Content', subtitle: 'Creators emerge from winter with new projects.' },
+    { title: '', subtitle: 'Brands and users ready their April Fools\' gags.' },
+    { title: 'The Great Deception', subtitle: 'Platforms vie to prank their users on April 1st.' },
+    { title: 'The Pixels Go to War', subtitle: 'The ghost of r/place haunts the calendar.' },
+    { title: 'Thinkpieces Sprout', subtitle: 'Cultural critics analyze the year\'s first quarter.' },
+    { title: '', subtitle: 'Coachella outfits dominate Instagram.' },
+    { title: '', subtitle: 'Earth Day inspires a surge in #Trashtag posts.' },
+    { title: '', subtitle: 'Viral formats begin to reference their own virality.' },
+    { title: 'The 4th Is With Us', subtitle: 'Star Wars Day ("May the 4th") is celebrated.' },
+    { title: 'The Revenge of the Fifth', subtitle: 'A secondary Star Wars day continues the celebration.' },
+    { title: '', subtitle: 'The first major film of the season sets the tone.' },
+    { title: '', subtitle: 'Russian cybersecurity conferences mark a season of state-influenced digital strategy.49' },
+    { title: '', subtitle: 'The Webby Awards announce their winners.' },
+    { title: '', subtitle: 'Holiday memes circulate before Memorial Day.' },
+    { title: '', subtitle: 'Corporations adopt Pride Month branding.' },
+    { title: '', subtitle: 'E3-season gaming announcements begin.' },
+    { title: '', subtitle: 'Steam Summer Sale drains digital wallets.' },
+    { title: '', subtitle: 'Father\'s Day tributes are posted.' },
+    { title: '', subtitle: 'Faces fill the screen for National Selfie Day.' },
+    { title: '', subtitle: 'A new challenge or dance trend takes hold.' },
+    { title: '', subtitle: 'World UFO Day sparks extraterrestrial speculation.' },
+    { title: '', subtitle: 'World Chocolate Day trends globally.' },
+    { title: '', subtitle: 'The anniversary of DashCon serves as a cautionary tale of community and chaos.50' },
+    { title: '', subtitle: 'The internet\'s native glyphs are celebrated on World Emoji Day.23' },
+    { title: '', subtitle: 'Summer controversies reach their peak.' },
+    { title: '', subtitle: 'End-of-internship posts become a genre.' },
+    { title: 'Vacation Photos Crest', subtitle: 'The peak of summer travel content is reached.' },
+    { title: '', subtitle: 'Pro-social challenges trend in the Indian internet.47' },
+    { title: 'Streamers Return', subtitle: 'Major online personalities come back from breaks.' },
+    { title: '', subtitle: '"Back to school" content begins to trend.' },
+    { title: 'The Servers Are Wiped', subtitle: 'A new season begins in a popular online game.' },
+    { title: '', subtitle: 'The Inktober prompt list is released.' },
+    { title: '', subtitle: 'Labor Day marks the unofficial end of summer.' },
+    { title: '', subtitle: 'A new iPhone is announced.' },
+    { title: '', subtitle: 'The tech world debates the new device\'s merits.' },
+    { title: 'The September That Never Ends', subtitle: 'The memory of Usenet\'s "Eternal September" echoes as new users flood platforms.52' },
+    { title: '', subtitle: 'Autumnal aesthetics flood Pinterest and Instagram.' },
+    { title: '', subtitle: 'Halloween-themed content begins in earnest.' },
+    { title: '', subtitle: 'The first week of Inktober is completed.' },
+    { title: '', subtitle: 'The Untitled Goose Game meme sees its anniversary.' },
+    { title: '', subtitle: 'DIY Halloween tutorials peak in viewership.' },
+    { title: '', subtitle: 'A major platform experiences a significant outage.' },
+    { title: '', subtitle: '"Locktober" ends, and NNN preparation begins.' },
+    { title: '', subtitle: 'No Nut November commences at midnight.' },
+    { title: '', subtitle: 'The first wave of NNN participants "fail."' },
+    { title: '', subtitle: 'Black Friday deal announcements start.' },
+    { title: '', subtitle: 'Winter-themed events launch in online worlds.' },
+    { title: '', subtitle: 'Thanksgiving content peaks.' },
+    { title: '', subtitle: 'The end of NNN is in sight for the survivors.' },
+    { title: '', subtitle: 'Holiday-themed branding appears everywhere.' },
+    { title: '', subtitle: 'Destroy Dick December begins.' },
+    { title: '', subtitle: 'Spotify Wrapped and other recaps are released.' },
+    { title: '', subtitle: 'Memes about winter hibernation and coziness trend.' },
+    { title: '', subtitle: 'Holiday shipping deadlines cause online panic.' },
+    { title: '', subtitle: 'Holiday greetings and family photos are posted.' },
+    { title: '', subtitle: '"New Year, New Me" posts are drafted.' },
+    { title: 'The Great Unboxing', subtitle: 'The feeds fill with declarations of intent.' },
+    { title: '', subtitle: 'Tech pundits forecast the future from CES.' },
+    { title: '', subtitle: 'Holiday content fades from the timeline.' },
+    { title: '', subtitle: 'A new year\'s first major controversy brews.' },
+    { title: '', subtitle: 'The first truly viral format of the year emerges.' },
+    { title: 'Digital Ghost Town', subtitle: 'Post-holiday engagement reaches its annual low.' },
+    { title: 'The Hype Train Gathers Steam', subtitle: 'Anticipation for spring media releases builds.' }
+];
+
+// Merge the new data into the existing timeline
+timeline.forEach((period, index) => {
+    if (internetMicroseasons[index]) {
+        period.sets.internet = internetMicroseasons[index];
+    }
+});
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const timelineEl = document.getElementById('microseason-timeline');
+        
+        // --- UPDATED: Populate timeline from new data structure ---
+        const fragment = document.createDocumentFragment();
+        timeline.forEach((period, index) => {
+            const item = document.createElement('div');
+            item.className = 'microseason-item';
+            item.dataset.index = index;
+
+            // Build the HTML for each set (philippines, japan, etc.)
+            let setsHtml = '';
+            for (const setName in period.sets) {
+                const set = period.sets[setName];
+                let sourcesHtml = '';
+                
+                // Specifically handle sources for the philippines set
+                if (setName === 'philippines' && set.sources && set.sources.length > 0) {
+                    const links = set.sources.map((url, i) => 
+                        `<a href="${url}" target="_blank" rel="noopener noreferrer">[${i + 1}]</a>`
+                    ).join(' ');
+                    sourcesHtml = `<div class="sources-container">Sources: ${links}</div>`;
+                }
+
+                setsHtml += `
+                    <div class="season-set ${setName}">
+                        <h3>${setName}</h3>
+                        <h2>${set.title}</h2>
+                        <p>${set.subtitle}</p>
+                        ${sourcesHtml}
+                    </div>
+                `;
+            }
+
+            item.innerHTML = `
+                <div class="ko-number">Kō ${period.ko} &mdash; (${period.dates})</div>
+                <div class="sets-container">${setsHtml}</div>
+            `;
+            fragment.appendChild(item);
+        });
+        
+        const totalItems = timeline.length;
+        timelineEl.prepend(fragment.cloneNode(true));
+        timelineEl.appendChild(fragment.cloneNode(true));
+        timelineEl.appendChild(fragment.cloneNode(true));
+
+        const currentSeasonIndex = getCurrentMicroseasonIndex();
+        
+// --- 3. Find Today's Microseason and Scroll to It ---
+        window.addEventListener('load', () => {
+            // querySelectorAll captures all cloned sets; [1] guarantees the middle set
+            const targetElements = timelineEl.querySelectorAll(`.microseason-item[data-index='${currentSeasonIndex}']`);
+            const middleSetTarget = targetElements[1] || targetElements[0];
+            
+            if (middleSetTarget) {
+                // Instantly snaps into the center marker space on load
+                middleSetTarget.scrollIntoView({ block: 'center', behavior: 'auto' });
+            }
+        });
+
+        let currentActiveIndex = -1;
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const newIndex = entry.target.dataset.index;
+                    if (newIndex !== currentActiveIndex) {
+                        const oldCurrent = timelineEl.querySelector('.microseason-item.current');
+                        if(oldCurrent) oldCurrent.classList.remove('current');
+                        
+                        entry.target.classList.add('current');
+                        currentActiveIndex = newIndex;
+                    }
+                }
+            });
+        }, { root: null, rootMargin: "-50% 0px -50% 0px", threshold: 0 });
+
+        timelineEl.querySelectorAll('.microseason-item').forEach(item => observer.observe(item));
+
+        timelineEl.addEventListener('scroll', () => {
+            const firstItem = timelineEl.querySelector('.microseason-item');
+            if (!firstItem) return;
+            const itemHeight = firstItem.offsetHeight + 16;
+            const scrollableHeight = totalItems * itemHeight;
+
+            if (timelineEl.scrollTop < scrollableHeight * 0.5) {
+                timelineEl.scrollTop += scrollableHeight;
+            } else if (timelineEl.scrollTop > scrollableHeight * 2.5) {
+                timelineEl.scrollTop -= scrollableHeight;
+            }
+        });
+        
+        const navUp = document.getElementById('nav-up');
+        const navDown = document.getElementById('nav-down');
+
+        navUp.addEventListener('click', () => {
+             const currentItem = timelineEl.querySelector('.microseason-item.current') || timelineEl.querySelector('.microseason-item');
+            if(!currentItem) return;
+            const itemHeight = currentItem.offsetHeight + 16;
+            timelineEl.scrollBy({ top: -itemHeight, behavior: 'smooth' });
+        });
+
+        navDown.addEventListener('click', () => {
+            const currentItem = timelineEl.querySelector('.microseason-item.current') || timelineEl.querySelector('.microseason-item');
+            if(!currentItem) return;
+            const itemHeight = currentItem.offsetHeight + 16;
+            timelineEl.scrollBy({ top: itemHeight, behavior: 'smooth' });
+        });
+
+        let isDragging = false, startY, scrollTop;
+        timelineEl.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            timelineEl.classList.add('is-dragging');
+            startY = e.pageY - timelineEl.offsetTop;
+            scrollTop = timelineEl.scrollTop;
+            timelineEl.style.scrollSnapType = 'none';
+        });
+        timelineEl.addEventListener('mouseleave', () => { if (isDragging) { isDragging = false; timelineEl.classList.remove('is-dragging'); timelineEl.style.scrollSnapType = 'y mandatory'; } });
+        timelineEl.addEventListener('mouseup', () => { if (isDragging) { isDragging = false; timelineEl.classList.remove('is-dragging'); timelineEl.style.scrollSnapType = 'y mandatory'; } });
+        timelineEl.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            const y = e.pageY - timelineEl.offsetTop;
+            const walk = (y - startY);
+            timelineEl.scrollTop = scrollTop - walk;
+        });
+    });
+    
+    // --- UPDATED: Works with the new `timeline` constant ---
+    function getCurrentMicroseasonIndex() {
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const monthMap = { "Jan": 0, "Feb": 1, "Mar": 2, "Apr": 3, "May": 4, "June": 5, "July": 6, "Aug": 7, "Sep": 8, "Oct": 9, "Nov": 10, "Dec": 11 };
+
+        let nextSeasonIndex = -1;
+        for(let i = 0; i < timeline.length; i++) {
+            const period = timeline[i];
+            const dateString = period.dates.split('–')[0].trim();
+            const [monthStr, dayStr] = dateString.split(' ');
+            const month = monthMap[monthStr];
+            const day = parseInt(dayStr, 10);
+            const seasonStartDate = new Date(currentYear, month, day);
+
+            if (seasonStartDate > now) {
+                nextSeasonIndex = i;
+                break;
+            }
+        }
+
+        if (nextSeasonIndex === 0) {
+            return timeline.length - 1;
+        } else if (nextSeasonIndex === -1) {
+            return timeline.length - 1;
+        } else {
+            return nextSeasonIndex - 1;
+        }
+    }
+</script>
+</body>
+</html>

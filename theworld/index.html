@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The World</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Averia+Gruesa+Libre&family=Averia+Libre:wght@300;400;700&family=Averia+Sans+Libre:wght@300;400;700&family=Averia+Serif+Libre:wght@300;400;700&family=Syne+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Space — deep blurple, never zero-chroma */
+      --space-0:  #110a26;
+      --space-1:  #1d1140;
+      --space-2:  #2a1a55;
+      /* Iridescent planet poles */
+      --planet-cyan:   #4fe6cf;
+      --planet-violet: #8a6cf0;
+      --planet-amber:  #f5bb4a;
+      /* The letters — tarot/JoJo gold */
+      --letter:   #ffd166;
+      --letter-glow: rgba(255,209,102,0.55);
+      /* Type & surfaces */
+      --ink:      #ece4ff;
+      --ink-soft: #b9add9;
+      --panel:    rgba(36, 22, 70, 0.55);
+      --panel-edge: rgba(150, 120, 240, 0.35);
+      --cyan:     #5fe6d0;
+      --violet:   #9d83f5;
+      --amber:    #f5bb4a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 28px 18px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse 120% 90% at 50% 12%, var(--space-2), transparent 60%),
+        radial-gradient(ellipse 90% 80% at 50% 100%, #1a0f38, transparent 55%),
+        linear-gradient(160deg, var(--space-0), var(--space-1) 70%, #0d0820);
+      color: var(--ink);
+      font-family: 'Averia Sans Libre', system-ui, sans-serif;
+    }
+
+    header { text-align: center; margin-bottom: 18px; }
+
+    h1 {
+      font-family: 'Averia Gruesa Libre', 'Averia Serif Libre', serif;
+      font-size: clamp(2.4rem, 7vw, 3.6rem);
+      font-weight: 400;
+      letter-spacing: 1px;
+      margin: 0;
+      line-height: 1;
+      background: linear-gradient(96deg, var(--planet-cyan), var(--letter) 45%, var(--violet));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 38px rgba(138, 108, 240, 0.25);
+    }
+    .sub {
+      margin-top: 8px;
+      font-family: 'Syne Mono', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+
+    .stage {
+      position: relative;
+      width: min(800px, 100%);
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 34px 22px 30px 24px;       /* organ, not corporate rectangle */
+      box-shadow:
+        0 0 0 1px rgba(150,120,240,0.25),
+        0 18px 60px -20px rgba(80, 40, 160, 0.6),
+        inset 0 0 80px -30px rgba(80, 200, 200, 0.25);
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 14px 22px;
+      margin-top: 22px;
+      padding: 16px 22px;
+      width: min(800px, 100%);
+      background: var(--panel);
+      border: 1px solid var(--panel-edge);
+      border-radius: 30px 18px 34px 20px;        /* shell / compartment */
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 12px 40px -22px rgba(60,30,140,0.7);
+    }
+
+    button {
+      padding: 10px 18px;
+      font-size: 0.98rem;
+      cursor: pointer;
+      color: var(--ink);
+      background: linear-gradient(170deg, rgba(95,230,208,0.16), rgba(157,131,245,0.16));
+      border: 1px solid var(--panel-edge);
+      border-radius: 16px 11px 15px 12px;
+      font-family: 'Averia Libre', serif;
+      transition: transform .15s ease, background .2s ease, box-shadow .2s ease;
+    }
+    button:hover {
+      transform: translateY(-1px);
+      background: linear-gradient(170deg, rgba(95,230,208,0.30), rgba(157,131,245,0.30));
+      box-shadow: 0 6px 18px -8px rgba(95,230,208,0.5);
+    }
+    button:active { transform: translateY(1px); }
+    button:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+    #timeStopButton {
+      font-family: 'MS Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+      letter-spacing: 0.12em;
+      color: #2a1a06;
+      background: linear-gradient(165deg, #ffe39a, var(--amber) 55%, #d98f23);
+      border-color: rgba(255, 220, 140, 0.7);
+      text-shadow: 0 1px 0 rgba(255,255,255,0.4);
+    }
+    #timeStopButton:hover {
+      box-shadow: 0 0 22px -2px rgba(245,187,74,0.7);
+      background: linear-gradient(165deg, #fff0c0, #ffc94f 55%, #e09a2a);
+    }
+
+    .slider-container { display: flex; align-items: center; gap: 9px; }
+    label {
+      font-family: 'Averia Sans Libre', sans-serif;
+      font-size: 0.92rem;
+      color: var(--ink-soft);
+    }
+    .val {
+      font-family: 'Syne Mono', monospace;
+      font-size: 0.82rem;
+      color: var(--cyan);
+      min-width: 2.7ch;
+      text-align: right;
+    }
+    input[type="range"] {
+      -webkit-appearance: none; appearance: none;
+      width: 110px; height: 6px;
+      background: linear-gradient(90deg, var(--planet-cyan), var(--violet));
+      border-radius: 6px; outline: none; opacity: 0.9;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #fff, var(--letter) 60%, #c98f1e);
+      border: 1px solid rgba(255,255,255,0.6);
+      box-shadow: 0 0 10px -2px var(--letter-glow);
+      cursor: pointer;
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 18px; height: 18px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.6);
+      background: radial-gradient(circle at 35% 30%, #fff, var(--letter) 60%, #c98f1e);
+      box-shadow: 0 0 10px -2px var(--letter-glow); cursor: pointer;
+    }
+
+    footer {
+      margin-top: 22px;
+      max-width: 640px;
+      text-align: center;
+      font-family: 'Averia Serif Libre', serif;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      color: var(--ink-soft);
+    }
+    footer em { color: var(--cyan); font-style: italic; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>The World</h1>
+    <div class="sub">an abecedarian gravitational billiard</div>
+  </header>
+
+  <div class="stage">
+    <canvas id="simulationCanvas" width="800" height="600"></canvas>
+  </div>
+
+  <div class="controls">
+    <button id="resetButton">Reset</button>
+    <div class="slider-container">
+      <label for="speedSlider">Time</label>
+      <input type="range" id="speedSlider" min="0.1" max="8" step="0.1" value="1.0" />
+      <span class="val" id="speedValue">1.0</span>
+    </div>
+    <div class="slider-container">
+      <label for="gravSlider">Gravity</label>
+      <input type="range" id="gravSlider" min="0.015" max="0.12" step="0.005" value="0.05" />
+      <span class="val" id="gravValue">0.050</span>
+    </div>
+    <div class="slider-container">
+      <label for="spinSlider">Spin</label>
+      <input type="range" id="spinSlider" min="0.3" max="1.25" step="0.01" value="0.65" />
+      <span class="val" id="spinValue">0.65</span>
+    </div>
+    <button id="timeStopButton">ザ・ワールド</button>
+  </div>
+
+  <footer>
+    Twenty-eight letters launch as one white light, fall toward the planet, and skip along its skin.
+    Nearly identical, never quite — and the world disperses their small differences into a <em>spectrum</em>.
+  </footer>
+
+  <script>
+    const canvas = document.getElementById('simulationCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const FILIPINO_ALPHABET = [
+      'a','b','c','d','e','f','g','h','i','j','k','l','m',
+      'n','ñ','ng','o','p','q','r','s','t','u','v','w','x','y','z'
+    ];
+    const PARTICLE_COUNT = FILIPINO_ALPHABET.length;
+    const PARTICLE_RADIUS = 8;
+    const FONT_SIZE = 22;
+    const TIME_STOP_DURATION = 3000;
+
+    const W = canvas.width, H = canvas.height;
+    const planet = { x: W / 2, y: H / 2, radius: 78 };
+
+    // --- Tunable parameters --------------------------------------------------
+    let gravityG0   = 0.05;   // gravitational acceleration AT the planet surface
+    let spinFactor  = 0.25;   // initial tangential speed as a fraction of circular orbit
+    let animSpeed   = 1.0;    // time scale
+    let K = gravityG0 * planet.radius * planet.radius;   // GM, so a(r) = K / r^2
+
+    // Initial-condition jitter — the Perfect Lovers seed.
+    const LAUNCH_R     = planet.radius + 95; // apsis the cluster is launched from (high drop)
+    const POS_JITTER   = planet.radius * 0.015;
+    const SPEED_JITTER = 0.004;   // ±0.4% speed
+    const ANGLE_JITTER = 0.010;   // radians
+
+    let isPaused = false;
+    let stopStart = -99999;
+    let particles = [];
+
+    class Particle {
+      constructor(index) {
+        // Launch point: top of the planet (an apsis of the would-be orbit)
+        const theta = -Math.PI / 2;
+        const rx = Math.cos(theta), ry = Math.sin(theta);       // radial unit
+        const tx = -ry, ty = rx;                                // CCW tangent
+
+        this.x = planet.x + rx * LAUNCH_R + (Math.random() - 0.5) * 2 * POS_JITTER;
+        this.y = planet.y + ry * LAUNCH_R + (Math.random() - 0.5) * 2 * POS_JITTER;
+
+        // Tangential launch: angular momentum, sub-circular so the arc dips to the surface
+        const vCirc = Math.sqrt(K / LAUNCH_R);
+        const speed = vCirc * spinFactor * (1 + (Math.random() - 0.5) * 2 * SPEED_JITTER);
+        const a = (Math.random() - 0.5) * 2 * ANGLE_JITTER;     // tiny aim wobble
+        const ca = Math.cos(a), sa = Math.sin(a);
+        this.vx = (tx * ca - ty * sa) * speed;
+        this.vy = (tx * sa + ty * ca) * speed;
+
+        this.charIndex = 0;
+
+        // Fixed spectral identity: superimposed, the 28 hues add to white;
+        // dispersed, they fan out into a prism.
+        const hue = (index / PARTICLE_COUNT) * 360;
+        this.color = `hsl(${hue}, 95%, 58%)`;
+      }
+
+      step(dt) {
+        const dx = this.x - planet.x, dy = this.y - planet.y;
+        const r2 = dx * dx + dy * dy;
+        const r = Math.sqrt(r2);
+        const aMag = K / r2;                 // toward centre
+        this.vx -= aMag * (dx / r) * dt;
+        this.vy -= aMag * (dy / r) * dt;
+        this.x += this.vx * dt;
+        this.y += this.vy * dt;
+        this.collide();
+      }
+
+      collide() {
+        let hit = false;
+
+        // Planet surface — elastic reflection about the surface normal
+        const dx = this.x - planet.x, dy = this.y - planet.y;
+        const d = Math.hypot(dx, dy);
+        const minD = planet.radius + PARTICLE_RADIUS;
+        if (d < minD) {
+          const nx = dx / d, ny = dy / d;
+          const vn = this.vx * nx + this.vy * ny;
+          if (vn < 0) { this.vx -= 2 * vn * nx; this.vy -= 2 * vn * ny; }
+          this.x = planet.x + nx * minD;       // lift back to the surface
+          this.y = planet.y + ny * minD;
+          hit = true;
+        }
+
+        // Box edges
+        if (this.x < PARTICLE_RADIUS) { this.x = PARTICLE_RADIUS; this.vx = Math.abs(this.vx); hit = true; }
+        else if (this.x > W - PARTICLE_RADIUS) { this.x = W - PARTICLE_RADIUS; this.vx = -Math.abs(this.vx); hit = true; }
+        if (this.y < PARTICLE_RADIUS) { this.y = PARTICLE_RADIUS; this.vy = Math.abs(this.vy); hit = true; }
+        else if (this.y > H - PARTICLE_RADIUS) { this.y = H - PARTICLE_RADIUS; this.vy = -Math.abs(this.vy); hit = true; }
+
+        if (hit) this.charIndex = (this.charIndex + 1) % FILIPINO_ALPHABET.length;
+      }
+
+      update(frameDt) {
+        const SUB = Math.max(8, Math.ceil(frameDt * 8));  // keep each sub-step ≈ 0.125 even when time runs fast
+        const dt = frameDt / SUB;
+        for (let i = 0; i < SUB; i++) this.step(dt);   // semi-implicit (symplectic) Euler
+      }
+
+      draw() {
+        ctx.fillStyle = this.color;
+        ctx.fillText(FILIPINO_ALPHABET[this.charIndex], this.x, this.y);
+      }
+    }
+
+    function init() {
+      K = gravityG0 * planet.radius * planet.radius;
+      particles = [];
+      for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle(i));
+    }
+
+    // --- Background star field (organic scatter, not a lattice) ---------------
+    const stars = Array.from({ length: 80 }, () => ({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 1.3 + 0.3,
+      ph: Math.random() * Math.PI * 2,
+      hue: Math.random() < 0.5 ? '170, 230, 215' : '180, 150, 245'
+    }));
+
+    function drawStars(t) {
+      for (const s of stars) {
+        const a = 0.25 + 0.35 * (0.5 + 0.5 * Math.sin(t * 1.5 + s.ph));
+        ctx.fillStyle = `rgba(${s.hue}, ${a.toFixed(3)})`;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function drawWreath() {
+      // The tarot World's mandorla / wreath of completion — a soft oval frame
+      ctx.save();
+      ctx.translate(planet.x, planet.y);
+      ctx.scale(1, 1.18);
+      ctx.beginPath();
+      ctx.arc(0, 0, planet.radius * 2.55, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(150, 120, 240, 0.16)';
+      ctx.lineWidth = 14;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(0, 0, planet.radius * 2.55, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(95, 230, 208, 0.20)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawPlanet(t) {
+      const { x, y, radius: R } = planet;
+
+      // Atmospheric glow
+      const glow = ctx.createRadialGradient(x, y, R * 0.6, x, y, R * 2.1);
+      glow.addColorStop(0, 'rgba(120, 95, 240, 0.32)');
+      glow.addColorStop(0.5, 'rgba(70, 200, 195, 0.12)');
+      glow.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = glow;
+      ctx.beginPath(); ctx.arc(x, y, R * 2.1, 0, Math.PI * 2); ctx.fill();
+
+      // Sphere body — iridescent, lit from upper-left
+      const body = ctx.createRadialGradient(x - R * 0.4, y - R * 0.45, R * 0.08, x, y, R * 1.05);
+      body.addColorStop(0,   '#7af0dd');
+      body.addColorStop(0.45,'#7a5fe6');
+      body.addColorStop(1,   '#2b1a55');
+      ctx.fillStyle = body;
+      ctx.beginPath(); ctx.arc(x, y, R, 0, Math.PI * 2); ctx.fill();
+
+      // Drifting iridescent sheen (angle-change reveals instability)
+      ctx.save();
+      ctx.beginPath(); ctx.arc(x, y, R, 0, Math.PI * 2); ctx.clip();
+      ctx.globalCompositeOperation = 'screen';
+      const a = t * 0.45;
+      const gx = Math.cos(a), gy = Math.sin(a);
+      const sheen = ctx.createLinearGradient(x - gx * R, y - gy * R, x + gx * R, y + gy * R);
+      sheen.addColorStop(0.0, 'rgba(90, 230, 210, 0.0)');
+      sheen.addColorStop(0.45, 'rgba(150, 120, 250, 0.22)');
+      sheen.addColorStop(0.72, 'rgba(245, 190, 90, 0.18)');
+      sheen.addColorStop(1.0, 'rgba(90, 230, 210, 0.0)');
+      ctx.fillStyle = sheen;
+      ctx.fillRect(x - R, y - R, R * 2, R * 2);
+      ctx.restore();
+
+      // Rim light
+      ctx.beginPath(); ctx.arc(x, y, R - 0.5, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(150, 245, 230, 0.35)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+
+    function drawTimeStop(now) {
+      const since = now - stopStart;
+      if (since > TIME_STOP_DURATION) return;
+      // fade in fast, hold, fade out in the final 500ms
+      let alpha = 1;
+      if (since < 180) alpha = since / 180;
+      else if (since > TIME_STOP_DURATION - 500) alpha = (TIME_STOP_DURATION - since) / 500;
+      alpha = Math.max(0, Math.min(1, alpha));
+
+      // Golden suspension of the scene
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      const v = ctx.createRadialGradient(planet.x, planet.y, 0, planet.x, planet.y, W * 0.7);
+      v.addColorStop(0, `rgba(245, 205, 90, ${0.10 * alpha})`);
+      v.addColorStop(1, `rgba(245, 205, 90, 0)`);
+      ctx.fillStyle = v;
+      ctx.fillRect(0, 0, W, H);
+      ctx.restore();
+
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = '#ffe39a';
+      ctx.shadowColor = 'rgba(245, 187, 74, 0.8)';
+      ctx.shadowBlur = 24;
+      ctx.font = `46px 'MS Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('時よ止まれ', W / 2, H - 70);
+      ctx.restore();
+    }
+
+    function animate(now) {
+      const t = now / 1000;
+      ctx.clearRect(0, 0, W, H);
+
+      drawStars(t);
+      drawWreath();
+      drawPlanet(t);
+
+      // Letters — additive prism: superimposed they sum to white, dispersed they fan into a spectrum
+      ctx.font = `${FONT_SIZE}px 'Averia Serif Libre', 'Georgia', serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.globalCompositeOperation = 'lighter';
+      for (const p of particles) {
+        if (!isPaused) p.update(animSpeed);
+        p.draw();
+      }
+      ctx.globalCompositeOperation = 'source-over';
+
+      drawTimeStop(now);
+      requestAnimationFrame(animate);
+    }
+
+    // --- Controls ------------------------------------------------------------
+    document.getElementById('timeStopButton').addEventListener('click', () => {
+      if (!isPaused) {
+        isPaused = true;
+        stopStart = performance.now();
+        setTimeout(() => { isPaused = false; }, TIME_STOP_DURATION);
+      }
+    });
+
+    document.getElementById('resetButton').addEventListener('click', init);
+
+    const gravSlider = document.getElementById('gravSlider');
+    const gravValue  = document.getElementById('gravValue');
+    gravSlider.addEventListener('input', e => {
+      gravityG0 = parseFloat(e.target.value);
+      K = gravityG0 * planet.radius * planet.radius;   // field changes live; orbits respond
+      gravValue.textContent = gravityG0.toFixed(3);
+    });
+
+    const spinSlider = document.getElementById('spinSlider');
+    const spinValue  = document.getElementById('spinValue');
+    spinSlider.addEventListener('input', e => {
+      spinFactor = parseFloat(e.target.value);
+      spinValue.textContent = spinFactor.toFixed(2);
+      init();   // spin is an initial condition — relaunch the cluster
+    });
+
+    const speedSlider = document.getElementById('speedSlider');
+    const speedValue  = document.getElementById('speedValue');
+    speedSlider.addEventListener('input', e => {
+      animSpeed = parseFloat(e.target.value);
+      speedValue.textContent = animSpeed.toFixed(1);
+    });
+
+    init();
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>

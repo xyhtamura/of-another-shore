@@ -3,86 +3,358 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>night bus</title>
+    <title>now</title>
     <style>
-        /* Basic reset for margin and padding */
-        body, h1, p {
-            margin: 0;
-            padding: 0;
-        }
+@import url('https://fonts.googleapis.com/css2?family=Averia+Sans+Libre&family=Exo+2:wght@300;400;600&display=swap');
 
-        /* Styling for the page background and font */
-        body {
-            font-family: "Exo 2", sans-serif;
-            background-color: #d5c3e8;
-            color: #eff1fe;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        /* Center align the container and text */
-        .poetry-container {
-            text-align: center;
-            line-height: 1.6;
-            color: #eff1fe;
-        }
-
-        h1 {
-            font-size: 2em;
-            margin-bottom: 20px;
-            color: #353e4d;
-        }
-
-        .poem {
-            font-size: 1.2em;
-            margin-bottom: 40px;
-
-        }
-
-        /* Styling for individual stanzas */
-        .stanza {
-            margin: 40px 0;
-        }
-		
-		.music-player {
-    text-align: center;
-    padding: 10px;
-    margin-bottom: 20px;
-    background-color: #d5c3e8; /* Matches the background overlay */
-    border-radius: 8px;
+:root {
+    --paper: #f3eadc;
+    --night: #26313a;
+    --ink: #2e3640;
+    --soft-ink: #667073;
+    --sea-glass: #82b6a8;
+    --afterimage: #b78692;
+    --signal: #d4b35f;
+    --line: rgba(46, 54, 64, 0.18);
+    --veil: rgba(255, 252, 242, 0.56);
 }
 
-.section {
-    padding: 10px;
+* {
+    box-sizing: border-box;
 }
 
-.column-container {
+body,
+h1,
+h2 {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    padding: 9vh 1.4rem;
     display: flex;
-    gap: 20px; /* Space between columns */
-    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
+    font-family: "Exo 2", sans-serif;
+    color: var(--ink);
+    background:
+        linear-gradient(180deg, rgba(255, 252, 242, 0.66), rgba(255, 252, 242, 0.16)),
+        repeating-linear-gradient(90deg, rgba(38, 49, 58, 0.055) 0 1px, transparent 1px 17px),
+        repeating-linear-gradient(0deg, rgba(130, 182, 168, 0.09) 0 1px, transparent 1px 29px),
+        linear-gradient(135deg, #e7dac8 0%, #d7e2d7 38%, #b9d3d0 67%, #d8b9bd 100%);
 }
 
-.column {
-    flex: 1;
-    line-height: 1.6;
+main {
+    width: min(100%, 620px);
+}
+
+h1 {
+    font-family: "Averia Sans Libre", "Exo 2", sans-serif;
+    font-size: clamp(2.5rem, 12vw, 6rem);
+    font-weight: 400;
+    line-height: 0.92;
+    letter-spacing: 0;
+    color: var(--night);
+    text-align: center;
+    text-shadow:
+        0 1px 0 rgba(255, 252, 242, 0.82),
+        0 16px 34px rgba(38, 49, 58, 0.14);
+}
+
+.players {
+    margin-top: clamp(2.2rem, 8vw, 4.5rem);
+    display: grid;
+    gap: 1rem;
+}
+
+.track {
+    padding: 1rem 0;
+    border-top: 1px solid var(--line);
+    background:
+        linear-gradient(90deg, transparent, var(--veil) 18%, var(--veil) 82%, transparent);
+}
+
+.track:last-child {
+    border-bottom: 1px solid var(--line);
+}
+
+.track h2 {
+    margin-bottom: 0.65rem;
+    font-size: 0.84rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: lowercase;
+    color: var(--soft-ink);
+}
+
+.track:nth-child(1) {
+    --track-color: var(--sea-glass);
+    --track-shadow: rgba(130, 182, 168, 0.34);
+}
+
+.track:nth-child(2) {
+    --track-color: var(--afterimage);
+    --track-shadow: rgba(183, 134, 146, 0.32);
+}
+
+.track:nth-child(3) {
+    --track-color: var(--signal);
+    --track-shadow: rgba(212, 179, 95, 0.28);
+}
+
+.track h2 {
+    color: var(--track-color);
+}
+
+.player {
+    display: grid;
+    grid-template-columns: 2.4rem minmax(0, 1fr) 3.4rem;
+    gap: 0.9rem;
+    align-items: center;
+}
+
+.play-button {
+    width: 2.4rem;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(46, 54, 64, 0.18);
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 35% 25%, rgba(255, 252, 242, 0.88), transparent 42%),
+        color-mix(in srgb, var(--track-color) 28%, rgba(255, 252, 242, 0.74));
+    box-shadow:
+        0 10px 20px var(--track-shadow),
+        inset 0 1px 0 rgba(255, 252, 242, 0.92);
+    cursor: pointer;
+}
+
+.play-button:focus-visible,
+.scrub:focus-visible {
+    outline: 2px solid var(--track-color);
+    outline-offset: 4px;
+}
+
+.play-icon {
+    width: 0;
+    height: 0;
+    margin-left: 0.18rem;
+    border-top: 0.43rem solid transparent;
+    border-bottom: 0.43rem solid transparent;
+    border-left: 0.64rem solid var(--night);
+}
+
+.pause-icon {
+    display: none;
+    width: 0.72rem;
+    height: 0.86rem;
+    background:
+        linear-gradient(90deg, var(--night) 0 32%, transparent 32% 68%, var(--night) 68% 100%);
+}
+
+.player.is-playing .play-icon {
+    display: none;
+}
+
+.player.is-playing .pause-icon {
+    display: block;
+}
+
+.scrub {
+    width: 100%;
+    height: 1.8rem;
+    appearance: none;
+    -webkit-appearance: none;
+    border: 0;
+    border-radius: 999px;
+    background:
+        linear-gradient(90deg, var(--track-color) var(--progress, 0%), transparent var(--progress, 0%)),
+        repeating-linear-gradient(90deg, rgba(38, 49, 58, 0.16) 0 1px, transparent 1px 0.72rem),
+        linear-gradient(90deg, rgba(255, 252, 242, 0.76), rgba(255, 252, 242, 0.42));
+    box-shadow:
+        inset 0 1px 0 rgba(255, 252, 242, 0.92),
+        inset 0 -1px 0 rgba(38, 49, 58, 0.08),
+        0 12px 24px var(--track-shadow);
+    cursor: pointer;
+}
+
+.scrub::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 0.72rem;
+    height: 1.8rem;
+    border: 0;
+    border-radius: 999px;
+    background:
+        linear-gradient(180deg, rgba(255, 252, 242, 0.92), rgba(255, 252, 242, 0.32)),
+        var(--track-color);
+    box-shadow:
+        0 0 0 1px rgba(46, 54, 64, 0.13),
+        0 0 18px var(--track-shadow);
+}
+
+.scrub::-moz-range-thumb {
+    width: 0.72rem;
+    height: 1.8rem;
+    border: 0;
+    border-radius: 999px;
+    background:
+        linear-gradient(180deg, rgba(255, 252, 242, 0.92), rgba(255, 252, 242, 0.32)),
+        var(--track-color);
+    box-shadow:
+        0 0 0 1px rgba(46, 54, 64, 0.13),
+        0 0 18px var(--track-shadow);
+}
+
+.scrub::-moz-range-track {
+    background: transparent;
+}
+
+.time {
+    font-variant-numeric: tabular-nums;
+    font-size: 0.82rem;
+    color: var(--soft-ink);
+    text-align: right;
+}
+
+@media (max-width: 520px) {
+    body {
+        align-items: flex-start;
+        padding-top: 14vh;
+    }
+
+    .players {
+        margin-top: 2.4rem;
+    }
+
+    .player {
+        grid-template-columns: 2.35rem minmax(0, 1fr);
+    }
+
+    .time {
+        grid-column: 2;
+        text-align: left;
+    }
 }
 
     </style>
 </head>
 <body>
 
-    <div class="poetry-container">
+    <main>
         <h1>now</h1>
-		<div class="music-player">
-    <audio controls>
-        <source src="Now.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
-</div>
-   
-    </div>
+        <div class="players">
+            <section class="track">
+                <h2>now</h2>
+                <div class="player">
+                    <button class="play-button" type="button" aria-label="Play now">
+                        <span class="play-icon" aria-hidden="true"></span>
+                        <span class="pause-icon" aria-hidden="true"></span>
+                    </button>
+                    <input class="scrub" type="range" min="0" max="100" step="0.01" value="0" aria-label="Playback position">
+                    <time class="time">0:00</time>
+                    <audio preload="metadata">
+                        <source src="now/Now1.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+            </section>
+
+            <section class="track">
+                <h2>now</h2>
+                <div class="player">
+                    <button class="play-button" type="button" aria-label="Play now">
+                        <span class="play-icon" aria-hidden="true"></span>
+                        <span class="pause-icon" aria-hidden="true"></span>
+                    </button>
+                    <input class="scrub" type="range" min="0" max="100" step="0.01" value="0" aria-label="Playback position">
+                    <time class="time">0:00</time>
+                    <audio preload="metadata">
+                        <source src="now/Now2.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+            </section>
+
+            <section class="track">
+                <h2>now</h2>
+                <div class="player">
+                    <button class="play-button" type="button" aria-label="Play now">
+                        <span class="play-icon" aria-hidden="true"></span>
+                        <span class="pause-icon" aria-hidden="true"></span>
+                    </button>
+                    <input class="scrub" type="range" min="0" max="100" step="0.01" value="0" aria-label="Playback position">
+                    <time class="time">0:00</time>
+                    <audio preload="metadata">
+                        <source src="now/Now3.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+            </section>
+        </div>
+    </main>
+    <script>
+const players = document.querySelectorAll('.player');
+
+const formatTime = (seconds) => {
+    if (!Number.isFinite(seconds)) {
+        return '0:00';
+    }
+
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60).toString().padStart(2, '0');
+    return `${minutes}:${remainingSeconds}`;
+};
+
+players.forEach((player) => {
+    const audio = player.querySelector('audio');
+    const button = player.querySelector('.play-button');
+    const scrub = player.querySelector('.scrub');
+    const time = player.querySelector('.time');
+
+    const updateProgress = () => {
+        const progress = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
+        scrub.value = progress;
+        scrub.style.setProperty('--progress', `${progress}%`);
+        time.textContent = formatTime(audio.currentTime);
+    };
+
+    button.addEventListener('click', () => {
+        players.forEach((otherPlayer) => {
+            const otherAudio = otherPlayer.querySelector('audio');
+            if (otherAudio !== audio) {
+                otherAudio.pause();
+            }
+        });
+
+        if (audio.paused) {
+            audio.play();
+        } else {
+            audio.pause();
+        }
+    });
+
+    scrub.addEventListener('input', () => {
+        if (!audio.duration) {
+            return;
+        }
+
+        audio.currentTime = (Number(scrub.value) / 100) * audio.duration;
+        updateProgress();
+    });
+
+    audio.addEventListener('loadedmetadata', updateProgress);
+    audio.addEventListener('timeupdate', updateProgress);
+    audio.addEventListener('play', () => {
+        player.classList.add('is-playing');
+        button.setAttribute('aria-label', 'Pause now');
+    });
+    audio.addEventListener('pause', () => {
+        player.classList.remove('is-playing');
+        button.setAttribute('aria-label', 'Play now');
+    });
+    audio.addEventListener('ended', () => {
+        audio.currentTime = 0;
+        updateProgress();
+    });
+});
+    </script>
 </body>
 </html>
