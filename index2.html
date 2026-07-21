@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Of Another Shore — a field guide</title>
+<link rel="shortcut icon" type="image/png" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Averia+Sans+Libre:ital,wght@0,300;0,400;0,700;1,400&family=Syne+Mono&family=Nova+Round&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   OF ANOTHER SHORE — index2 : shore cross-section panorama
+   one continuous educational-illustration painting.
+   scroll = descend: sky → sea → shore → shelf → strata.
+   ============================================================ */
+:root{
+  /* tateishi pastel-nostalgia — every color carries hue, no pure white/black */
+  --sky-hi:#e9c7d6; --sky-lo:#f3ddc0;
+  --sea-hi:#a7c9bd; --sea-lo:#4f7f8c; --sea-deep:#39616f;
+  --sand:#eedcb4; --sand-dk:#d9b989;
+  --ochre:#d49a55; --fadedred:#c26a58; --plum:#6d4a63;
+  --tealink:#3a6a6e; --ink:#4d3c44; --paper:#f6ecd9;
+  --rail-bg:#e7d3b6; --rail-edge:#b98d5e;
+  --glow:#ffd9a3;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; padding:0;
+  font-family:"Averia Sans Libre",sans-serif;
+  color:var(--ink);
+  background:var(--sky-lo);
+}
+
+/* ---------- layout: fake frame rail + panorama ---------- */
+#rail{
+  position:fixed; top:0; left:0; bottom:0; width:186px;
+  background:
+    linear-gradient(170deg, #f0e0c4 0%, var(--rail-bg) 55%, #dcc09a 100%);
+  border-right:4px ridge var(--rail-edge);
+  padding:14px 12px 20px;
+  overflow-y:auto; z-index:50;
+  scrollbar-width:thin; scrollbar-color:var(--tealink) var(--rail-bg);
+  font-size:.82rem;
+}
+#panorama{ margin-left:186px; position:relative; }
+
+@media (max-width:700px){
+  #rail{ position:static; width:auto; border-right:none;
+         border-bottom:4px ridge var(--rail-edge); overflow:visible; }
+  #panorama{ margin-left:0; }
+}
+
+/* ---------- rail contents ---------- */
+#rail h1{
+  font-family:"Nova Round",sans-serif; font-size:1.05rem; margin:0 0 2px;
+  color:var(--plum); line-height:1.25; transform:rotate(-1.2deg);
+}
+#rail .sub{
+  font-family:"Syne Mono",monospace; font-size:.62rem; color:var(--tealink);
+  margin:0 0 12px; letter-spacing:.04em;
+}
+#rail .legend{ border-top:1px dashed var(--rail-edge); padding-top:10px; margin-top:4px; }
+#rail .legend b{
+  font-family:"Syne Mono",monospace; font-size:.6rem; letter-spacing:.14em;
+  color:var(--fadedred);
+}
+#rail .legend a{
+  display:block; color:var(--tealink); text-decoration:none;
+  padding:3px 0 3px 4px; border-left:3px solid transparent;
+}
+#rail .legend a:hover{ color:var(--fadedred); border-left-color:var(--fadedred); background:rgba(194,106,88,.08); }
+#rail .legend a small{ color:var(--plum); opacity:.75; font-size:.85em; }
+#counter{
+  margin:14px 0 4px; text-align:center;
+  font-family:"Syne Mono",monospace; font-size:.72rem; color:var(--paper);
+  background:var(--plum); border:2px inset var(--rail-edge);
+  padding:5px 4px; letter-spacing:.2em;
+}
+#counter small{ display:block; letter-spacing:.05em; font-size:.55rem; color:var(--sky-hi); }
+.badges{ display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin-top:10px; }
+.badges svg{ display:block; image-rendering:pixelated; }
+#rail .fineprint{
+  margin-top:12px; font-size:.6rem; line-height:1.5; color:var(--plum);
+  font-family:"Syne Mono",monospace;
+}
+#rail .fineprint a{ color:var(--tealink); }
+#rail .oldway{ display:inline-block; margin-top:8px; color:var(--fadedred); font-size:.68rem; }
+
+/* ---------- zones ---------- */
+.zone{ position:relative; overflow:hidden; }
+#sky   { min-height:135vh; background:linear-gradient(178deg, #d9b4cf 0%, var(--sky-hi) 34%, var(--sky-lo) 72%, #f7e3bd 100%); }
+#sea   { min-height:115vh; background:linear-gradient(175deg, #f2d9ae 0%, var(--sea-hi) 16%, #6d9aa0 48%, var(--sea-lo) 78%, var(--sea-deep) 100%); }
+#shore { min-height:150vh; background:linear-gradient(183deg, var(--sea-deep) 0%, #7d9a8b 7%, var(--sand) 22%, #ecd4a6 60%, #e3c48f 100%); }
+#shelf { min-height:88vh;  background:linear-gradient(177deg, #e3c48f 0%, #a5714b 12%, #8a5a40 55%, #6e4634 100%); }
+#strata{ min-height:130vh; background:linear-gradient(180deg, #6e4634 0%, #b98a63 10%, #c9977a 26%, #93727d 45%, #6f5a70 64%, #47445e 84%, #313a52 100%); }
+
+/* wavy seam between zones — irregular, never a straight lattice line */
+.seam{ position:absolute; left:0; right:0; top:-2px; width:100%; height:70px; z-index:3; pointer-events:none; }
+
+/* zone nameplates, field-guide style */
+.platelabel{
+  position:absolute; z-index:6;
+  font-family:"Syne Mono",monospace; font-size:.66rem; letter-spacing:.28em;
+  color:var(--paper); background:rgba(77,60,68,.72);
+  padding:4px 10px 3px; transform:rotate(-.8deg);
+  border:1px solid rgba(246,236,217,.4);
+}
+
+/* ---------- hotspots ---------- */
+.spot{
+  position:absolute; z-index:10; text-decoration:none; color:inherit;
+  display:block; text-align:center;
+  transition:transform .35s ease, filter .35s ease;
+  filter:drop-shadow(2px 4px 6px rgba(77,60,68,.25));
+}
+.spot:hover, .spot:focus-visible{ transform:translateY(-4px) rotate(-1deg); filter:drop-shadow(2px 8px 10px rgba(77,60,68,.4)); z-index:20; }
+.spot .tag{
+  display:inline-block; margin-top:4px;
+  font-family:"Averia Sans Libre",sans-serif; font-size:.82rem; font-weight:700;
+  color:var(--tealink); background:rgba(246,236,217,.82);
+  padding:1px 7px; border-radius:2px 9px 3px 8px;
+  border:1px solid rgba(58,106,110,.35); transform:rotate(-.6deg);
+}
+.spot:hover .tag, .spot:focus-visible .tag{ color:var(--fadedred); border-color:var(--fadedred); }
+.spot.dim .tag{ color:var(--plum); font-style:italic; }
+
+/* encarta hover blurb */
+.spot .blurb{
+  position:absolute; left:50%; top:100%; transform:translate(-50%,6px);
+  width:210px; padding:8px 10px; z-index:30;
+  font-family:"Syne Mono",monospace; font-size:.6rem; line-height:1.55;
+  text-align:left; letter-spacing:.02em;
+  color:var(--paper); background:linear-gradient(160deg,#54626f, #46525e);
+  border:1px solid var(--glow); border-radius:1px 10px 2px 8px;
+  opacity:0; pointer-events:none;
+  transition:opacity .3s ease, transform .3s ease;
+}
+.spot .blurb b{ color:var(--glow); letter-spacing:.12em; }
+.spot:hover .blurb, .spot:focus-visible .blurb{ opacity:1; transform:translate(-50%,12px); }
+.spot.blurb-up .blurb{ top:auto; bottom:100%; }
+.spot.blurb-up:hover .blurb, .spot.blurb-up:focus-visible .blurb{ transform:translate(-50%,-12px); }
+/* spots hugging the right edge: right-align the blurb so it stays on screen */
+.spot.edge-r .blurb{ left:auto; right:-8px; transform:translate(0,6px); }
+.spot.edge-r:hover .blurb, .spot.edge-r:focus-visible .blurb{ transform:translate(0,12px); }
+.spot.edge-r.blurb-up:hover .blurb, .spot.edge-r.blurb-up:focus-visible .blurb{ transform:translate(0,-12px); }
+
+.spot svg{ display:block; margin:0 auto; overflow:visible; }
+
+/* under construction sign */
+.uc{
+  display:inline-block; margin-top:3px;
+  font-family:"Syne Mono",monospace; font-size:.5rem; letter-spacing:.1em;
+  color:#5a4426; background:repeating-linear-gradient(-45deg,#e8c664 0 7px,#7a6034 7px 14px);
+  padding:2px 6px; border:1px solid #7a6034; transform:rotate(1.4deg);
+  text-shadow:0 0 3px #f3dfae, 0 0 3px #f3dfae, 0 0 3px #f3dfae;
+}
+
+/* ---------- ambient motion (all eased, never stepped) ---------- */
+@keyframes drift-a{ 0%{transform:translateX(0) translateY(0)} 46%{transform:translateX(46px) translateY(-7px)} 100%{transform:translateX(0) translateY(0)} }
+@keyframes drift-b{ 0%{transform:translateX(0)} 55%{transform:translateX(-38px) translateY(5px)} 100%{transform:translateX(0)} }
+@keyframes bob   { 0%{transform:translateY(0) rotate(-1deg)} 50%{transform:translateY(-7px) rotate(1.4deg)} 100%{transform:translateY(0) rotate(-1deg)} }
+@keyframes bob2  { 0%{transform:translateY(0) rotate(.8deg)} 50%{transform:translateY(-4px) rotate(-1deg)} 100%{transform:translateY(0) rotate(.8deg)} }
+@keyframes glowp { 0%{opacity:.55} 50%{opacity:1} 100%{opacity:.55} }
+@keyframes wobble{ 0%{transform:rotate(-.7deg)} 50%{transform:rotate(.9deg)} 100%{transform:rotate(-.7deg)} }
+.drift-a{ animation:drift-a 44s ease-in-out infinite; }
+.drift-b{ animation:drift-b 58s ease-in-out infinite; }
+.bob    { animation:bob 9s ease-in-out infinite; }
+.bob2   { animation:bob2 12s ease-in-out infinite; }
+@media (prefers-reduced-motion:reduce){ *{animation:none !important; transition:none !important} }
+
+/* ---------- decorations ---------- */
+.deco{ position:absolute; z-index:2; pointer-events:none; }
+
+/* the house cutaway sits as HTML so rooms are real links */
+#house{
+  position:absolute; z-index:9;
+  width:340px; left:clamp(12px, 52%, calc(100% - 356px)); top:26%;
+}
+#house .roofline{ display:block; margin:0 auto -6px; }
+#house .rooms{
+  position:relative; background:linear-gradient(165deg,#f0dfc2, #e2c9a4);
+  border:3px solid #8a5a40; border-radius:6px 14px 4px 10px;
+  padding:8px; display:flex; flex-wrap:wrap; gap:7px;
+}
+#house .room{
+  flex:1 1 40%; min-height:64px; text-decoration:none;
+  display:flex; flex-direction:column; justify-content:flex-end;
+  padding:6px 7px; position:relative;
+  border:2px solid #a5714b; border-radius:3px 9px 2px 7px;
+  font-size:.72rem; line-height:1.3; color:var(--ink);
+  transition:background .3s ease;
+}
+/* rooms deliberately unequal — no two the same shape */
+#house .room:nth-child(1){ flex-basis:56%; background:#f3e0d4; transform:rotate(-.4deg); }
+#house .room:nth-child(2){ flex-basis:34%; background:#e8e4cd; border-radius:14px 3px 10px 2px; }
+#house .room:nth-child(3){ flex-basis:30%; background:#ead6dc; min-height:82px; }
+#house .room:nth-child(4){ flex-basis:60%; background:#dde4d3; transform:rotate(.5deg); border-radius:2px 8px 16px 3px; }
+#house .room:nth-child(5){ flex-basis:44%; background:#f0ddc0; }
+#house .room:nth-child(6){ flex-basis:46%; background:#e4d5e6; min-height:56px; border-radius:10px 2px 5px 12px; }
+#house .room:hover{ background:var(--glow); }
+#house .room b{ color:var(--tealink); font-weight:700; }
+#house .room:hover b{ color:var(--fadedred); }
+#house .room small{ font-size:.58rem; font-family:"Syne Mono",monospace; color:var(--plum); }
+#house .roomtag{
+  position:absolute; top:-9px; left:8px;
+  font-family:"Syne Mono",monospace; font-size:.5rem; letter-spacing:.08em;
+  background:var(--paper); color:var(--fadedred); padding:0 5px;
+  border:1px solid var(--fadedred); border-radius:6px; transform:rotate(-2deg);
+}
+
+/* strata bands: irregular labeled rock layers */
+.stratum{
+  position:relative; z-index:8; display:block; text-decoration:none;
+  margin:0; padding:26px 8% 26px calc(8% + 20px);
+  color:var(--paper); font-size:.95rem;
+  border-top:3px solid rgba(246,236,217,.25);
+  transition:padding-left .35s ease;
+}
+.stratum:hover{ padding-left:calc(8% + 44px); }
+.stratum .sname{
+  font-family:"Nova Round",sans-serif; font-size:1.15rem; display:block;
+  color:var(--glow); transform:rotate(-.4deg);
+}
+.stratum:hover .sname{ color:#ffe9c9; text-shadow:0 0 12px rgba(255,217,163,.6); }
+.stratum .sdepth{
+  font-family:"Syne Mono",monospace; font-size:.58rem; letter-spacing:.2em; opacity:.8;
+}
+.stratum .snote{ font-size:.75rem; opacity:.85; font-style:italic; }
+#strata .glitchband{
+  background:repeating-linear-gradient(93deg,#7c4a5e 0 41px,#4f6d78 41px 47px,#8d6a4e 47px 118px,#3e5a68 118px 121px);
+  filter:saturate(1.15);
+}
+#strata .glitchband:hover{ animation:wobble .18s linear infinite; }
+
+/* taped-in photo (wikimedia) */
+.polaroid{
+  position:relative; display:inline-block; background:var(--paper);
+  padding:8px 8px 26px; transform:rotate(-2.4deg);
+  box-shadow:3px 6px 14px rgba(30,25,50,.45);
+}
+.polaroid::before{
+  content:""; position:absolute; top:-10px; left:34%; width:64px; height:20px;
+  background:rgba(233,199,214,.65); transform:rotate(2deg);
+  border-left:1px dashed rgba(109,74,99,.4); border-right:1px dashed rgba(109,74,99,.4);
+}
+.polaroid img{ display:block; width:150px; height:auto; filter:sepia(.25) saturate(.9); }
+.polaroid figcaption{
+  font-family:"Syne Mono",monospace; font-size:.55rem; color:var(--plum);
+  padding-top:6px; text-align:center; letter-spacing:.06em;
+}
+
+/* footer basement */
+#basement{
+  position:relative; z-index:9; text-align:center;
+  padding:60px 12% 90px; color:#b9b4d6;
+  font-family:"Syne Mono",monospace; font-size:.68rem; line-height:2;
+}
+#basement a{ color:var(--glow); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ RAIL : the fake frame ═══════════════ -->
+<nav id="rail" aria-label="site legend">
+  <h1>of another shore</h1>
+  <p class="sub">a field guide to the<br>whole territory at once</p>
+
+  <div class="legend">
+    <b>LEGEND ☞</b>
+    <a href="#sky">☾ the sky <small>— far side</small></a>
+    <a href="#sea">≋ the sea <small>— long distance</small></a>
+    <a href="#shore">⌂ the shore <small>— one house</small></a>
+    <a href="#shelf">▤ the shelf <small>— memorabilia</small></a>
+    <a href="#strata">≡ the strata <small>— deep time</small></a>
+  </div>
+
+  <div id="counter">
+    <small>you are visitor no.</small>
+    <span id="visnum">0020261</span>
+  </div>
+
+  <div class="badges" aria-hidden="true">
+    <!-- hand-drawn 88x31 buttons -->
+    <svg width="88" height="31" viewBox="0 0 88 31"><rect width="88" height="31" fill="#3a6a6e"/><rect x="2" y="2" width="84" height="27" fill="none" stroke="#ffd9a3" stroke-width="1.5"/><text x="44" y="13" font-family="monospace" font-size="8" fill="#f6ecd9" text-anchor="middle">BEST VIEWED</text><text x="44" y="24" font-family="monospace" font-size="8" fill="#ffd9a3" text-anchor="middle">WITH ANY EYES</text></svg>
+    <svg width="88" height="31" viewBox="0 0 88 31"><rect width="88" height="31" fill="#c26a58"/><circle cx="16" cy="15" r="9" fill="#e9c7d6"/><circle cx="13" cy="12" r="2" fill="#6d4a63"/><circle cx="20" cy="17" r="1.5" fill="#6d4a63"/><text x="52" y="13" font-family="monospace" font-size="8" fill="#f6ecd9" text-anchor="middle">FAR SIDE</text><text x="52" y="24" font-family="monospace" font-size="8" fill="#f6ecd9" text-anchor="middle">CERTIFIED</text></svg>
+    <svg width="88" height="31" viewBox="0 0 88 31"><rect width="88" height="31" fill="#47445e"/><path d="M4 22 Q 14 12 24 20 T 44 19 T 64 21 T 84 18" stroke="#a7c9bd" fill="none" stroke-width="2"/><text x="44" y="12" font-family="monospace" font-size="8" fill="#ffd9a3" text-anchor="middle">EDIACARAN</text><text x="44" y="29" font-family="monospace" font-size="7" fill="#e9c7d6" text-anchor="middle">ring member</text></svg>
+  </div>
+
+  <p class="fineprint">
+    last updated: soon<br>
+    hosted between tides<br>
+    <a href="mailto:dalumatten@gmail.com">✍ sign the guestbook</a><br>
+    (it is an email)
+  </p>
+  <a class="oldway" href="index.html">⤺ the old three doors</a>
+</nav>
+
+<!-- ═══════════════ PANORAMA ═══════════════ -->
+<main id="panorama">
+
+<!-- ─────────── ZONE 1 : SKY ─────────── -->
+<section class="zone" id="sky" aria-label="the sky">
+  <span class="platelabel" style="top:26px; left:7%;">FIG. 1 — THE SKY, SEEN FROM BELOW</span>
+
+  <!-- far side of the moon -->
+  <a class="spot" href="moonmilk.html" style="top:9%; left:56%; width:190px;">
+    <svg width="170" height="170" viewBox="0 0 170 170" class="bob2" role="img" aria-label="the far side of the moon">
+      <defs><clipPath id="moonclip"><circle cx="85" cy="85" r="78"/></clipPath></defs>
+      <circle cx="85" cy="85" r="78" fill="#efe0e6"/>
+      <image href="img/moon-farside.png" x="4" y="4" width="162" height="162"
+             clip-path="url(#moonclip)" preserveAspectRatio="xMidYMid slice"
+             style="filter:sepia(.3) saturate(.7) brightness(1.12) contrast(.95)"/>
+      <circle cx="85" cy="85" r="78" fill="#e9c7d6" opacity=".22" clip-path="url(#moonclip)" style="mix-blend-mode:multiply"/>
+      <circle cx="85" cy="85" r="78" fill="none" stroke="#6d4a63" stroke-width="2" stroke-dasharray="5 7"/>
+      <text x="58" y="58" font-family="monospace" font-size="7" fill="#f6ecd9" text-anchor="middle" style="paint-order:stroke;stroke:#4d3c44;stroke-width:2px">Moscoviense</text>
+      <text x="114" y="98" font-family="monospace" font-size="7" fill="#f6ecd9" text-anchor="middle" style="paint-order:stroke;stroke:#4d3c44;stroke-width:2px">Tsiolkovskiy</text>
+      <text x="70" y="128" font-family="monospace" font-size="6.5" fill="#f6ecd9" text-anchor="middle" style="paint-order:stroke;stroke:#4d3c44;stroke-width:2px">Apollo</text>
+      <text x="120" y="50" font-family="monospace" font-size="6" fill="#f6ecd9" text-anchor="middle" style="paint-order:stroke;stroke:#4d3c44;stroke-width:2px">Korolev</text>
+    </svg>
+    <span class="tag">moonmilk</span>
+    <span class="blurb"><b>MOONMILK.</b> soft white carbonate; forms on cave walls and on the far side of certain nights. swipeable — the supercontinents underneath will rearrange.</span>
+  </a>
+
+  <!-- a window, floating, returned -->
+  <a class="spot" href="dreamwindowreturn.html" style="top:22%; left:18%;">
+    <svg width="92" height="110" viewBox="0 0 92 110" class="bob" role="img" aria-label="a floating window">
+      <rect x="6" y="6" width="80" height="98" rx="4" fill="#a7c9bd" stroke="#3a6a6e" stroke-width="3"/>
+      <path d="M46 8 V102 M8 55 H84" stroke="#3a6a6e" stroke-width="2.5"/>
+      <path d="M14 30 Q 24 20 34 28" stroke="#f6ecd9" stroke-width="2" fill="none"/>
+      <circle cx="66" cy="78" r="7" fill="#ffd9a3"/>
+      <rect x="2" y="102" width="88" height="6" fill="#8a5a40"/>
+    </svg>
+    <span class="tag">dream window return</span>
+    <span class="blurb"><b>DREAM WINDOW RETURN.</b> a window observed returning. languages fail intermittently in its vicinity; this is normal and expected.</span>
+  </a>
+
+  <!-- cloud conference: deities in a meeting (under construction) -->
+  <span class="spot dim" style="top:40%; left:60%;" tabindex="0">
+    <svg width="150" height="72" viewBox="0 0 150 72" class="drift-a" role="img" aria-label="clouds holding a meeting">
+      <ellipse cx="42" cy="46" rx="34" ry="19" fill="#f6ecd9" opacity=".92"/>
+      <ellipse cx="82" cy="38" rx="40" ry="23" fill="#efe0e6" opacity=".92"/>
+      <ellipse cx="116" cy="50" rx="27" ry="15" fill="#f6ecd9" opacity=".92"/>
+      <circle cx="46" cy="42" r="2" fill="#6d4a63"/><circle cx="58" cy="42" r="2" fill="#6d4a63"/>
+      <circle cx="84" cy="34" r="2" fill="#6d4a63"/><circle cx="96" cy="34" r="2" fill="#6d4a63"/>
+      <path d="M48 50 Q 52 54 56 50" stroke="#6d4a63" fill="none" stroke-width="1.5"/>
+      <path d="M86 42 Q 90 44 94 42" stroke="#6d4a63" fill="none" stroke-width="1.5"/>
+      <text x="20" y="16" font-family="monospace" font-size="7" fill="#6d4a63">re: humidity in jaro —</text>
+    </svg>
+    <span class="tag">cloud conference</span>
+    <span class="uc">⚠ UNDER CONSTRUCTION</span>
+    <span class="blurb"><b>CLOUD CONFERENCE.</b> the deities are still in a meeting about the weather between manila, jaro, tokyo, honolulu, los angeles. please do not disturb. (page pending)</span>
+  </span>
+
+  <!-- argence: the silver star -->
+  <a class="spot blurb-up" href="argence.html" style="top:64%; left:33%;">
+    <svg width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="a silver star">
+      <g style="animation:glowp 5s ease-in-out infinite">
+        <path d="M32 4 L37 26 L59 32 L37 38 L32 60 L27 38 L5 32 L27 26 Z" fill="#e9e4ef" stroke="#6d4a63" stroke-width="1.5"/>
+        <circle cx="32" cy="32" r="4" fill="#ffd9a3"/>
+      </g>
+    </svg>
+    <span class="tag">argence</span>
+    <span class="blurb"><b>ARGENCE.</b> a silver weather. documented only in dreams and in certain folklore; observers report speculative fauna. see also: second star, silverness.</span>
+  </a>
+
+  <!-- pinned supercontinent chart, echoes moonmilk's shifting ground -->
+  <a class="spot blurb-up" href="moonmilk.html" style="top:80%; left:70%;">
+    <figure class="polaroid" style="margin:0; transform:rotate(3deg)">
+      <img src="img/pangaea.jpg" alt="map of the supercontinent Pangaea" onerror="this.closest('figure').style.display='none'" style="width:130px">
+      <figcaption>the ground, an earlier draft<br>(Pangaea, ~200 Mya)</figcaption>
+    </figure>
+    <span class="tag">moonmilk ↻</span>
+    <span class="blurb"><b>SUPERCONTINENT.</b> the arrangement underneath is provisional. swipe moonmilk and it reassembles into a configuration that also used to be true.</span>
+  </a>
+
+  <!-- passing clouds, decorative -->
+  <svg class="deco drift-b" style="top:55%; left:66%; opacity:.8" width="130" height="46" viewBox="0 0 130 46"><ellipse cx="40" cy="28" rx="36" ry="15" fill="#f6ecd9"/><ellipse cx="88" cy="24" rx="38" ry="17" fill="#efe0e6"/></svg>
+  <svg class="deco drift-a" style="top:14%; left:4%; opacity:.65" width="110" height="40" viewBox="0 0 110 40"><ellipse cx="36" cy="24" rx="32" ry="13" fill="#f6ecd9"/><ellipse cx="76" cy="20" rx="30" ry="15" fill="#efe0e6"/></svg>
+</section>
+
+<!-- ─────────── ZONE 2 : SEA ─────────── -->
+<section class="zone" id="sea" aria-label="the sea">
+  <svg class="seam" viewBox="0 0 1200 70" preserveAspectRatio="none"><path d="M0,0 L1200,0 L1200,18 C 1050,52 890,10 700,38 C 520,64 330,14 160,44 C 90,56 40,30 0,44 Z" fill="#f7e3bd"/></svg>
+  <!-- real Pacific horizon, sunk faint under the drawn sea -->
+  <img class="deco" src="img/pacific-sunset.jpg" alt="" aria-hidden="true"
+       onerror="this.style.display='none'"
+       style="left:0; right:0; width:100%; top:20%; height:60%; object-fit:cover; opacity:.28; mix-blend-mode:soft-light; filter:sepia(.35) saturate(.8)">
+  <span class="platelabel" style="top:84px; left:9%;">FIG. 2 — THE SEA, LONG DISTANCE</span>
+
+  <!-- distant landmass: in manchuria -->
+  <a class="spot edge-r" href="inmanchuria.html" style="top:13%; left:66%;">
+    <svg width="180" height="46" viewBox="0 0 180 46" role="img" aria-label="a distant landmass">
+      <path d="M2 44 L28 30 Q 44 18 62 26 L84 14 Q 104 4 122 18 L146 26 Q 164 32 178 44 Z" fill="#8d7f9b" opacity=".85"/>
+    </svg>
+    <span class="tag">in manchuria</span>
+    <span class="blurb"><b>IN MANCHURIA.</b> a landmass visible only in certain weather. it is not manchuria. it has never been manchuria, which is the point.</span>
+  </a>
+
+  <!-- big boat -->
+  <a class="spot" href="bigboat.html" style="top:26%; left:22%;">
+    <svg width="130" height="86" viewBox="0 0 130 86" class="bob" role="img" aria-label="a boat">
+      <path d="M14 58 L116 58 L98 80 L30 80 Z" fill="#c26a58" stroke="#6d4a63" stroke-width="2"/>
+      <path d="M64 58 V12" stroke="#6d4a63" stroke-width="3"/>
+      <path d="M64 14 Q 96 24 64 44 Z" fill="#f6ecd9" stroke="#6d4a63" stroke-width="1.5"/>
+      <text x="64" y="73" font-family="monospace" font-size="9" fill="#f6ecd9" text-anchor="middle" transform="rotate(180 64 71)">big boat</text>
+    </svg>
+    <span class="tag">big boat</span>
+    <span class="blurb"><b>BIG BOAT.</b> rotating handwriting over a spinning cyanobacterium; archival audio, 1940s. legible upside down and right side up, like most inheritances.</span>
+  </a>
+
+  <!-- insulae incognita: unknown islands -->
+  <a class="spot" href="https://xyhtamura.github.io/insulaeincognita/" style="top:26%; left:48%;">
+    <svg width="120" height="52" viewBox="0 0 120 52" role="img" aria-label="a cluster of small unknown islands">
+      <path d="M6 46 Q 18 28 32 34 Q 40 24 50 32 Q 56 40 66 44 Z" fill="#7d9a8b" stroke="#3a6a6e" stroke-width="1.5"/>
+      <path d="M74 44 Q 82 32 92 38 Q 100 30 112 42 Q 116 46 114 48 L78 48 Z" fill="#8d7f9b" stroke="#6d4a63" stroke-width="1.5"/>
+      <path d="M34 32 Q 36 24 42 22" stroke="#3a6a6e" stroke-width="1.5" fill="none"/>
+      <text x="24" y="16" font-family="monospace" font-size="8" fill="#6d4a63" transform="rotate(-3 24 16)">hic sunt?</text>
+    </svg>
+    <span class="tag">insulae incognita</span>
+    <span class="blurb"><b>INSULAE INCOGNITA.</b> islands present on no two charts in the same place. approach by dead reckoning only; the lighthouse is unstaffed but lit.</span>
+  </a>
+
+  <!-- ediacaran hotline: ice floe with telephone -->
+  <a class="spot" href="ediacaranhotline.html" style="top:47%; left:47%;">
+    <svg width="120" height="88" viewBox="0 0 120 88" class="bob2" role="img" aria-label="a telephone on an ice floe">
+      <path d="M8 66 L26 52 L52 58 L80 48 L108 60 L98 78 L20 80 Z" fill="#dfeaee" stroke="#6d9aa0" stroke-width="2"/>
+      <path d="M42 50 Q 42 34 58 34 Q 74 34 74 50" fill="none" stroke="#c26a58" stroke-width="6" stroke-linecap="round"/>
+      <rect x="46" y="46" width="24" height="12" rx="4" fill="#c26a58"/>
+      <path d="M58 58 Q 60 70 40 76" stroke="#6d4a63" stroke-width="2" fill="none" stroke-dasharray="3 3"/>
+    </svg>
+    <span class="tag">ediacaran hotline</span>
+    <span class="blurb"><b>EDIACARAN HOTLINE.</b> established c. 635,000,000 BCE. the dialing keeps time with the words, then stops keeping it. long-distance rates apply. please hold.</span>
+  </a>
+
+  <!-- night bus on a causeway -->
+  <a class="spot" href="nightbus.html" style="top:66%; left:9%;">
+    <svg width="170" height="76" viewBox="0 0 170 76" role="img" aria-label="a bus crossing a causeway at night">
+      <path d="M0 62 L170 54" stroke="#47445e" stroke-width="7"/>
+      <path d="M16 62 V74 M58 60 V74 M104 58 V74 M148 56 V74" stroke="#47445e" stroke-width="4"/>
+      <rect x="44" y="26" width="86" height="30" rx="7" fill="#4f5d75" stroke="#2f2b45" stroke-width="2"/>
+      <g style="animation:glowp 4s ease-in-out infinite">
+        <rect x="52" y="33" width="11" height="9" fill="#ffd9a3"/><rect x="68" y="33" width="11" height="9" fill="#ffd9a3"/>
+        <rect x="84" y="33" width="11" height="9" fill="#ffe9c9"/><rect x="100" y="33" width="11" height="9" fill="#ffd9a3"/>
+      </g>
+      <circle cx="60" cy="58" r="6" fill="#2f2b45"/><circle cx="112" cy="57" r="6" fill="#2f2b45"/>
+    </svg>
+    <span class="tag">night bus</span>
+    <span class="blurb"><b>NIGHT BUS.</b> departs nightly, frame by frame, one note at a time. some words arrive at their stop as car horns. two voices may occupy one seat.</span>
+  </a>
+
+  <!-- buoy: now -->
+  <a class="spot blurb-up" href="now.html" style="top:78%; left:58%;">
+    <svg width="42" height="64" viewBox="0 0 42 64" class="bob" role="img" aria-label="a blinking buoy">
+      <path d="M21 62 Q 4 52 10 34 L32 34 Q 38 52 21 62" fill="#c26a58" stroke="#6d4a63" stroke-width="2"/>
+      <rect x="18" y="16" width="6" height="18" fill="#6d4a63"/>
+      <circle cx="21" cy="11" r="7" fill="#ffd9a3" style="animation:glowp 2.6s ease-in-out infinite"/>
+    </svg>
+    <span class="tag">now</span>
+    <span class="blurb"><b>NOW.</b> a buoy marking the present position. updated whenever. accuracy not guaranteed past the next wave.</span>
+  </a>
+
+  <!-- dungan: a light over the water -->
+  <a class="spot blurb-up edge-r" href="dungan.html" style="top:40%; left:82%;">
+    <svg width="40" height="40" viewBox="0 0 40 40" class="drift-b" role="img" aria-label="a small light over the water">
+      <circle cx="20" cy="20" r="12" fill="#ffd9a3" opacity=".4"/>
+      <circle cx="20" cy="20" r="5" fill="#ffe9c9" style="animation:glowp 3.4s ease-in-out infinite"/>
+    </svg>
+    <span class="tag">dungan</span>
+    <span class="blurb"><b>DUNGAN.</b> travels over open water while the body sleeps. returns before waking, usually. do not call its name loudly.</span>
+  </a>
+</section>
+
+<!-- ─────────── ZONE 3 : SHORE ─────────── -->
+<section class="zone" id="shore" aria-label="the shore">
+  <svg class="seam" viewBox="0 0 1200 70" preserveAspectRatio="none"><path d="M0,0 L1200,0 L1200,26 C 1010,58 860,6 660,34 C 470,60 300,16 150,40 C 80,52 30,34 0,48 Z" fill="#39616f"/></svg>
+  <span class="platelabel" style="top:26%; left:6%;">FIG. 3 — THE SHORE, ONE HOUSE</span>
+
+  <!-- the house cutaway -->
+  <div id="house">
+    <svg class="roofline" width="340" height="66" viewBox="0 0 340 66" aria-hidden="true">
+      <path d="M6 64 L170 6 L334 64 Z" fill="#c26a58" stroke="#8a5a40" stroke-width="3"/>
+      <rect x="236" y="18" width="14" height="30" fill="#8a5a40"/>
+      <path d="M243 18 Q 250 6 258 10 Q 254 16 258 20" stroke="#e9c7d6" stroke-width="3" fill="none"/>
+    </svg>
+    <div class="rooms">
+      <a class="room" href="https://xyhtamura.github.io/whisperhouse/">
+        <span class="roomtag">kitchen, ppp</span>
+        <b>whisper house</b>
+        <small>the egg will gradually bloom into a telephone</small>
+      </a>
+      <a class="room" href="horizons/threefloorhome.html">
+        <span class="roomtag">stairs</span>
+        <b>three floor home</b>
+        <small>verses stacked in a triangle</small>
+      </a>
+      <a class="room" href="memorypalace.html">
+        <span class="roomtag">corridor</span>
+        <b>memory palace</b>
+        <small>doors that open onto further doors</small>
+      </a>
+      <a class="room" href="thingsmyparentsthoughtwheniwasunborn.html">
+        <span class="roomtag">attic radio</span>
+        <b>things my parents thought when i was unborn</b>
+        <small>whispered, multilingual, cut before finishing</small>
+      </a>
+      <a class="room" href="horizons/fourbedroomgarden.html">
+        <span class="roomtag">garden door</span>
+        <b>four bedroom garden</b>
+        <small>2×2 and overgrown</small>
+      </a>
+      <a class="room" href="adobar.html">
+        <span class="roomtag">pantry</span>
+        <b>adobar</b>
+        <small>precolonial technique, japanese pantry</small>
+      </a>
+    </div>
+  </div>
+
+  <!-- starfish on the sand: five horizon intersection -->
+  <a class="spot" href="horizons/fivehorizonintersection.html" style="top:57%; left:20%;">
+    <svg width="96" height="96" viewBox="0 0 96 96" role="img" aria-label="a starfish with one arm apart">
+      <path d="M48 10 L57 40 L88 42 L62 58 L70 88 L48 68 L30 84 L36 56 L12 38 L41 39 Z" fill="#e9a06b" stroke="#c26a58" stroke-width="2.5" transform="rotate(-8 48 48)"/>
+      <path d="M84 78 L96 90" stroke="#e9a06b" stroke-width="7" stroke-linecap="round"/>
+      <circle cx="48" cy="48" r="3" fill="#c26a58"/>
+    </svg>
+    <span class="tag">five horizon intersection</span>
+    <span class="blurb"><b>FIVE HORIZON INTERSECTION.</b> lines written along the arms of a starfish. one arm has broken off; its words continue at a small distance.</span>
+  </a>
+
+  <!-- tide pool: sand dollar exchange -->
+  <a class="spot" href="sanddollarexchange.html" style="top:73%; left:44%;">
+    <svg width="120" height="70" viewBox="0 0 120 70" role="img" aria-label="a tide pool with sand dollars">
+      <ellipse cx="60" cy="38" rx="54" ry="24" fill="#6d9aa0" stroke="#d9b989" stroke-width="4"/>
+      <circle cx="44" cy="36" r="11" fill="#eedcb4"/><circle cx="76" cy="44" r="8" fill="#eedcb4"/>
+      <path d="M44 28 V44 M37 36 H51 M40 31 L48 41 M48 31 L40 41" stroke="#d9b989" stroke-width="1.4"/>
+    </svg>
+    <span class="tag">sand dollar exchange</span>
+    <span class="blurb"><b>SAND DOLLAR EXCHANGE.</b> current rate: 1 sand dollar = 1 sand dollar. the bureau opens at low tide and honors all previous tides.</span>
+  </a>
+
+  <!-- quoin: a coin half-buried at the corner -->
+  <a class="spot blurb-up" href="quoineconomics.html" style="top:84%; left:70%;">
+    <svg width="58" height="42" viewBox="0 0 58 42" role="img" aria-label="a coin half-buried in sand">
+      <path d="M0 40 Q 30 30 58 40 L58 42 L0 42 Z" fill="#d9b989"/>
+      <path d="M12 36 A 17 17 0 1 1 46 36" fill="#ffd9a3" stroke="#c26a58" stroke-width="2"/>
+      <text x="29" y="30" font-family="monospace" font-size="9" fill="#6d4a63" text-anchor="middle">隅</text>
+    </svg>
+    <span class="tag">quoin</span>
+    <span class="blurb"><b>QUOIN (ECONOMICS).</b> a cornerstone, a wedge, a haiku in several currencies. exchange rate varies by language.</span>
+  </a>
+
+  <!-- dune grass, decorative -->
+  <svg class="deco" style="top:66%; left:6%;" width="90" height="60" viewBox="0 0 90 60"><path d="M10 60 Q 6 30 16 10 M24 60 Q 28 26 20 8 M40 60 Q 36 34 46 16 M58 60 Q 62 30 54 12 M74 60 Q 70 32 80 14" stroke="#7d9a8b" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
+  <svg class="deco" style="top:50%; left:83%;" width="90" height="60" viewBox="0 0 90 60"><path d="M10 60 Q 14 28 8 10 M28 60 Q 24 30 34 12 M48 60 Q 52 28 44 10 M66 60 Q 62 34 72 16" stroke="#7d9a8b" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
+</section>
+
+<!-- ─────────── ZONE 4 : SHELF ─────────── -->
+<section class="zone" id="shelf" aria-label="the shelf">
+  <svg class="seam" viewBox="0 0 1200 70" preserveAspectRatio="none"><path d="M0,0 L1200,0 L1200,22 C 1040,54 880,12 700,36 C 500,62 320,18 140,42 C 70,52 30,32 0,46 Z" fill="#e3c48f"/></svg>
+  <span class="platelabel" style="top:80px; left:8%;">FIG. 4 — THE SHELF, KEPT THINGS</span>
+
+  <!-- the egg drawing -->
+  <a class="spot" href="index.html#egg" style="top:30%; left:12%;">
+    <svg width="66" height="82" viewBox="0 0 66 82" role="img" aria-label="an egg drawn in oil pastel">
+      <path d="M33 6 Q 58 30 56 52 A 23 24 0 0 1 10 52 Q 8 30 33 6" fill="#f3e0d4" stroke="#c26a58" stroke-width="3" stroke-dasharray="7 3"/>
+      <path d="M22 40 Q 33 32 44 42" stroke="#e9a06b" stroke-width="2.5" fill="none"/>
+    </svg>
+    <span class="tag">the egg</span>
+    <span class="blurb"><b>THE EGG.</b> oil pastel and color pencil. kept on the shelf until it blooms; see kitchen, fig. 3. leads back to the three doors.</span>
+  </a>
+
+  <!-- body clocks -->
+  <a class="spot" href="bodyclocks.html" style="top:24%; left:38%;">
+    <svg width="86" height="86" viewBox="0 0 86 86" role="img" aria-label="a clock with three rings">
+      <circle cx="43" cy="43" r="38" fill="#f6ecd9" stroke="#3a6a6e" stroke-width="3"/>
+      <circle cx="43" cy="43" r="27" fill="none" stroke="#c26a58" stroke-width="1.6" stroke-dasharray="4 5"/>
+      <circle cx="43" cy="43" r="17" fill="none" stroke="#6d4a63" stroke-width="1.6" stroke-dasharray="2 6"/>
+      <path d="M43 43 L43 20 M43 43 L58 52" stroke="#3a6a6e" stroke-width="3" stroke-linecap="round"/>
+      <text x="43" y="76" font-family="monospace" font-size="6.5" fill="#6d4a63" text-anchor="middle">72 × 3</text>
+    </svg>
+    <span class="tag">body clocks</span>
+    <span class="blurb"><b>BODY CLOCKS.</b> the 72 microseasons, three ways: philippine, japanese, internet. current season: the steam summer sale approaches; the east wind melts the backlog.</span>
+  </a>
+
+  <!-- the world -->
+  <a class="spot" href="theworld/index.html" style="top:52%; left:56%;">
+    <svg width="80" height="80" viewBox="0 0 80 80" role="img" aria-label="a circular billiard diagram">
+      <rect x="4" y="4" width="72" height="72" fill="#e8e4cd" stroke="#6d4a63" stroke-width="2"/>
+      <circle cx="40" cy="40" r="15" fill="#d9b4cf" stroke="#6d4a63" stroke-width="2"/>
+      <text x="16" y="18" font-family="monospace" font-size="9" fill="#3a6a6e">a</text>
+      <text x="62" y="24" font-family="monospace" font-size="9" fill="#c26a58">b</text>
+      <text x="20" y="68" font-family="monospace" font-size="9" fill="#6d4a63">k</text>
+      <text x="64" y="64" font-family="monospace" font-size="9" fill="#3a6a6e">ng</text>
+      <path d="M22 20 Q 34 30 30 44" stroke="#c26a58" stroke-width="1" fill="none" stroke-dasharray="2 3"/>
+    </svg>
+    <span class="tag">the world</span>
+    <span class="blurb"><b>THE WORLD.</b> 28 letters in a magnetic billiard, superimposed, then unpredictably themselves. time stops — but only temporarily.</span>
+  </a>
+
+  <!-- letter: dungan's envelope / all tomorrows parties invitation -->
+  <a class="spot blurb-up" href="dreamwindowreturn.html" style="top:62%; left:26%;">
+    <svg width="86" height="56" viewBox="0 0 86 56" role="img" aria-label="an old envelope">
+      <rect x="3" y="6" width="80" height="46" fill="#f0ddc0" stroke="#a5714b" stroke-width="2" transform="rotate(-2 43 28)"/>
+      <path d="M5 9 L43 34 L81 7" stroke="#a5714b" stroke-width="1.6" fill="none" transform="rotate(-2 43 28)"/>
+      <rect x="62" y="10" width="13" height="15" fill="#e9c7d6" stroke="#c26a58" stroke-width="1"/>
+    </svg>
+    <span class="tag">unsent mail</span>
+    <span class="blurb"><b>UNSENT MAIL.</b> address illegible; several languages attempted. returned through the dream window, postage due.</span>
+  </a>
+
+  <!-- taped photograph from the commons -->
+  <a class="spot blurb-up" href="afterwemisrememberthegrains.html" style="top:18%; left:72%;">
+    <figure class="polaroid" style="margin:0">
+      <img src="img/dickinsonia.jpg" alt="fossil of Dickinsonia costata"
+           onerror="this.closest('figure').style.display='none'">
+      <figcaption>somebody we used to be<br>(ediacara hills, 558 Mya)</figcaption>
+    </figure>
+    <span class="tag">after we misremember the grains</span>
+    <span class="blurb"><b>AFTER WE MISREMEMBER THE GRAINS.</b> the photograph is fine. the memory of the photograph is corrupted in exactly the right places.</span>
+  </a>
+
+  <!-- Haeckel starfish plate, echoes the broken-arm poem -->
+  <a class="spot blurb-up" href="horizons/fivehorizonintersection.html" style="top:56%; left:12%;">
+    <figure class="polaroid" style="margin:0; transform:rotate(1.8deg)">
+      <img src="img/haeckel-asteridea.jpg" alt="Ernst Haeckel plate of starfish (Asteridea)" onerror="this.closest('figure').style.display='none'" style="width:132px">
+      <figcaption>five arms, one apart<br>(Haeckel, Asteridea, 1904)</figcaption>
+    </figure>
+    <span class="tag">five horizon intersection</span>
+    <span class="blurb"><b>ASTERIDEA.</b> radial near-symmetry, kept as reference. one arm reads at a different angle from the rest; the plate does not explain why.</span>
+  </a>
+</section>
+
+<!-- ─────────── ZONE 5 : STRATA ─────────── -->
+<section class="zone" id="strata" aria-label="the strata">
+  <svg class="seam" viewBox="0 0 1200 70" preserveAspectRatio="none"><path d="M0,0 L1200,0 L1200,20 C 1060,50 900,8 720,34 C 540,58 340,14 160,40 C 80,50 40,28 0,44 Z" fill="#6e4634"/></svg>
+  <span class="platelabel" style="top:84px; right:8%;">FIG. 5 — THE STRATA, DEEP TIME</span>
+
+  <div style="height:150px"></div>
+
+  <a class="stratum" href="sandstoneschistandesite.html" style="background:linear-gradient(96deg,#c9977a,#b98a63)">
+    <span class="sdepth">— 0 m TO 40 m · SEDIMENTARY / METAMORPHIC / IGNEOUS —</span>
+    <span class="sname">sandstone, schist, andesite</span>
+    <span class="snote">field notes, factual throughout, until the last paragraph gets homesick.</span>
+  </a>
+
+  <a class="stratum" href="escarpmentpinks.html" style="background:linear-gradient(94deg,#c98a96,#b06f85)">
+    <span class="sdepth">— 40 m TO 65 m · FLOWERING FAULT LINE —</span>
+    <span class="sname">escarpment pinks</span>
+    <span class="snote">dianthus growing exactly where the ground disagrees with itself.</span>
+  </a>
+
+  <a class="stratum glitchband" href="afterwemisrememberthegrains.html">
+    <span class="sdepth">— 65 m TO 8&#65533; m · UNCONF&#65533;RMITY (DATA MISSING) —</span>
+    <span class="sname">after we misremember the grains</span>
+    <span class="snote">a seam where the record was overwritten. handle sections with gloves.</span>
+  </a>
+
+  <a class="stratum" href="iwantedtothinkabouttimeiwanted.html" style="background:linear-gradient(95deg,#847092,#6f5a70)">
+    <span class="sdepth">— 80 m TO 300 m · FOSSILIFEROUS LIST BEDS —</span>
+    <span class="sname">i wanted to think about time, i wanted</span>
+    <span class="snote">facts deposited in layers; draggable. order of deposition not guaranteed.</span>
+  </a>
+
+  <a class="stratum" href="ediacaranhotline.html" style="background:linear-gradient(97deg,#565a78,#47445e); display:flex; align-items:center; gap:20px; flex-wrap:wrap">
+    <span style="flex:1 1 60%; min-width:240px">
+      <span class="sdepth">— 300 m TO 635 Ma · EDIACARAN BIOTA (STILL REACHABLE) —</span>
+      <span class="sname">the ediacaran, by telephone</span>
+      <span class="snote">soft bodies, no predators, excellent reception.</span>
+    </span>
+    <img src="img/charnia.jpg" alt="Charnia masoni, an Ediacaran frond fossil"
+         onerror="this.style.display='none'"
+         style="flex:0 0 auto; width:150px; height:auto; border:1px solid rgba(233,199,214,.5); box-shadow:2px 4px 10px rgba(20,15,35,.5); filter:sepia(.2) contrast(1.05); transform:rotate(-1.5deg)">
+  </a>
+
+  <div id="basement">
+    <p>you have reached the basement of this page.<br>
+    below this line there is only mantle, and it has no hyperlinks yet.</p>
+    <p>
+      <a href="manual.html">manual</a> ·
+      <a href="index.html">the old three doors</a> ·
+      <a href="mailto:dalumatten@gmail.com">guestbook</a>
+    </p>
+    <p style="opacity:.6">of another shore · a field guide · no two visits survey the same territory</p>
+  </div>
+</section>
+
+</main>
+
+<script>
+/* visitor counter: starts plausible, drifts irregularly — never a stepped tick */
+(function(){
+  var el = document.getElementById('visnum');
+  var n = 20261 + Math.floor(Math.random()*37);
+  function show(){ el.textContent = String(n).padStart(7,'0'); }
+  function drift(){
+    n += Math.random() < 0.7 ? 1 : Math.floor(Math.random()*4);
+    show();
+    setTimeout(drift, 4000 + Math.random()*9000);
+  }
+  show(); setTimeout(drift, 3000 + Math.random()*4000);
+})();
+</script>
+
+</body>
+</html>
