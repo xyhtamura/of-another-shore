@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>a leaf falling — of another shore</title>
+<link rel="shortcut icon" type="image/png" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Averia+Sans+Libre:wght@300;400&family=Syne+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sky:#e9c7d6; --haze:#f3ddc0; --paper:#f6ecd9;
+  --leaf:#c26a58; --leaf-light:#d49a55; --vein:#6d4a63;
+  --ink:#4d3c44; --teal:#3a6a6e;
+}
+*{ box-sizing:border-box; }
+html{ min-height:100%; }
+body{
+  min-height:100vh; margin:0; color:var(--ink);
+  background:
+    radial-gradient(circle at 76% 16%, rgba(246,236,217,.75) 0 4%, transparent 4.5%),
+    linear-gradient(168deg,var(--sky) 0%,var(--haze) 54%,#a7c9bd 100%);
+  font-family:"Averia Sans Libre",sans-serif;
+}
+.page{
+  min-height:100vh; display:grid; grid-template-columns:minmax(180px,1fr) minmax(270px,430px) minmax(180px,1fr);
+  align-items:center; gap:clamp(18px,4vw,64px); padding:clamp(26px,6vw,80px);
+}
+.back{
+  position:fixed; top:20px; left:20px; z-index:5;
+  color:var(--teal); background:rgba(246,236,217,.72); border:1px solid rgba(58,106,110,.35);
+  border-radius:2px 9px 3px 8px; padding:5px 10px; text-decoration:none;
+  font-family:"Syne Mono",monospace; font-size:.68rem;
+}
+.back:hover,.back:focus-visible{ color:var(--leaf); border-color:var(--leaf); }
+.field-note{
+  align-self:start; margin-top:18vh; justify-self:end; max-width:150px;
+  color:var(--teal); font-family:"Syne Mono",monospace; font-size:.62rem; line-height:1.6;
+  letter-spacing:.08em; transform:rotate(-2deg);
+}
+.field-note::before{ content:"FIG. 6"; display:block; color:var(--leaf); letter-spacing:.2em; margin-bottom:6px; }
+.poem-card{
+  position:relative; padding:clamp(30px,6vw,58px) clamp(24px,5vw,48px);
+  background:rgba(246,236,217,.74); border:1px solid rgba(109,74,99,.25);
+  border-radius:3px 18px 4px 14px; box-shadow:5px 9px 28px rgba(77,60,68,.16);
+  transform:rotate(-.35deg);
+}
+.poem-card::before{
+  content:""; position:absolute; width:74px; height:21px; top:-11px; left:calc(50% - 37px);
+  background:rgba(233,199,214,.72); border-left:1px dashed rgba(109,74,99,.35);
+  border-right:1px dashed rgba(109,74,99,.35); transform:rotate(1.5deg);
+}
+h1{
+  margin:0 0 28px; font-family:"Syne Mono",monospace; font-weight:400;
+  color:var(--leaf); font-size:.72rem; letter-spacing:.18em;
+}
+.poem{
+  margin:0; overflow:visible; white-space:pre-wrap;
+  font:300 clamp(.96rem,2.2vw,1.12rem)/1.7 "Averia Sans Libre",sans-serif;
+}
+.falling-figure{ position:relative; width:150px; height:300px; margin:0; justify-self:start; }
+.trail{
+  position:absolute; width:120px; height:88px; border-top:2px dashed rgba(109,74,99,.35);
+  border-radius:50%; transform:rotate(24deg); top:72px; left:2px;
+}
+.trail.second{ width:95px; top:210px; left:35px; transform:rotate(-25deg); }
+.leaf{
+  position:absolute; left:56px; top:146px; width:48px; height:29px;
+  background:linear-gradient(145deg,var(--leaf-light),var(--leaf));
+  border:2px solid var(--vein); border-radius:95% 0 95% 0;
+  animation:tumble 9s ease-in-out infinite;
+}
+.leaf::before{
+  content:""; position:absolute; width:37px; height:1px; left:6px; top:14px;
+  background:var(--vein); transform:rotate(-25deg); transform-origin:left;
+}
+.leaf::after{
+  content:""; position:absolute; width:15px; height:1px; right:-12px; bottom:0;
+  background:var(--vein); transform:rotate(28deg); transform-origin:left;
+}
+figcaption{
+  position:absolute; top:270px; left:18px; width:125px; color:var(--teal);
+  font-family:"Syne Mono",monospace; font-size:.58rem; line-height:1.5; text-align:center;
+}
+@keyframes tumble{
+  0%{ transform:translate(-12px,-18px) rotate(-24deg); }
+  50%{ transform:translate(16px,18px) rotate(42deg); }
+  100%{ transform:translate(-12px,-18px) rotate(-24deg); }
+}
+@media (max-width:760px){
+  .page{ display:flex; flex-direction:column; justify-content:center; padding:76px 24px 42px; }
+  .field-note{ align-self:flex-start; margin:0; max-width:none; }
+  .poem-card{ width:min(100%,430px); }
+  .falling-figure{ height:170px; transform:scale(.78); transform-origin:top center; margin-bottom:-55px; }
+}
+@media (prefers-reduced-motion:reduce){ .leaf{ animation:none; } }
+</style>
+</head>
+<body>
+<a class="back" href="index.html#sky">⤺ return to the map</a>
+<main class="page">
+  <p class="field-note">A LEAF, OBSERVED BETWEEN ONE MOMENT AND THE NEXT</p>
+
+  <article class="poem-card" aria-labelledby="poem-title">
+    <h1 id="poem-title">a leaf falling</h1>
+    <pre class="poem">a le
+      a
+
+        f
+
+so many ways
+
+of falling: this:
+
+the present: a border
+
+land of time: though
+
+hazy, in a way
+
+one can kind of tell
+
+what might happen:
+
+but I don’t exactly
+
+remember where it
+
+even a second ago.</pre>
+  </article>
+
+  <figure class="falling-figure" aria-label="a leaf following a wandering fall">
+    <span class="trail" aria-hidden="true"></span>
+    <span class="leaf" aria-hidden="true"></span>
+    <span class="trail second" aria-hidden="true"></span>
+    <figcaption>the route is approximate.<br>the second is not to scale.</figcaption>
+  </figure>
+</main>
+</body>
+</html>

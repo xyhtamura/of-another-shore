@@ -1,827 +1,872 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Of Another Shore</title>
-	<link rel="shortcut icon" type="image/png" href="img/favicon.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600&family=Quicksand:wght@300;400;600&family=Nova+Round&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Syne+Mono&family=Syne+Tactile&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Of Another Shore</title>
+<link rel="shortcut icon" type="image/png" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Averia+Sans+Libre:ital,wght@0,300;0,400;0,700;1,400&family=Syne+Mono&family=Nova+Round&display=swap" rel="stylesheet">
 <style>
-/* Import the dream-like beach theme font */
-@import url('https://fonts.googleapis.com/css2?family=Averia+Sans+Libre&display=swap');
-
-/* Root colors for the dream-like beach theme */
-:root {
-    --bg-color: #f4e2d8; /* Sandy beige */
-    --text-color: #807663; /* Muted taupe */
-    --link-color: #3a8fb7; /* Ocean blue */
-    --link-hover-color: #ffa07a; /* Soft coral */
-    --heading-color-start: #b58191; /* Dusty rose */
-    --heading-color-end: #2c6975; /* Muted teal */
+/* ============================================================
+   OF ANOTHER SHORE — index : shore cross-section panorama
+   one continuous educational-illustration painting.
+   scroll = descend: sky → sea → shore → shelf → strata.
+   ============================================================ */
+:root{
+  /* tateishi pastel-nostalgia — every color carries hue, no pure white/black */
+  --sky-hi:#e9c7d6; --sky-lo:#f3ddc0;
+  --sea-hi:#a7c9bd; --sea-lo:#4f7f8c; --sea-deep:#39616f;
+  --sand:#eedcb4; --sand-dk:#d9b989;
+  --ochre:#d49a55; --fadedred:#c26a58; --plum:#6d4a63;
+  --tealink:#3a6a6e; --ink:#4d3c44; --paper:#f6ecd9;
+  --rail-bg:#e7d3b6; --rail-edge:#b98d5e;
+  --glow:#ffd9a3;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; padding:0;
+  font-family:"Averia Sans Libre",sans-serif;
+  color:var(--ink);
+  background:var(--sky-lo);
 }
 
-body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-	width: 100%;
-    font-family: "Averia Sans Libre", sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
+/* ---------- layout: fake frame rail + panorama ---------- */
+#rail{
+  position:fixed; top:0; left:0; bottom:0; width:186px;
+  background:
+    linear-gradient(170deg, #f0e0c4 0%, var(--rail-bg) 55%, #dcc09a 100%);
+  border-right:4px ridge var(--rail-edge);
+  padding:14px 12px 20px;
+  overflow-y:auto; z-index:50;
+  scrollbar-width:thin; scrollbar-color:var(--tealink) var(--rail-bg);
+  font-size:.82rem;
+}
+#panorama{ margin-left:186px; position:relative; }
+
+@media (max-width:700px){
+  #rail{ position:static; width:auto; border-right:none;
+         border-bottom:4px ridge var(--rail-edge); overflow:visible; }
+  #panorama{ margin-left:0; }
 }
 
-        header {
-            position: relative;
-            top: 20px;
-            left: 0;
-            right: 0;
-            width: 100%;
-            z-index: 1000;
-            pointer-events: none; /* Allow clicks to pass through header */
-        }
+/* ---------- rail contents ---------- */
+#rail h1{
+  font-family:"Nova Round",sans-serif; font-size:1.05rem; margin:0 0 2px;
+  color:var(--plum); line-height:1.25; transform:rotate(-1.2deg);
+}
+#rail .sub{
+  font-family:"Syne Mono",monospace; font-size:.62rem; color:var(--tealink);
+  margin:0 0 12px; letter-spacing:.04em;
+}
+#rail .legend{ border-top:1px dashed var(--rail-edge); padding-top:10px; margin-top:4px; }
+#rail .legend b{
+  font-family:"Syne Mono",monospace; font-size:.6rem; letter-spacing:.14em;
+  color:var(--fadedred);
+}
+#rail .legend a{
+  display:block; color:var(--tealink); text-decoration:none;
+  padding:3px 0 3px 4px; border-left:3px solid transparent;
+}
+#rail .legend a:hover{ color:var(--fadedred); border-left-color:var(--fadedred); background:rgba(194,106,88,.08); }
+#rail .legend a small{ color:var(--plum); opacity:.75; font-size:.85em; }
+#counter{
+  margin:14px 0 4px; text-align:center;
+  font-family:"Syne Mono",monospace; font-size:.72rem; color:var(--paper);
+  background:var(--plum); border:2px inset var(--rail-edge);
+  padding:5px 4px; letter-spacing:.2em;
+}
+#counter small{ display:block; letter-spacing:.05em; font-size:.55rem; color:var(--sky-hi); }
+.badges{ display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin-top:10px; }
+.badges svg{ display:block; image-rendering:pixelated; }
+#rail .fineprint{
+  margin-top:12px; font-size:.6rem; line-height:1.5; color:var(--plum);
+  font-family:"Syne Mono",monospace;
+}
+#rail .fineprint a{ color:var(--tealink); }
+#rail .oldway{ display:inline-block; margin-top:8px; color:var(--fadedred); font-size:.68rem; }
+#rail .rail-poem{
+  margin-top:18px; padding:13px 5px 8px;
+  border-top:1px dashed var(--rail-edge);
+  font-size:.68rem; line-height:1.45; color:var(--ink);
+}
+#rail .rail-poem h2{
+  margin:0 0 11px; color:var(--plum);
+  font-family:"Nova Round",sans-serif; font-size:.88rem; font-weight:400;
+  letter-spacing:.03em; transform:rotate(-.7deg);
+}
+#rail .rail-poem p{ margin:0 0 12px; }
+#rail .rail-poem p:nth-of-type(even){ color:var(--tealink); }
 
-h1 {
-    font-family: "Averia Sans Libre", sans-serif;
-    font-size: 3rem;
-    margin: 20px;
-    background: linear-gradient(to right, var(--heading-color-start) 40%, var(--heading-color-end) 60%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-align: center;
-    pointer-events: auto; /* Re-enable clicks for the h1 */
-    cursor: pointer;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    transition: transform 0.3s ease, text-shadow 0.3s ease;
+/* ---------- zones ---------- */
+.zone{ position:relative; overflow:hidden; }
+#sky   { min-height:135vh; background:linear-gradient(178deg, #d9b4cf 0%, var(--sky-hi) 34%, var(--sky-lo) 72%, #f7e3bd 100%); }
+#sea   { min-height:115vh; background:linear-gradient(175deg, #f2d9ae 0%, var(--sea-hi) 16%, #6d9aa0 48%, var(--sea-lo) 78%, var(--sea-deep) 100%); }
+#shore { min-height:150vh; background:linear-gradient(183deg, var(--sea-deep) 0%, #7d9a8b 7%, var(--sand) 22%, #ecd4a6 60%, #e3c48f 100%); }
+#shelf { min-height:88vh;  background:linear-gradient(177deg, #e3c48f 0%, #a5714b 12%, #8a5a40 55%, #6e4634 100%); }
+#strata{ min-height:130vh; background:linear-gradient(180deg, #6e4634 0%, #b98a63 10%, #c9977a 26%, #93727d 45%, #6f5a70 64%, #47445e 84%, #313a52 100%); }
+
+/* wavy seam between zones — irregular, never a straight lattice line */
+.seam{ position:absolute; left:0; right:0; top:-2px; width:100%; height:70px; z-index:3; pointer-events:none; }
+
+/* zone nameplates, field-guide style */
+.platelabel{
+  position:absolute; z-index:6;
+  font-family:"Syne Mono",monospace; font-size:.66rem; letter-spacing:.28em;
+  color:var(--paper); background:rgba(77,60,68,.72);
+  padding:4px 10px 3px; transform:rotate(-.8deg);
+  border:1px solid rgba(246,236,217,.4);
 }
 
-/* Hover effect */
-h1:hover {
-     text-shadow: 0 4px 15px rgba(58, 243, 183, 0.4); /* Ocean blue and dusty rose glow */
+/* ---------- hotspots ---------- */
+.spot{
+  position:absolute; z-index:10; text-decoration:none; color:inherit;
+  display:block; text-align:center;
+  transition:transform .35s ease, filter .35s ease;
+  filter:drop-shadow(2px 4px 6px rgba(77,60,68,.25));
+}
+.spot:hover, .spot:focus-visible{ transform:translateY(-4px) rotate(-1deg); filter:drop-shadow(2px 8px 10px rgba(77,60,68,.4)); z-index:20; }
+.spot .tag{
+  display:inline-block; margin-top:4px;
+  font-family:"Averia Sans Libre",sans-serif; font-size:.82rem; font-weight:700;
+  color:var(--tealink); background:rgba(246,236,217,.82);
+  padding:1px 7px; border-radius:2px 9px 3px 8px;
+  border:1px solid rgba(58,106,110,.35); transform:rotate(-.6deg);
+}
+.spot:hover .tag, .spot:focus-visible .tag{ color:var(--fadedred); border-color:var(--fadedred); }
+.spot.dim .tag{ color:var(--plum); font-style:italic; }
+
+/* encarta hover blurb */
+.spot .blurb{
+  position:absolute; left:50%; top:100%; transform:translate(-50%,6px);
+  width:210px; padding:8px 10px; z-index:30;
+  font-family:"Syne Mono",monospace; font-size:.6rem; line-height:1.55;
+  text-align:left; letter-spacing:.02em;
+  color:var(--paper); background:linear-gradient(160deg,#54626f, #46525e);
+  border:1px solid var(--glow); border-radius:1px 10px 2px 8px;
+  opacity:0; pointer-events:none;
+  transition:opacity .3s ease, transform .3s ease;
+}
+.spot .blurb b{ color:var(--glow); letter-spacing:.12em; }
+.spot:hover .blurb, .spot:focus-visible .blurb{ opacity:1; transform:translate(-50%,12px); }
+.spot.blurb-up .blurb{ top:auto; bottom:100%; }
+.spot.blurb-up:hover .blurb, .spot.blurb-up:focus-visible .blurb{ transform:translate(-50%,-12px); }
+/* spots hugging the right edge: right-align the blurb so it stays on screen */
+.spot.edge-r .blurb{ left:auto; right:-8px; transform:translate(0,6px); }
+.spot.edge-r:hover .blurb, .spot.edge-r:focus-visible .blurb{ transform:translate(0,12px); }
+.spot.edge-r.blurb-up:hover .blurb, .spot.edge-r.blurb-up:focus-visible .blurb{ transform:translate(0,-12px); }
+
+.spot svg{ display:block; margin:0 auto; overflow:visible; }
+
+/* under construction sign */
+.uc{
+  display:inline-block; margin-top:3px;
+  font-family:"Syne Mono",monospace; font-size:.5rem; letter-spacing:.1em;
+  color:#5a4426; background:repeating-linear-gradient(-45deg,#e8c664 0 7px,#7a6034 7px 14px);
+  padding:2px 6px; border:1px solid #7a6034; transform:rotate(1.4deg);
+  text-shadow:0 0 3px #f3dfae, 0 0 3px #f3dfae, 0 0 3px #f3dfae;
 }
 
-/* Active effect */
-h1:active {
-    text-shadow: 0 3px 10px rgba(255, 160, 122, 0.6); /* Soft coral glow */
+/* ---------- ambient motion (all eased, never stepped) ---------- */
+@keyframes drift-a{ 0%{transform:translateX(0) translateY(0)} 46%{transform:translateX(46px) translateY(-7px)} 100%{transform:translateX(0) translateY(0)} }
+@keyframes drift-b{ 0%{transform:translateX(0)} 55%{transform:translateX(-38px) translateY(5px)} 100%{transform:translateX(0)} }
+@keyframes bob   { 0%{transform:translateY(0) rotate(-1deg)} 50%{transform:translateY(-7px) rotate(1.4deg)} 100%{transform:translateY(0) rotate(-1deg)} }
+@keyframes bob2  { 0%{transform:translateY(0) rotate(.8deg)} 50%{transform:translateY(-4px) rotate(-1deg)} 100%{transform:translateY(0) rotate(.8deg)} }
+@keyframes glowp { 0%{opacity:.55} 50%{opacity:1} 100%{opacity:.55} }
+@keyframes wobble{ 0%{transform:rotate(-.7deg)} 50%{transform:rotate(.9deg)} 100%{transform:rotate(-.7deg)} }
+@keyframes leaf-tumble{
+  0%{ transform:translate(-8px,-10px) rotate(-18deg); }
+  48%{ transform:translate(10px,8px) rotate(34deg); }
+  100%{ transform:translate(-8px,-10px) rotate(-18deg); }
+}
+.drift-a{ animation:drift-a 44s ease-in-out infinite; }
+.drift-b{ animation:drift-b 58s ease-in-out infinite; }
+.bob    { animation:bob 9s ease-in-out infinite; }
+.bob2   { animation:bob2 12s ease-in-out infinite; }
+@media (prefers-reduced-motion:reduce){ *{animation:none !important; transition:none !important} }
+
+/* ---------- decorations ---------- */
+.deco{ position:absolute; z-index:2; pointer-events:none; }
+
+/* the house cutaway sits as HTML so rooms are real links */
+#house{
+  position:absolute; z-index:9;
+  width:340px; left:clamp(12px, 52%, calc(100% - 356px)); top:26%;
+}
+#house .roofline{ display:block; margin:0 auto -6px; }
+#house .rooms{
+  position:relative; background:linear-gradient(165deg,#f0dfc2, #e2c9a4);
+  border:3px solid #8a5a40; border-radius:6px 14px 4px 10px;
+  padding:8px; display:flex; flex-wrap:wrap; gap:7px;
+}
+#house .room{
+  flex:1 1 40%; min-height:64px; text-decoration:none;
+  display:flex; flex-direction:column; justify-content:flex-end;
+  padding:6px 7px; position:relative;
+  border:2px solid #a5714b; border-radius:3px 9px 2px 7px;
+  font-size:.72rem; line-height:1.3; color:var(--ink);
+  transition:background .3s ease;
+}
+/* rooms deliberately unequal — no two the same shape */
+#house .room:nth-child(1){ flex-basis:56%; background:#f3e0d4; transform:rotate(-.4deg); }
+#house .room:nth-child(2){ flex-basis:34%; background:#e8e4cd; border-radius:14px 3px 10px 2px; }
+#house .room:nth-child(3){ flex-basis:30%; background:#ead6dc; min-height:82px; }
+#house .room:nth-child(4){ flex-basis:60%; background:#dde4d3; transform:rotate(.5deg); border-radius:2px 8px 16px 3px; }
+#house .room:nth-child(5){ flex-basis:44%; background:#f0ddc0; }
+#house .room:nth-child(6){ flex-basis:46%; background:#e4d5e6; min-height:56px; border-radius:10px 2px 5px 12px; }
+#house .room:hover{ background:var(--glow); }
+#house .room b{ color:var(--tealink); font-weight:700; }
+#house .room:hover b{ color:var(--fadedred); }
+#house .room small{ font-size:.58rem; font-family:"Syne Mono",monospace; color:var(--plum); }
+#house .roomtag{
+  position:absolute; top:-9px; left:8px;
+  font-family:"Syne Mono",monospace; font-size:.5rem; letter-spacing:.08em;
+  background:var(--paper); color:var(--fadedred); padding:0 5px;
+  border:1px solid var(--fadedred); border-radius:6px; transform:rotate(-2deg);
 }
 
+/* strata bands: irregular labeled rock layers */
+.stratum{
+  position:relative; z-index:8; display:block; text-decoration:none;
+  margin:0; padding:26px 8% 26px calc(8% + 20px);
+  color:var(--paper); font-size:.95rem;
+  border-top:3px solid rgba(246,236,217,.25);
+  transition:padding-left .35s ease;
+}
+.stratum:hover{ padding-left:calc(8% + 44px); }
+.stratum .sname{
+  font-family:"Nova Round",sans-serif; font-size:1.15rem; display:block;
+  color:var(--glow); transform:rotate(-.4deg);
+}
+.stratum:hover .sname{ color:#ffe9c9; text-shadow:0 0 12px rgba(255,217,163,.6); }
+.stratum .sdepth{
+  font-family:"Syne Mono",monospace; font-size:.58rem; letter-spacing:.2em; opacity:.8;
+}
+.stratum .snote{ font-size:.75rem; opacity:.85; font-style:italic; }
+#strata .glitchband{
+  background:repeating-linear-gradient(93deg,#7c4a5e 0 41px,#4f6d78 41px 47px,#8d6a4e 47px 118px,#3e5a68 118px 121px);
+  filter:saturate(1.15);
+}
+#strata .glitchband:hover{ animation:wobble .18s linear infinite; }
+#strata .mouthband{
+  background:
+    radial-gradient(circle at 82% 42%, rgba(167,201,189,.22) 0 4px, transparent 5px),
+    radial-gradient(circle at 88% 67%, rgba(167,201,189,.18) 0 7px, transparent 8px),
+    linear-gradient(96deg,#313a52,#252d43 68%,#1f293d);
+  border-bottom:1px solid rgba(167,201,189,.24);
+}
+#strata .mouthband .sname{ color:#e9c7d6; }
+#strata .mouthband:hover .sname{ color:#ffd9a3; }
 
-.section {
-    height: 100vh;
-    width: 100%;
-    display: none; /* Hide all sections initially */
-    justify-content: center;
-    align-items: center;
-    font-size: 1.25rem;
-    text-align: center;
-    padding: 20px;
-    box-sizing: border-box;
+/* taped-in photo (wikimedia) */
+.polaroid{
+  position:relative; display:inline-block; background:var(--paper);
+  padding:8px 8px 26px; transform:rotate(-2.4deg);
+  box-shadow:3px 6px 14px rgba(30,25,50,.45);
+}
+.polaroid::before{
+  content:""; position:absolute; top:-10px; left:34%; width:64px; height:20px;
+  background:rgba(233,199,214,.65); transform:rotate(2deg);
+  border-left:1px dashed rgba(109,74,99,.4); border-right:1px dashed rgba(109,74,99,.4);
+}
+.polaroid img{ display:block; width:150px; height:auto; filter:sepia(.25) saturate(.9); }
+.polaroid figcaption{
+  font-family:"Syne Mono",monospace; font-size:.55rem; color:var(--plum);
+  padding-top:6px; text-align:center; letter-spacing:.06em;
 }
 
-
-.nav-btn {
-    position: fixed;
-    top: 50%;
-    transform: translateY(-50%);
-    padding: 10px 20px;
-    font-size: 1rem;
-    background-color: var(--text-color);
-    color: var(--bg-color);
-    border: none;
-    cursor: pointer;
-    z-index: 1000;
-    border-radius: 50px;
-    transition: background 0.3s ease, box-shadow 0.3s ease;
+/* a small field-guide figure drawn without leaving the page */
+.leaf-figure{ position:relative; width:104px; height:116px; margin:0 auto; }
+.leaf-figure .wind{
+  position:absolute; height:30px; border-top:2px dashed rgba(109,74,99,.52);
+  border-radius:50%; pointer-events:none;
+}
+.leaf-figure .wind.one{ width:78px; top:22px; left:8px; transform:rotate(17deg); }
+.leaf-figure .wind.two{ width:64px; top:76px; left:27px; transform:rotate(-19deg); }
+.leaf-figure .leaf{
+  position:absolute; left:38px; top:47px; width:34px; height:21px;
+  background:linear-gradient(145deg,#d49a55,#c26a58);
+  border:2px solid #6d4a63; border-radius:95% 0 95% 0;
+  animation:leaf-tumble 8s ease-in-out infinite;
+}
+.leaf-figure .leaf::before{
+  content:""; position:absolute; width:25px; height:1px; left:4px; top:10px;
+  background:#6d4a63; transform:rotate(-25deg); transform-origin:left center;
+}
+.leaf-figure .leaf::after{
+  content:""; position:absolute; width:11px; height:1px; right:-9px; bottom:0;
+  background:#6d4a63; transform:rotate(28deg); transform-origin:left center;
 }
 
-/* Gradient effect on hover */
-.nav-btn:hover {
-    background: linear-gradient(45deg, #ff6b6b, #ff9770, #ffc3a0);
-    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.6);
-    color: white; /* Ensures text remains visible against the gradient */
+/* dark collage card for blueprint for a sunrise */
+.blueprint-figure{
+  position:relative; width:92px; height:116px; margin:0 auto; overflow:hidden;
+  background:#30323a; border:2px solid #6d4a63; transform:rotate(-2deg);
+  box-shadow:3px 5px 10px rgba(77,60,68,.28);
+}
+.blueprint-figure .sun{
+  position:absolute; width:68px; height:68px; left:10px; top:8px;
+  border-radius:50%; background:#b9574e; opacity:.92;
+}
+.blueprint-figure .face{
+  position:absolute; width:55px; height:76px; left:20px; top:18px;
+  border:2px solid rgba(246,236,217,.88); border-right-color:rgba(246,236,217,.28);
+  border-radius:48% 55% 42% 46%; transform:rotate(7deg);
+}
+.blueprint-figure .face::before{
+  content:""; position:absolute; width:25px; height:8px; left:8px; top:27px;
+  border-top:2px solid rgba(246,236,217,.82); transform:rotate(-7deg);
+}
+.blueprint-figure .face::after{
+  content:""; position:absolute; width:31px; height:18px; left:9px; top:42px;
+  border-bottom:2px solid rgba(246,236,217,.72); border-radius:50%; transform:rotate(5deg);
+}
+.blueprint-figure .collage-line{
+  position:absolute; width:116px; height:7px; left:-12px; top:55px;
+  background:#d2a452; opacity:.82; transform:rotate(-8deg);
+}
+.blueprint-figure figcaption{
+  position:absolute; left:5px; right:5px; bottom:5px; padding:0;
+  color:#f6ecd9; font-family:"Syne Mono",monospace; font-size:.46rem;
+  line-height:1.25; letter-spacing:.1em; text-align:center;
 }
 
-/* Gradient effect on active (when clicked) */
-.nav-btn:active {
-    background: linear-gradient(45deg, #ff9770, #ff6b6b, #d96c89);
-    box-shadow: 0 2px 10px rgba(217, 108, 137, 0.5);
-    transform: translateY(-50%) scale(0.95); /* Subtle scale effect */
+/* footer basement */
+#basement{
+  position:relative; z-index:9; text-align:center;
+  padding:60px 12% 90px; color:#b9b4d6;
+  font-family:"Syne Mono",monospace; font-size:.68rem; line-height:2;
 }
-
-#leftBtn {
-    left: 20px;
-}
-
-#rightBtn {
-    right: 20px;
-}
-
-/* Background images for sections */
-.section-1, .section-2, .section-3{
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-        .section-1 { background-image: url(''); }
-        .section-2 { background-image: url(''); }
-        .section-3 { background-image: url(''); }
-
-
-.map-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-}
-
-.node {
-    position: absolute;
-    color: var(--link-color);
-    text-decoration: none;
-    font-size: 2rem;
-    font-family: "Averia Sans Libre", sans-serif;
-    transition: color 0.3s ease, transform 0.3s ease;
-}
-
-.node::before {
-    /* Create the star using the ★ character */
-    content: "🌘︎";
-    position: absolute;
-    color: #87d9ff; /* Gold color for visibility */
-    font-size: 1.2em; /* Make star slightly larger than text */
-    
-    /* Position star above the node text */
-    left: 50%; /* Center horizontally relative to node */
-    transform: translateX(-50%); /* Offset by half its width for true centering */
-    bottom: 100%; /* Position above the node */
-    margin-bottom: 5px; /* Add some space between star and text */
-}
-
-.node:hover {
-    color: var(--link-hover-color);
-}
-
-/* Styling for each item container */
-.item {
-    margin: 1.5rem 0;
-}
-
-.section-3 {
-    position: relative;
-    height: 100vh;
-    width: 100%;
-    background-color: var(--bg-color);
-    overflow: hidden; /* Ensures content doesn't spill out */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.image-container {
-    position: relative;
-    height: 100%;
-    width: 100%;
-}
-
-.image {
-    position: absolute;
-    opacity: 0.9; /* Slightly transparent for an ethereal look */
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: infinite;
-}
-
-/* Unique animation for Image 1 */
-.image-1 {
-    animation-name: animation1;
-    animation-duration: 55s; /* Slightly shorter loop for variation */
-}
-@keyframes animation1 {
-    0% {
-        transform: translate(0, 0) rotate(-50deg);
-    }
-    20% {
-        transform: translate(30px, -50px) rotate(-30deg);
-    }
-    50% {
-        transform: translate(-50px, 40px) rotate(-70deg);
-    }
-    80% {
-        transform: translate(20px, -30px) rotate(-10deg);
-    }
-    100% {
-        transform: translate(0, 0) rotate(-50deg);
-    }
-}
-
-/* Unique animation for Image 2 */
-.image-2 {
-    animation-name: animation2;
-    animation-duration: 65s; /* Longer loop for more subtle motion */
-}
-@keyframes animation2 {
-    0% {
-        transform: translate(0, 0) rotate(60deg);
-    }
-    25% {
-        transform: translate(-40px, 30px) rotate(45deg);
-    }
-    50% {
-        transform: translate(50px, -20px) rotate(90deg);
-    }
-    75% {
-        transform: translate(-20px, 50px) rotate(30deg);
-    }
-    100% {
-        transform: translate(0, 0) rotate(60deg);
-    }
-}
-
-/* Unique animation for Image 3 */
-.image-3 {
-    animation-name: animation3;
-    animation-duration: 50s; /* Faster loop for more dynamic movement */
-}
-@keyframes animation3 {
-    0% {
-        transform: translate(0, 0) rotate(5deg);
-    }
-    15% {
-        transform: translate(20px, -10px) rotate(-10deg);
-    }
-    40% {
-        transform: translate(-30px, 30px) rotate(15deg);
-    }
-    70% {
-        transform: translate(40px, -40px) rotate(0deg);
-    }
-    100% {
-        transform: translate(0, 0) rotate(5deg);
-    }
-}
-
-
-.image:hover {
-    transform: scale(1.1); /* Slightly enlarge on hover */
-    opacity: 1; /* Fully opaque on hover */
-	mix-blend-mode: exclusion;
-}
-
-.image:active {
-    transform: scale(1.1); /* Slightly enlarge on hover */
-    opacity: 1; /* Fully opaque on hover */
-	mix-blend-mode: exclusion;
-}
-
-
-.text{
-	position: relative;
-}
-/* Styling for main title links */
-.text a.title-link {
-    font-family: "Nova Round", sans-serif;
-    text-decoration: none;
-    color: var(--link-color);
-    font-size: 1.3rem;
-    display: block;
-
-}
-
-.text a.title-link:hover {
-    color: var(--link-hover-color);
-}
-
-/* Specific styling for notes links */
-.text a.notes-link {
-    color: #c07b7b; /* Soft pinkish color for notes links */
-    font-size: 1rem; /* Slightly smaller font size */
-    /* Adds spacing from the main title */
-    font-style: italic; /* Distinct italic style */
-}
-
-.text a.notes-link:hover {
-    color: #ffa07a; /* Coral hover color */
-}
-
-.menu {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-	height 80%;
-    width: 100%;
-    padding: 20px;
-    box-sizing: border-box;
-    z-index: 999; /* Ensure it overlays other sections */
-    scrollbar-color: var(--link-color) var(--bg-color);
-    -webkit-scrollbar-color: var(--link-color) var(--bg-color);
-}
-
-/* Rounded scrollbar styling */
-.menu::-webkit-scrollbar {
-    width: 8px; /* Width of the scrollbar */
-}
-
-.menu::-webkit-scrollbar-track {
-    background: var(--bg-color); /* Track color */
-}
-
-.menu::-webkit-scrollbar-thumb {
-    background-color: var(--link-color);
-    border-radius: 50px; /* Rounded scrollbar thumb */
-    border: 2px solid var(--bg-color); /* Optional: border around the scrollbar */
-}
-
-/* Ethereal hover effect for scrollbar */
-.menu::-webkit-scrollbar-thumb:hover {
-    background-color: var(--link-hover-color);
-}
-
-.sand-grainy {
-  background-color: #f4d03f;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
-  background-blend-mode: multiply;
-  opacity: 0.9;
-}
-
-.section-1 {
-    transform: translate(0, 10%);
-    position: absolute;
-    margin: 0;
-    white-space: pre-wrap;
-}
-
-/* Separate styling for section-1-text */
-.section-1-text {
-    position: relative;
-    font-size: 1.5rem;
-    line-height: 1.5;
-    font-family: "Syne Tactile", sans-serif;
-    letter-spacing: 0.5px;
-	/* background-color: var(--text-color);*/
-	/* color: var(--bg-color); */
-	padding-bottom: 1rem;
-    text-shadow: 20px 20px 40px rgba(30, 60, 0, 0.1);
-    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
-    transition: transform 0.3s ease;
-}
-
-/* Hover text styling */
-.section-1-text::after {
-    content: "text generated from Claude and ChatGPT fed the three linked poems, then asked to create their own version based on the three poems. Resulting poem was then handwritten and fed into a OCR, but misrecognition of characters was greatly intensified.";
-    position: absolute;
-    left: 0;
-    top: 100%;
-    width: 100%;
-    font-family: "Averia Sans Libre", sans-serif;
-    font-size: 0.8em;
-    /* Give hover text its own distinct color, not affected by parent gradient */
-    background: none;
-    color: rgba(128, 118, 99, 0.6);
-    text-align: center;
-    padding-top: 10px;
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-/* Show the text on hover */
-.section-1-text:hover::after {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* Show the text when active */
-.section-1-text:active::after {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* Preserve existing link styling */
-.section-1-text a {
-    background: linear-gradient(
-        45deg,
-        #49adb3 0%,
-        #5bbec4 25%,
-        #6dcfd5 50%,
-        #5bbec4 75%,
-        #49adb3 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    position: relative;
-    text-decoration: none;
-    animation: linkFloat 6s ease-in-out infinite;
-    display: inline-block;
-    padding: 0 4px;
-}
-
-/* Preserve hover effect for non-link text */
-.section-1-text:hover {
-    animation: textGlow 2s ease-in-out infinite;
-}
-
-		
-@keyframes gradientShift {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
-}
-
-.section-1 a {
-    background: linear-gradient(
-        45deg,
-        #49adb3 0%,
-        #5bbec4 25%,
-        #6dcfd5 50%,
-        #5bbec4 75%,
-        #49adb3 100%
-    );
-	
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    position: relative;
-    text-decoration: none;
-    animation: linkFloat 6s ease-in-out infinite;
-    display: inline-block;
-    padding: 0 4px;
-}
-
-.section-1 a:hover {
-    background: linear-gradient(
-        45deg,
-        #aa49b3 0%,
-        #bb5ac4 25%,
-        #cc6bd5 50%,
-        #bb5ac4 75%,
-        #aa49b3 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    animation: linkPulse 1.5s ease-in-out infinite;
-}
-
-@keyframes linkFloat {
-    0%, 100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-3px);
-    }
-}
-
-@keyframes linkPulse {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.05);
-    }
-}
-
-/* Add this hover effect for non-link text */
-.section-1:hover {
-    animation: textGlow 2s ease-in-out infinite;
-}
-
-@keyframes textGlow {
-    0%, 100% {
-        filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.3));
-    }
-    50% {
-        filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
-    }
-}
-
-.section-2 a{
-	color: #4d6299;
-	font-family: "Syne Mono", sans-serif;
-}
-
-.section-2 a:hover{
-	color: #4d995c;
-}
-
-    </style>
+#basement a{ color:var(--glow); }
+</style>
 </head>
 <body>
-    <header>
-        <h1>Of Another Shore</h1>
-    </header>
-    <div class="section section-1">
-	<div class="section-1-text">
-d!n0sa#ur t(..t dr1p,s t_h.u th#e c|0k&rsquo;s <a href="memorypalace.html" target="_blank">di_g3st!v3 t7r/ac%t;;</a><br>
-.00.. <a href="sandstoneschistandesite.html" target="_blank">p3t/r!fied</a> b0ot|terf|!es ch@w&amp;i.g (on m00|nbea~~ms~&mdash;<br>
-ur m3--s.ry le@ks p(r!m0rdi@l suP fRom 1!ts po&lt;ke+ts;;<br>
-th3 h?ouse g|ew tt:eeth annd sw@l(ow&amp;ed !+ts o!wn sh@d_0wz&mdash;<br>
-timme ma(c)!h1n*es |aY e66gs !n y3ste<a href="iwantedtothinkabouttimeiwanted.html" target="_blank">rda_y$ t!m_0r</a>0~~sk&yen;...
-</div>
 
-	</div>
- <div class="section section-2">
-    <div class="map-container">
-        <a href="argence.html" class="node" style="top: 20%; left: 30%;" target="_blank">Oceanus Procellarum</a>
-        <a href="moonmilk.html" class="node" style="top: 70%; left: 40%;" target="_blank">Apollo Basin</a>
-        <a href="dreamwindowreturn.html" class="node" style="top: 40%; left: 70%;" target="_blank">Mare Orientale</a>
+<!-- ═══════════════ RAIL : the fake frame ═══════════════ -->
+<nav id="rail" aria-label="site legend">
+  <h1>of another shore</h1>
+  <p class="sub">decending or ascending<br>or moving side to side</p>
+
+  <div class="legend">
+    <b>LEGEND ☞</b>
+    <a href="#sky">☾ the sky <small>— far side</small></a>
+    <a href="#sea">≋ the sea <small>— long distance</small></a>
+    <a href="#shore">⌂ the shore <small>— one house</small></a>
+    <a href="#shelf">▤ the shelf <small>— memorabilia</small></a>
+    <a href="#strata">≡ the strata <small>— deep time</small></a>
+  </div>
+
+  <div id="counter">
+    <small>you are visitor no.</small>
+    <span id="visnum">0020261</span>
+  </div>
+
+  <div class="badges" aria-hidden="true">
+    <!-- hand-drawn 88x31 buttons -->
+    <svg width="88" height="31" viewBox="0 0 88 31"><rect width="88" height="31" fill="#3a6a6e"/><rect x="2" y="2" width="84" height="27" fill="none" stroke="#ffd9a3" stroke-width="1.5"/><text x="44" y="13" font-family="monospace" font-size="8" fill="#f6ecd9" text-anchor="middle">BEST VIEWED</text><text x="44" y="24" font-family="monospace" font-size="8" fill="#ffd9a3" text-anchor="middle">WITH ANY EYES</text></svg>
+    <svg width="88" height="31" viewBox="0 0 88 31"><rect width="88" height="31" fill="#c26a58"/><circle cx="16" cy="15" r="9" fill="#e9c7d6"/><circle cx="13" cy="12" r="2" fill="#6d4a63"/><circle cx="20" cy="17" r="1.5" fill="#6d4a63"/><text x="52" y="13" font-family="monospace" font-size="8" fill="#f6ecd9" text-anchor="middle">FAR SIDE</text><text x="52" y="24" font-family="monospace" font-size="8" fill="#f6ecd9" text-anchor="middle">CERTIFIED</text></svg>
+    <svg width="88" height="31" viewBox="0 0 88 31"><rect width="88" height="31" fill="#47445e"/><path d="M4 22 Q 14 12 24 20 T 44 19 T 64 21 T 84 18" stroke="#a7c9bd" fill="none" stroke-width="2"/><text x="44" y="12" font-family="monospace" font-size="8" fill="#ffd9a3" text-anchor="middle">EDIACARAN</text><text x="44" y="29" font-family="monospace" font-size="7" fill="#e9c7d6" text-anchor="middle">ring member</text></svg>
+  </div>
+
+  <p class="fineprint">
+    last updated: soon<br>
+    hosted between tides<br>
+    <a href="mailto:dalumatten@gmail.com">✍ sign the guestbook</a><br>
+    (it is an email)
+  </p>
+  <a class="oldway" href="oldindex.html">⤺ the old three doors</a>
+
+  <article class="rail-poem" aria-labelledby="encyclopedia-title">
+    <h2 id="encyclopedia-title">encyclopedia</h2>
+    <p>the same thought,<br>
+    upon seeing my own<br>
+    reflection seven<br>
+    years old: opening<br>
+    the new Encarta at lunch,</p>
+
+    <p>finally the future<br>
+    is arriving, here in the<br>
+    tropics, and then,<br>
+    pyramids, carbon<br>
+    cycle outlasting generations<br>
+    of oceans and continents,<br>
+    the first metal<br>
+    mirrors, paths over land<br>
+    bridges following coasts,</p>
+
+    <p>paint from arsenic to lead<br>
+    to acrylic, the last ice<br>
+    age and the Ordovician,<br>
+    satellites, Pluto, we will</p>
+
+    <p>reach it some day, a space<br>
+    torus, spinning its own<br>
+    gravity, spinning seven<br>
+    eras of luck, the difficult<br>
+    birth of the moon; my brain<br>
+    behind my foreign face<br>
+    the monitor and its tomorrow,</p>
+
+    <p>when we can reach<br>
+    anyone a world away,<br>
+    today, today, is this</p>
+
+    <p>how it really is? I have been<br>
+    born. A vast<br>
+    field before me,<br>
+    after me, around me, a<br>
+    pearl inside an oyster’s<br>
+    body, sliding around.<br>
+    where or when</p>
+
+    <p>am I? the light from who<br>
+    knows where blurring<br>
+    my own fingers. sleeping</p>
+
+    <p>later, I will dream<br>
+    of meeting merfolk outfitted<br>
+    with custom genes, sitting with<br>
+    my grandmothers,<br>
+    alive again, somewhere<br>
+    spiralling in Andromeda<br>
+    not knowing that name.</p>
+  </article>
+</nav>
+
+<!-- ═══════════════ PANORAMA ═══════════════ -->
+<main id="panorama">
+
+<!-- ─────────── ZONE 1 : SKY ─────────── -->
+<section class="zone" id="sky" aria-label="the sky">
+  <span class="platelabel" style="top:26px; left:7%;">FIG. 1 — THE SKY, SEEN FROM BELOW</span>
+
+  <!-- far side of the moon -->
+  <a class="spot" href="moonmilk.html" style="top:9%; left:56%; width:190px;">
+    <svg width="170" height="170" viewBox="0 0 170 170" class="bob2" role="img" aria-label="the far side of the moon">
+      <defs><clipPath id="moonclip"><circle cx="85" cy="85" r="78"/></clipPath></defs>
+      <circle cx="85" cy="85" r="78" fill="#efe0e6"/>
+      <image href="img/moon-farside.png" x="4" y="4" width="162" height="162"
+             clip-path="url(#moonclip)" preserveAspectRatio="xMidYMid slice"
+             style="filter:sepia(.3) saturate(.7) brightness(1.12) contrast(.95)"/>
+      <circle cx="85" cy="85" r="78" fill="#e9c7d6" opacity=".22" clip-path="url(#moonclip)" style="mix-blend-mode:multiply"/>
+      <circle cx="85" cy="85" r="78" fill="none" stroke="#6d4a63" stroke-width="2" stroke-dasharray="5 7"/>
+      <text x="58" y="58" font-family="monospace" font-size="7" fill="#f6ecd9" text-anchor="middle" style="paint-order:stroke;stroke:#4d3c44;stroke-width:2px">Moscoviense</text>
+      <text x="114" y="98" font-family="monospace" font-size="7" fill="#f6ecd9" text-anchor="middle" style="paint-order:stroke;stroke:#4d3c44;stroke-width:2px">Tsiolkovskiy</text>
+      <text x="70" y="128" font-family="monospace" font-size="6.5" fill="#f6ecd9" text-anchor="middle" style="paint-order:stroke;stroke:#4d3c44;stroke-width:2px">Apollo</text>
+      <text x="120" y="50" font-family="monospace" font-size="6" fill="#f6ecd9" text-anchor="middle" style="paint-order:stroke;stroke:#4d3c44;stroke-width:2px">Korolev</text>
+    </svg>
+    <span class="tag">moonmilk</span>
+    <span class="blurb"><b>MOONMILK.</b> soft white carbonate; forms on cave walls and on the far side of certain nights.</span>
+  </a>
+
+  <!-- a window, floating, returned -->
+  <a class="spot" href="dreamwindowreturn.html" style="top:22%; left:18%;">
+    <svg width="92" height="110" viewBox="0 0 92 110" class="bob" role="img" aria-label="a floating window">
+      <rect x="6" y="6" width="80" height="98" rx="4" fill="#a7c9bd" stroke="#3a6a6e" stroke-width="3"/>
+      <path d="M46 8 V102 M8 55 H84" stroke="#3a6a6e" stroke-width="2.5"/>
+      <path d="M14 30 Q 24 20 34 28" stroke="#f6ecd9" stroke-width="2" fill="none"/>
+      <circle cx="66" cy="78" r="7" fill="#ffd9a3"/>
+      <rect x="2" y="102" width="88" height="6" fill="#8a5a40"/>
+    </svg>
+    <span class="tag">dream window return</span>
+    <span class="blurb"><b>DREAM WINDOW RETURN.</b> a window observed returning. not about Kyōto, maybe the Kyōto school</span>
+  </a>
+
+  <!-- cloud conference: deities in a meeting (under construction) -->
+  <span class="spot dim" style="top:40%; left:60%;" tabindex="0">
+    <svg width="150" height="72" viewBox="0 0 150 72" class="drift-a" role="img" aria-label="clouds holding a meeting">
+      <ellipse cx="42" cy="46" rx="34" ry="19" fill="#f6ecd9" opacity=".92"/>
+      <ellipse cx="82" cy="38" rx="40" ry="23" fill="#efe0e6" opacity=".92"/>
+      <ellipse cx="116" cy="50" rx="27" ry="15" fill="#f6ecd9" opacity=".92"/>
+      <circle cx="46" cy="42" r="2" fill="#6d4a63"/><circle cx="58" cy="42" r="2" fill="#6d4a63"/>
+      <circle cx="84" cy="34" r="2" fill="#6d4a63"/><circle cx="96" cy="34" r="2" fill="#6d4a63"/>
+      <path d="M48 50 Q 52 54 56 50" stroke="#6d4a63" fill="none" stroke-width="1.5"/>
+      <path d="M86 42 Q 90 44 94 42" stroke="#6d4a63" fill="none" stroke-width="1.5"/>
+      <text x="20" y="16" font-family="monospace" font-size="7" fill="#6d4a63">re: humidity in jaro —</text>
+    </svg>
+    <span class="tag">cloud conference</span>
+    <span class="uc">⚠ UNDER CONSTRUCTION</span>
+    <span class="blurb"><b>CLOUD CONFERENCE.</b> the deities are still in a meeting. please do not disturb. (page pending)</span>
+  </span>
+
+  <!-- argence: the silver star -->
+  <a class="spot blurb-up" href="argence.html" style="top:64%; left:33%;">
+    <svg width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="a silver star">
+      <g style="animation:glowp 5s ease-in-out infinite">
+        <path d="M32 4 L37 26 L59 32 L37 38 L32 60 L27 38 L5 32 L27 26 Z" fill="#e9e4ef" stroke="#6d4a63" stroke-width="1.5"/>
+        <circle cx="32" cy="32" r="4" fill="#ffd9a3"/>
+      </g>
+    </svg>
+    <span class="tag">argence</span>
+    <span class="blurb"><b>ARGENCE.</b> a silver weather. see also: second star, silverness.</span>
+  </a>
+
+  <!-- a leaf falling through the present -->
+  <a class="spot edge-r" href="aleaffalling.html" style="top:48%; right:6%;">
+    <figure class="leaf-figure" role="img" aria-label="a leaf falling along a wandering path">
+      <span class="wind one" aria-hidden="true"></span>
+      <span class="leaf" aria-hidden="true"></span>
+      <span class="wind two" aria-hidden="true"></span>
+    </figure>
+    <span class="tag">a leaf falling</span>
+    <span class="blurb"><b>A LEAF FALLING.</b>for about a second.</span>
+  </a>
+
+  <!-- a dark cover at the edge of sunrise -->
+  <a class="spot blurb-up" href="blueprint.html" style="top:76%; left:9%;">
+    <figure class="blueprint-figure" role="img" aria-label="a dark collage cover with a red sunrise and a superimposed face">
+      <span class="sun" aria-hidden="true"></span>
+      <span class="face" aria-hidden="true"></span>
+      <span class="collage-line" aria-hidden="true"></span>
+      <figcaption>BLUEPRINT<br>FOR A SUNRISE</figcaption>
+    </figure>
+    <span class="tag">blueprint</span>
+    <span class="blurb"><b>BLUEPRINT.</b>sound, blood.</span>
+  </a>
+
+  <!-- pinned supercontinent chart, echoes moonmilk's shifting ground -->
+  <a class="spot blurb-up" href="moonmilk.html" style="top:80%; left:70%;">
+    <figure class="polaroid" style="margin:0; transform:rotate(3deg)">
+      <img src="img/pangaea.jpg" alt="map of the supercontinent Pangaea" onerror="this.closest('figure').style.display='none'" style="width:130px">
+      <figcaption>the ground, an earlier draft<br>(Pangaea, ~200 Mya)</figcaption>
+    </figure>
+    <span class="tag">moonmilk ↻</span>
+    <span class="blurb"><b>SUPERCONTINENT.</b> the arrangement underneath is provisional. swipe moonmilk and it reassembles into a configuration that also used to be true.</span>
+  </a>
+
+  <!-- passing clouds, decorative -->
+  <svg class="deco drift-b" style="top:55%; left:66%; opacity:.8" width="130" height="46" viewBox="0 0 130 46"><ellipse cx="40" cy="28" rx="36" ry="15" fill="#f6ecd9"/><ellipse cx="88" cy="24" rx="38" ry="17" fill="#efe0e6"/></svg>
+  <svg class="deco drift-a" style="top:14%; left:4%; opacity:.65" width="110" height="40" viewBox="0 0 110 40"><ellipse cx="36" cy="24" rx="32" ry="13" fill="#f6ecd9"/><ellipse cx="76" cy="20" rx="30" ry="15" fill="#efe0e6"/></svg>
+</section>
+
+<!-- ─────────── ZONE 2 : SEA ─────────── -->
+<section class="zone" id="sea" aria-label="the sea">
+  <svg class="seam" viewBox="0 0 1200 70" preserveAspectRatio="none"><path d="M0,0 L1200,0 L1200,18 C 1050,52 890,10 700,38 C 520,64 330,14 160,44 C 90,56 40,30 0,44 Z" fill="#f7e3bd"/></svg>
+  <!-- real Pacific horizon, sunk faint under the drawn sea -->
+  <img class="deco" src="img/pacific-sunset.jpg" alt="" aria-hidden="true"
+       onerror="this.style.display='none'"
+       style="left:0; right:0; width:100%; top:20%; height:60%; object-fit:cover; opacity:.28; mix-blend-mode:soft-light; filter:sepia(.35) saturate(.8)">
+  <span class="platelabel" style="top:84px; left:9%;">FIG. 2 — THE SEA, LONG DISTANCE</span>
+
+  <!-- distant landmass: in manchuria -->
+  <a class="spot edge-r" href="inmanchuria.html" style="top:13%; left:66%;">
+    <svg width="180" height="46" viewBox="0 0 180 46" role="img" aria-label="a distant landmass">
+      <path d="M2 44 L28 30 Q 44 18 62 26 L84 14 Q 104 4 122 18 L146 26 Q 164 32 178 44 Z" fill="#8d7f9b" opacity=".85"/>
+    </svg>
+    <span class="tag">in manchuria</span>
+    <span class="blurb"><b>IN MANCHURIA.</b> a landmass visible only in certain weather. it is not manchuria. it has never been manchuria, which is the point.</span>
+  </a>
+
+  <!-- big boat -->
+  <a class="spot" href="bigboat.html" style="top:26%; left:22%;">
+    <svg width="130" height="86" viewBox="0 0 130 86" class="bob" role="img" aria-label="a boat">
+      <path d="M14 58 L116 58 L98 80 L30 80 Z" fill="#c26a58" stroke="#6d4a63" stroke-width="2"/>
+      <path d="M64 58 V12" stroke="#6d4a63" stroke-width="3"/>
+      <path d="M64 14 Q 96 24 64 44 Z" fill="#f6ecd9" stroke="#6d4a63" stroke-width="1.5"/>
+      <text x="64" y="73" font-family="monospace" font-size="9" fill="#f6ecd9" text-anchor="middle" transform="rotate(180 64 71)">big boat</text>
+    </svg>
+    <span class="tag">big boat</span>
+    <span class="blurb"><b>BIG BOAT.</b>archival audio, 1940s. legible upside down and right side up, like most inheritances.</span>
+  </a>
+
+  <!-- insulae incognita: unknown islands -->
+  <a class="spot" href="https://xyhtamura.github.io/insulaeincognita/" style="top:26%; left:48%;">
+    <svg width="120" height="52" viewBox="0 0 120 52" role="img" aria-label="a cluster of small unknown islands">
+      <path d="M6 46 Q 18 28 32 34 Q 40 24 50 32 Q 56 40 66 44 Z" fill="#7d9a8b" stroke="#3a6a6e" stroke-width="1.5"/>
+      <path d="M74 44 Q 82 32 92 38 Q 100 30 112 42 Q 116 46 114 48 L78 48 Z" fill="#8d7f9b" stroke="#6d4a63" stroke-width="1.5"/>
+      <path d="M34 32 Q 36 24 42 22" stroke="#3a6a6e" stroke-width="1.5" fill="none"/>
+      <text x="24" y="16" font-family="monospace" font-size="8" fill="#6d4a63" transform="rotate(-3 24 16)">hic sunt?</text>
+    </svg>
+    <span class="tag">insulae incognita</span>
+    <span class="blurb"><b>INSULAE INCOGNITA.</b> islands present on no two charts in the same place. approach by dead reckoning only;</span>
+  </a>
+
+  <!-- ediacaran hotline: ice floe with telephone
+  <a class="spot" href="ediacaranhotline.html" style="top:47%; left:47%;">
+    <svg width="120" height="88" viewBox="0 0 120 88" class="bob2" role="img" aria-label="a telephone on an ice floe">
+      <path d="M8 66 L26 52 L52 58 L80 48 L108 60 L98 78 L20 80 Z" fill="#dfeaee" stroke="#6d9aa0" stroke-width="2"/>
+      <path d="M42 50 Q 42 34 58 34 Q 74 34 74 50" fill="none" stroke="#c26a58" stroke-width="6" stroke-linecap="round"/>
+      <rect x="46" y="46" width="24" height="12" rx="4" fill="#c26a58"/>
+      <path d="M58 58 Q 60 70 40 76" stroke="#6d4a63" stroke-width="2" fill="none" stroke-dasharray="3 3"/>
+    </svg>
+    <span class="tag">ediacaran hotline</span>
+    <span class="blurb"><b>EDIACARAN HOTLINE.</b> established c. 635,000,000 BCE. long-distance rates apply. please hold.</span>
+  </a> -->
+
+  <!-- night bus on a causeway -->
+  <a class="spot" href="nightbus.html" style="top:66%; left:9%;">
+    <svg width="170" height="76" viewBox="0 0 170 76" role="img" aria-label="a bus crossing a causeway at night">
+      <path d="M0 62 L170 54" stroke="#47445e" stroke-width="7"/>
+      <path d="M16 62 V74 M58 60 V74 M104 58 V74 M148 56 V74" stroke="#47445e" stroke-width="4"/>
+      <rect x="44" y="26" width="86" height="30" rx="7" fill="#4f5d75" stroke="#2f2b45" stroke-width="2"/>
+      <g style="animation:glowp 4s ease-in-out infinite">
+        <rect x="52" y="33" width="11" height="9" fill="#ffd9a3"/><rect x="68" y="33" width="11" height="9" fill="#ffd9a3"/>
+        <rect x="84" y="33" width="11" height="9" fill="#ffe9c9"/><rect x="100" y="33" width="11" height="9" fill="#ffd9a3"/>
+      </g>
+      <circle cx="60" cy="58" r="6" fill="#2f2b45"/><circle cx="112" cy="57" r="6" fill="#2f2b45"/>
+    </svg>
+    <span class="tag">night bus</span>
+    <span class="blurb"><b>NIGHT BUS.</b> departs nightly, frame by frame, one note at a time.</span>
+  </a>
+
+  <!-- buoy: now -->
+  <a class="spot blurb-up" href="now.html" style="top:78%; left:58%;">
+    <svg width="42" height="64" viewBox="0 0 42 64" class="bob" role="img" aria-label="a blinking buoy">
+      <path d="M21 62 Q 4 52 10 34 L32 34 Q 38 52 21 62" fill="#c26a58" stroke="#6d4a63" stroke-width="2"/>
+      <rect x="18" y="16" width="6" height="18" fill="#6d4a63"/>
+      <circle cx="21" cy="11" r="7" fill="#ffd9a3" style="animation:glowp 2.6s ease-in-out infinite"/>
+    </svg>
+    <span class="tag">now</span>
+    <span class="blurb"><b>NOW.</b>updated whenever.</span>
+  </a>
+
+  <!-- dungan: a light over the water -->
+  <a class="spot blurb-up edge-r" href="dungan.html" style="top:40%; left:82%;">
+    <svg width="40" height="40" viewBox="0 0 40 40" class="drift-b" role="img" aria-label="a small light over the water">
+      <circle cx="20" cy="20" r="12" fill="#ffd9a3" opacity=".4"/>
+      <circle cx="20" cy="20" r="5" fill="#ffe9c9" style="animation:glowp 3.4s ease-in-out infinite"/>
+    </svg>
+    <span class="tag">dungan</span>
+    <span class="blurb"><b>DUNGAN.</b>returns before waking, usually. do not call its name loudly.</span>
+  </a>
+</section>
+
+<!-- ─────────── ZONE 3 : SHORE ─────────── -->
+<section class="zone" id="shore" aria-label="the shore">
+  <svg class="seam" viewBox="0 0 1200 70" preserveAspectRatio="none"><path d="M0,0 L1200,0 L1200,26 C 1010,58 860,6 660,34 C 470,60 300,16 150,40 C 80,52 30,34 0,48 Z" fill="#39616f"/></svg>
+  <span class="platelabel" style="top:26%; left:6%;">FIG. 3 — THE SHORE, ONE HOUSE</span>
+
+  <!-- the house cutaway -->
+  <div id="house">
+    <svg class="roofline" width="340" height="66" viewBox="0 0 340 66" aria-hidden="true">
+      <path d="M6 64 L170 6 L334 64 Z" fill="#c26a58" stroke="#8a5a40" stroke-width="3"/>
+      <rect x="236" y="18" width="14" height="30" fill="#8a5a40"/>
+      <path d="M243 18 Q 250 6 258 10 Q 254 16 258 20" stroke="#e9c7d6" stroke-width="3" fill="none"/>
+    </svg>
+    <div class="rooms">
+      <a class="room" href="https://xyhtamura.github.io/whisperhouse/">
+        <span class="roomtag">kitchen, ppp</span>
+        <b>whisper house</b>
+        <small>the egg will gradually bloom into a telephone</small>
+      </a>
+      <a class="room" href="horizons/threefloorhome.html">
+        <span class="roomtag">stairs</span>
+        <b>three floor home</b>
+        <small>verses stacked in a triangle</small>
+      </a>
+      <a class="room" href="memorypalace.html">
+        <span class="roomtag">corridor</span>
+        <b>memory palace</b>
+        <small>doors that open onto further doors</small>
+      </a>
+      <a class="room" href="thingsmyparentsthoughtwheniwasunborn.html">
+        <span class="roomtag">attic radio</span>
+        <b>things my parents thought when i was unborn</b>
+        <small>whispered, multilingual, cut before finishing</small>
+      </a>
+      <a class="room" href="horizons/fourbedroomgarden.html">
+        <span class="roomtag">garden door</span>
+        <b>four bedroom garden</b>
+        <small>2×2 and overgrown</small>
+      </a>
+      <a class="room" href="adobar.html">
+        <span class="roomtag">pantry</span>
+        <b>adobar</b>
+        <small>precolonial technique, japanese pantry</small>
+      </a>
     </div>
-</div>
+  </div>
 
-    <div class="section section-3"><div class="image-container">
-    <a href="dungan.html" target="_blank">
-        <img src="img/egg.png" alt="Image 1" class="image image-1" style="top: 25%; left: 20%; transform: rotate(-50deg); width:400px;">
-    </a>
-    <a href="inmanchuria.html" target="_blank">
-        <img src="img/photograph.png" alt="Image 2" class="image image-2" style="top: 15%; left: 35%; transform: rotate(60deg); width:400px;">
-    </a>
-    <a href="afterwemisrememberthegrains.html" target="_blank">
-        <img src="img/grains.png" alt="Image 3" class="image image-3" style="top: 25%; left: 40%; transform: rotate(5deg); width:300px;">
-    </a>
-</div>
-</div>
-    <button id="leftBtn" class="nav-btn">←</button>
-    <button id="rightBtn" class="nav-btn">→</button>
-	<div class="menu">
-	 <div class="text">
-	 <div class="item">
-    <a href="memorypalace.html" class="title-link" target="_blank">memory palace</a>
-</div>
-<div class="item">
-    <a href="sandstoneschistandesite.html" class="title-link" target="_blank">sandstone, schist, andesite</a>
-</div>
-<div class="item">
-    <a href="argence.html" class="title-link" target="_blank">argence</a>
-</div>
-<div class="item">
-    <a href="iwantedtothinkabouttimeiwanted.html" class="title-link" target="_blank">i wanted to think about time, i wanted</a>
-</div>
+  <!-- starfish on the sand: five horizon intersection -->
+  <a class="spot" href="horizons/fivehorizonintersection.html" style="top:57%; left:20%;">
+    <svg width="96" height="96" viewBox="0 0 96 96" role="img" aria-label="a starfish with one arm apart">
+      <path d="M48 10 L57 40 L88 42 L62 58 L70 88 L48 68 L30 84 L36 56 L12 38 L41 39 Z" fill="#e9a06b" stroke="#c26a58" stroke-width="2.5" transform="rotate(-8 48 48)"/>
+      <path d="M84 78 L96 90" stroke="#e9a06b" stroke-width="7" stroke-linecap="round"/>
+      <circle cx="48" cy="48" r="3" fill="#c26a58"/>
+    </svg>
+    <span class="tag">five horizon intersection</span>
+    <span class="blurb"><b>FIVE HORIZON INTERSECTION.</b>continue at a small distance.</span>
+  </a>
 
-<div class="item">
-    <a href="horizons/threefloorhome.html" class="title-link" target="_blank">three floor home</a>
-</div>
+  <!-- tide pool: sand dollar exchange -->
+  <a class="spot" href="sanddollarexchange.html" style="top:73%; left:44%;">
+    <svg width="120" height="70" viewBox="0 0 120 70" role="img" aria-label="a tide pool with sand dollars">
+      <ellipse cx="60" cy="38" rx="54" ry="24" fill="#6d9aa0" stroke="#d9b989" stroke-width="4"/>
+      <circle cx="44" cy="36" r="11" fill="#eedcb4"/><circle cx="76" cy="44" r="8" fill="#eedcb4"/>
+      <path d="M44 28 V44 M37 36 H51 M40 31 L48 41 M48 31 L40 41" stroke="#d9b989" stroke-width="1.4"/>
+    </svg>
+    <span class="tag">sand dollar exchange</span>
+    <span class="blurb"><b>SAND DOLLAR EXCHANGE.</b> current rate: 1 sand dollar = 1 sand dollar. bureau opens at low tide and honors all previous tides.</span>
+  </a>
 
-<div class="item">
-    <a href="dreamwindowreturn.html" class="title-link" target="_blank">dream window return</a>
-</div>
+  <!-- quoin: a coin half-buried at the corner -->
+  <a class="spot blurb-up" href="quoineconomics.html" style="top:84%; left:70%;">
+    <svg width="58" height="42" viewBox="0 0 58 42" role="img" aria-label="a coin half-buried in sand">
+      <path d="M0 40 Q 30 30 58 40 L58 42 L0 42 Z" fill="#d9b989"/>
+      <path d="M12 36 A 17 17 0 1 1 46 36" fill="#ffd9a3" stroke="#c26a58" stroke-width="2"/>
+      <text x="29" y="30" font-family="monospace" font-size="9" fill="#6d4a63" text-anchor="middle">隅</text>
+    </svg>
+    <span class="tag">quoin</span>
+    <span class="blurb"><b>QUOIN (ECONOMICS).</b> a cornerstone, a wedge, several currencies</span>
+  </a>
 
-<div class="item">
-    <a href="horizons/fourbedroomgarden.html" class="title-link" target="_blank">four bedroom garden</a>
-</div>
+  <!-- dune grass, decorative -->
+  <svg class="deco" style="top:66%; left:6%;" width="90" height="60" viewBox="0 0 90 60"><path d="M10 60 Q 6 30 16 10 M24 60 Q 28 26 20 8 M40 60 Q 36 34 46 16 M58 60 Q 62 30 54 12 M74 60 Q 70 32 80 14" stroke="#7d9a8b" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
+  <svg class="deco" style="top:50%; left:83%;" width="90" height="60" viewBox="0 0 90 60"><path d="M10 60 Q 14 28 8 10 M28 60 Q 24 30 34 12 M48 60 Q 52 28 44 10 M66 60 Q 62 34 72 16" stroke="#7d9a8b" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
+</section>
 
-<div class="item">
-    <a href="horizons/fivehorizonintersection.html" class="title-link" target="_blank">five horizon intersection</a>
-</div>
+<!-- ─────────── ZONE 4 : SHELF ─────────── -->
+<section class="zone" id="shelf" aria-label="the shelf">
+  <svg class="seam" viewBox="0 0 1200 70" preserveAspectRatio="none"><path d="M0,0 L1200,0 L1200,22 C 1040,54 880,12 700,36 C 500,62 320,18 140,42 C 70,52 30,32 0,46 Z" fill="#e3c48f"/></svg>
+  <span class="platelabel" style="top:80px; left:8%;">FIG. 4 — THE SHELF, KEPT THINGS</span>
 
-<div class="item">
-    <a href="nightbus.html" class="title-link" target="_blank">night bus</a>
-</div>
+  <!-- the egg drawing -->
+  <a class="spot" href="oldindex.html#egg" style="top:30%; left:12%;">
+    <svg width="66" height="82" viewBox="0 0 66 82" role="img" aria-label="an egg drawn in oil pastel">
+      <path d="M33 6 Q 58 30 56 52 A 23 24 0 0 1 10 52 Q 8 30 33 6" fill="#f3e0d4" stroke="#c26a58" stroke-width="3" stroke-dasharray="7 3"/>
+      <path d="M22 40 Q 33 32 44 42" stroke="#e9a06b" stroke-width="2.5" fill="none"/>
+    </svg>
+    <span class="tag">the egg</span>
+    <span class="blurb"><b>THE EGG.</b>see kitchen, fig. 3. leads back to the three doors.</span>
+  </a>
 
-<div class="item">
-    <a href="ediacaranhotline.html" class="title-link" target="_blank">ediacaran hotline</a>
-</div>
+  <!-- body clocks -->
+  <a class="spot" href="bodyclocks.html" style="top:24%; left:38%;">
+    <svg width="86" height="86" viewBox="0 0 86 86" role="img" aria-label="a clock with three rings">
+      <circle cx="43" cy="43" r="38" fill="#f6ecd9" stroke="#3a6a6e" stroke-width="3"/>
+      <circle cx="43" cy="43" r="27" fill="none" stroke="#c26a58" stroke-width="1.6" stroke-dasharray="4 5"/>
+      <circle cx="43" cy="43" r="17" fill="none" stroke="#6d4a63" stroke-width="1.6" stroke-dasharray="2 6"/>
+      <path d="M43 43 L43 20 M43 43 L58 52" stroke="#3a6a6e" stroke-width="3" stroke-linecap="round"/>
+      <text x="43" y="76" font-family="monospace" font-size="6.5" fill="#6d4a63" text-anchor="middle">72 × 3</text>
+    </svg>
+    <span class="tag">body clocks</span>
+    <span class="blurb"><b>BODY CLOCKS.</b> the 72 microseasons, three ways</span>
+  </a>
 
-<div class="item">
-    <a href="bigboat.html" class="title-link" target="_blank">big boat</a>
-</div>
+  <!-- the world -->
+  <a class="spot" href="theworld/index.html" style="top:52%; left:56%;">
+    <svg width="80" height="80" viewBox="0 0 80 80" role="img" aria-label="a circular billiard diagram">
+      <rect x="4" y="4" width="72" height="72" fill="#e8e4cd" stroke="#6d4a63" stroke-width="2"/>
+      <circle cx="40" cy="40" r="15" fill="#d9b4cf" stroke="#6d4a63" stroke-width="2"/>
+      <text x="16" y="18" font-family="monospace" font-size="9" fill="#3a6a6e">a</text>
+      <text x="62" y="24" font-family="monospace" font-size="9" fill="#c26a58">b</text>
+      <text x="20" y="68" font-family="monospace" font-size="9" fill="#6d4a63">k</text>
+      <text x="64" y="64" font-family="monospace" font-size="9" fill="#3a6a6e">ng</text>
+      <path d="M22 20 Q 34 30 30 44" stroke="#c26a58" stroke-width="1" fill="none" stroke-dasharray="2 3"/>
+    </svg>
+    <span class="tag">the world</span>
+    <span class="blurb"><b>THE WORLD.</b> 28 letters in a magnetic billiard</span>
+  </a>
 
-<div class="item">
-    <a href="sanddollarexchange.html" class="title-link" target="_blank">sand dollar exchange</a>
-</div>
+  <!-- letter: dungan's envelope / all tomorrows parties invitation -->
+  <a class="spot blurb-up" href="dreamwindowreturn.html" style="top:62%; left:26%;">
+    <svg width="86" height="56" viewBox="0 0 86 56" role="img" aria-label="an old envelope">
+      <rect x="3" y="6" width="80" height="46" fill="#f0ddc0" stroke="#a5714b" stroke-width="2" transform="rotate(-2 43 28)"/>
+      <path d="M5 9 L43 34 L81 7" stroke="#a5714b" stroke-width="1.6" fill="none" transform="rotate(-2 43 28)"/>
+      <rect x="62" y="10" width="13" height="15" fill="#e9c7d6" stroke="#c26a58" stroke-width="1"/>
+    </svg>
+    <span class="tag">unsent mail</span>
+    <span class="blurb"><b>UNSENT MAIL.</b> address illegible</span>
+  </a>
 
-<div class="item">
-    <a href="afterwemisrememberthegrains.html" class="title-link" target="_blank">after we misremember the grains</a>
-</div>
+  <!-- taped photograph from the commons -->
+  <a class="spot blurb-up" href="afterwemisrememberthegrains.html" style="top:18%; left:72%;">
+    <figure class="polaroid" style="margin:0">
+      <img src="img/dickinsonia.jpg" alt="fossil of Dickinsonia costata"
+           onerror="this.closest('figure').style.display='none'">
+      <figcaption>somebody we used to be<br>(ediacara hills, 558 Mya)</figcaption>
+    </figure>
+    <span class="tag">after we misremember the grains</span>
+    <span class="blurb"><b>AFTER WE MISREMEMBER THE GRAINS.</b> the photograph is fine.</span>
+  </a>
 
-<div class="item">
-    <a href="inmanchuria.html" class="title-link" target="_blank">in Manchuria</a>
-</div>
+  <!-- Haeckel starfish plate, echoes the broken-arm poem -->
+  <a class="spot blurb-up" href="horizons/fivehorizonintersection.html" style="top:56%; left:12%;">
+    <figure class="polaroid" style="margin:0; transform:rotate(1.8deg)">
+      <img src="img/haeckel-asteridea.jpg" alt="Ernst Haeckel plate of starfish (Asteridea)" onerror="this.closest('figure').style.display='none'" style="width:132px">
+      <figcaption>five arms, one apart<br>(Haeckel, Asteridea, 1904)</figcaption>
+    </figure>
+    <span class="tag">five horizon intersection</span>
+    <span class="blurb"><b>ASTERIDEA.</b> radial near-symmetry</span>
+  </a>
+</section>
 
-<div class="item">
-    <a href="quoineconomics.html" class="title-link" target="_blank">quoin (economics)</a>
-</div>
+<!-- ─────────── ZONE 5 : STRATA ─────────── -->
+<section class="zone" id="strata" aria-label="the strata">
+  <svg class="seam" viewBox="0 0 1200 70" preserveAspectRatio="none"><path d="M0,0 L1200,0 L1200,20 C 1060,50 900,8 720,34 C 540,58 340,14 160,40 C 80,50 40,28 0,44 Z" fill="#6e4634"/></svg>
+  <span class="platelabel" style="top:84px; right:8%;">FIG. 5 — THE STRATA, DEEP TIME</span>
 
-<div class="item">
-    <a href="now.html" class="title-link" target="_blank">now</a>
-</div>
+  <div style="height:150px"></div>
 
-<div class="item">
-    <a href="dungan.html" class="title-link" target="_blank">dungan</a>
-</div>
+  <a class="stratum" href="sandstoneschistandesite.html" style="background:linear-gradient(96deg,#c9977a,#b98a63)">
+    <span class="sdepth">— 0 m TO 40 m · SEDIMENTARY / METAMORPHIC / IGNEOUS —</span>
+    <span class="sname">sandstone, schist, andesite</span>
+    <span class="snote">field notes</span>
+  </a>
 
-<div class="item">
-    <a href="whisperhouse.html" class="title-link" target="_blank">whisper house</a>
-</div>
+  <a class="stratum" href="escarpmentpinks.html" style="background:linear-gradient(94deg,#c98a96,#b06f85)">
+    <span class="sdepth">— 40 m TO 65 m · FLOWERING FAULT LINE —</span>
+    <span class="sname">escarpment pinks</span>
+    <span class="snote">dianthus growing where the ground disagrees with itself</span>
+  </a>
 
-<div class="item">
-    <a href="thingsmyparentsthoughtwheniwasunborn.html" class="title-link" target="_blank">things my parents thought when i was unborn</a>
-</div>
+  <a class="stratum glitchband" href="afterwemisrememberthegrains.html">
+    <span class="sdepth">— 65 m TO 8&#65533; m · UNCONF&#65533;RMITY (DATA MISSING) —</span>
+    <span class="sname">after we misremember the grains</span>
+    <span class="snote">sections with gloves.</span>
+  </a>
 
-<div class="item">
-    <a href="moonmilk.html" class="title-link" target="_blank">moonmilk</a>
-    <a href="https://youtu.be/27LNfCEGIzA" class="notes-link" target="_blank">video</a>
-</div>
+  <a class="stratum" href="iwantedtothinkabouttimeiwanted.html" style="background:linear-gradient(95deg,#847092,#6f5a70)">
+    <span class="sdepth">— 80 m TO 300 m · FOSSILIFEROUS LIST BEDS —</span>
+    <span class="sname">i wanted to think about time, i wanted</span>
+    <span class="snote">order of deposition not </span>
+  </a>
 
-<div class="item">
-    <a href="escarpmentpinks.html" class="title-link" target="_blank">escarpment pinks</a>
-</div>
+  <a class="stratum" href="ediacaranhotline.html" style="background:linear-gradient(97deg,#565a78,#47445e); display:flex; align-items:center; gap:20px; flex-wrap:wrap">
+    <span style="flex:1 1 60%; min-width:240px">
+      <span class="sdepth">— 300 m TO 635 Ma · EDIACARAN BIOTA (STILL REACHABLE) —</span>
+      <span class="sname">the ediacaran, by telephone</span>
+      <span class="snote">soft bodies, no predators, excellent reception.</span>
+    </span>
+    <img src="img/charnia.jpg" alt="Charnia masoni, an Ediacaran frond fossil"
+         onerror="this.style.display='none'"
+         style="flex:0 0 auto; width:150px; height:auto; border:1px solid rgba(233,199,214,.5); box-shadow:2px 4px 10px rgba(20,15,35,.5); filter:sepia(.2) contrast(1.05); transform:rotate(-1.5deg)">
+  </a>
 
-</div>
-	
-	</div>
-<script>// Initialize current section and images
-let currentSection = Math.floor(Math.random() * 3) + 1;
-const backgroundImages = {
-    1: 'url("path/to/image1.jpg")',
-    2: 'url("img/pinkearth.jpg")',
-    3: 'url("path/to/image3.jpg")'
-};
+  <a class="stratum mouthband" href="mouth.html">
+    <span class="sdepth">— BELOW 635 Ma · SUBMERGED SPEECH BED —</span>
+    <span class="sname"><span lang="ja">口</span> / mouth</span>
+    <span class="snote">a mouth underwater; translations surface when touched.</span>
+  </a>
 
-const blendModes = {
-    1: 'normal',
-    2: 'normal',
-    3: 'normal'
-};
+  <div id="basement">
+    <p>you have reached the basement of this page.</p>
+    <p>
+      <a href="manual.html">manual</a> ·
+      <a href="oldindex.html">the old page</a> ·
+      <a href="mailto:dalumatten@gmail.com">guestbook</a>
+    </p>
+    <p style="opacity:.6">of another shore · a field guide · no two visits survey the same territory</p>
+  </div>
+</section>
 
+</main>
 
-// Get DOM elements
-const sections = document.querySelectorAll('.section');
-const leftBtn = document.getElementById('leftBtn');
-const rightBtn = document.getElementById('rightBtn');
-const header = document.querySelector('header');
-const menu = document.querySelector('.menu');
-
-// Set up initial state
-function initializePage() {
-    sections.forEach(section => section.style.display = 'none');
-    sections[currentSection - 1].style.display = 'block';
-    document.body.style.backgroundImage = backgroundImages[currentSection];
-	document.body.style.backgroundBlendMode = blendModes[currentSection];
-    
-    // Add transitions
-    document.body.style.transition = 'background-image 0.5s ease-in-out';
-    sections.forEach(section => {
-        section.style.transition = 'opacity 0.5s ease-in-out';
-        section.style.opacity = '1';
-    });
-    
-    // Initialize menu state
-    menu.style.visibility = 'hidden';
-    menu.style.opacity = '0';
-}
-
-// Navigation function
-function navigateSection(direction) {
-    sections[currentSection - 1].style.opacity = '0';
-    
-    setTimeout(() => {
-        sections[currentSection - 1].style.display = 'none';
-        
-        currentSection = direction === 'next' 
-            ? (currentSection % 3) + 1 
-            : (currentSection - 2 + 3) % 3 + 1;
-        
-        sections[currentSection - 1].style.display = 'block';
-        document.body.style.backgroundImage = backgroundImages[currentSection];
-        
-        setTimeout(() => {
-            sections[currentSection - 1].style.opacity = '1';
-        }, 50);
-    }, 500);
-}
-
-// Event Listeners
-leftBtn.addEventListener('click', () => navigateSection('prev'));
-rightBtn.addEventListener('click', () => navigateSection('next'));
-
-// Keyboard navigation
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft') navigateSection('prev');
-    if (e.key === 'ArrowRight') navigateSection('next');
-});
-
-// Touch navigation
-let touchStartX = 0;
-let touchEndX = 0;
-
-document.addEventListener('touchstart', (e) => {
-    touchStartX = e.changedTouches[0].screenX;
-});
-
-document.addEventListener('touchend', (e) => {
-    touchEndX = e.changedTouches[0].screenX;
-    const diff = touchStartX - touchEndX;
-    
-    if (Math.abs(diff) > 50) { // Minimum swipe distance
-        if (diff > 0) navigateSection('next');
-        else navigateSection('prev');
-    }
-});
-
-// Menu toggle with improved visibility handling
-header.addEventListener('click', () => {
-    if (menu.style.visibility === 'hidden') {
-        menu.style.visibility = 'visible';
-        menu.style.opacity = '1';
-        
-        // Hide other elements
-        sections.forEach(section => section.style.visibility = 'hidden');
-        leftBtn.style.visibility = 'hidden';
-        rightBtn.style.visibility = 'hidden';
-    } else {
-        menu.style.opacity = '0';
-        setTimeout(() => {
-            menu.style.visibility = 'hidden';
-            
-            // Show other elements
-            sections.forEach(section => section.style.visibility = 'visible');
-            leftBtn.style.visibility = 'visible';
-            rightBtn.style.visibility = 'visible';
-        }, 300); // Match transition duration
-    }
-});
-
-// Initialize page on load
-window.addEventListener('load', initializePage);
-
-// Add necessary CSS
-const style = document.createElement('style');
-style.textContent = `
-
-    body {
-        margin: 0;
-        min-height: 100vh;
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-		overflow: hidden;
-    }
-    .section {
-        opacity: 0;
-        position: absolute;
-        top: 100px; /* Adjust based on header height */
-        left: 0;
-        right: 0;
-        overflow: hidden;
-        transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
-    }
-    
-    .menu {
-        position: relative;
-        top: 120px; /* Adjust based on header height */
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: var(--bg-color);
-		height: 80%;
-        z-index: 1000;
-        visibility: hidden;
-		overflow-y: scroll;
-        opacity: 0.2;
-        transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-    }
-    
-    .nav-btn {
-        position: fixed;
-        top: 50%;
-        transform: translateY(-50%);
-        z-index: 500;
-        visibility: visible;
-        transition: visibility 0.3s ease-in-out;
-    }
-    
-    #leftBtn {
-        left: 20px;
-    }
-    
-    #rightBtn {
-        right: 20px;
-    }
-    
-    header {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 1500;
-        cursor: pointer;
-    }
-`;
-document.head.appendChild(style);
+<script>
+/* visitor counter: starts plausible, drifts irregularly — never a stepped tick */
+(function(){
+  var el = document.getElementById('visnum');
+  var n = 20261 + Math.floor(Math.random()*37);
+  function show(){ el.textContent = String(n).padStart(7,'0'); }
+  function drift(){
+    n += Math.random() < 0.7 ? 1 : Math.floor(Math.random()*4);
+    show();
+    setTimeout(drift, 4000 + Math.random()*9000);
+  }
+  show(); setTimeout(drift, 3000 + Math.random()*4000);
+})();
 </script>
 
 </body>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Cover of Yoko Ono's "Blueprint for a Sunrise"</title>
+    
+    <style>
+        /* --- Google Font Import --- */
+        @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&display=swap');
+
+        /* --- Basic Setup & Theming --- */
+        :root {
+            --background-color: #222222;
+            --text-color: #E8E8D8;
+            --accent-color: #8B0000; /* Dark Red */
+            --wavy-underline-color: #B8860B; /* Dark Goldenrod for contrast */
+            --font-main: 'Lora', serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        /* --- Content Container --- */
+        .container {
+            max-width: 650px;
+            width: 100%;
+            text-align: left;
+        }
+        
+        /* --- Header & Title Styling --- */
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid var(--accent-color);
+            padding-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 1rem;
+            font-style: italic;
+            font-weight: 400;
+            color: rgba(232, 232, 216, 0.8);
+        }
+        
+        /* --- Poem Styling --- */
+        .poem {
+            font-size: 1.125rem;
+        }
+        
+        /* --- Interactive Hiligaynon Phrase Styling --- */
+        .hiligaynon {
+            text-decoration: underline wavy var(--wavy-underline-color);
+            text-underline-offset: 3px; /* Adds a little space between text and underline */
+            cursor: help;
+        }
+        
+        /* --- Popover/Tooltip Styling --- */
+        #popover {
+            position: fixed; /* Fixed position relative to the viewport */
+            background-color: var(--text-color);
+            color: var(--background-color);
+            padding: 0.5rem 0.8rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            font-style: italic;
+            max-width: 250px;
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease-in-out;
+            pointer-events: none; /* Prevents the popover itself from being interactive */
+            z-index: 10;
+        }
+
+        #popover.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* --- Final Line Emphasis --- */
+        .final-line {
+            color: var(--accent-color);
+            font-weight: 700;
+        }
+
+        /* --- Final Line Emphasis --- */
+        .indent {
+            padding-left: 1rem;
+			font-style: italic;
+        }
+
+    </style>
+</head>
+<body>
+
+    <main class="container">
+        <header>
+            <h1>The Cover of Yoko Ono's "<a href="https://en.wikipedia.org/wiki/Blueprint_for_a_Sunrise">Blueprint for a Sunrise</a>" Where She Collages Her Face On a Hubert Vos Painting of <a href="inmachuria.html">Empress Dowager Cixi</a></h1>
+        </header>
+        
+        <div class="poem">
+            <p>
+                <span class="hiligaynon" data-translation="mama sleeps">naga tulog si mama</span><br>
+                after lunch<br>
+                <span class="hiligaynon" data-translation="because we are all full">kay busog na kami tanan</span><br>
+                <span class="hiligaynon" data-translation="of/from the ringing">sang bagting</span><br>
+                <span class="hiligaynon" data-translation="of the small plates">sang mga platito</span><br>
+                after nones, <span class="hiligaynon" data-translation="it's lola now">si lola naman</span><br>
+                <span class="hiligaynon" data-translation="who crochets/knits">naga gansilyo sang</span><br>
+                <span class="hiligaynon" data-translation="my fingernails on my fingers">akon kuko sa mga tudlo ko</span> in preparation<br>
+                for the night in which I go<br>
+                to the boulder behind the church<br>
+				<span class="indent">like I've been telling your mama</span><br>
+				<span class="indent">always dress up good because you never know</span><br>
+				<span class="indent">who or what will see you</span><br>
+                <span class="hiligaynon" data-translation="and I return to rake">kag balik ako sa pagkahig</span><br>
+                <span class="hiligaynon" data-translation="[object pronoun] until its like">sa iya asta daw</span><br>
+                <span class="hiligaynon" data-translation="[object pronoun] looks like a bowl/ [possessive pronoun]'s face/appearance is like a bowl">yahong ang iya itsura</span><br>
+                able to hold rain<br>
+                able to hold sound, blood<br>
+                a fan like a caldera
+            </p>
+        </div>
+    </main>
+
+    <div id="popover"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const popover = document.getElementById('popover');
+            const hiligaynonSpans = document.querySelectorAll('.hiligaynon');
+
+            hiligaynonSpans.forEach(span => {
+                span.addEventListener('mouseover', function(event) {
+                    const translation = this.dataset.translation;
+                    popover.textContent = translation;
+
+                    // Get position of the hovered span
+                    const rect = this.getBoundingClientRect();
+                    
+                    // Position the popover above the span
+                    // It calculates the center of the span and then centers the popover on that point
+                    popover.style.left = `${rect.left + rect.width / 2 - popover.offsetWidth / 2}px`;
+                    popover.style.top = `${rect.top - popover.offsetHeight - 8}px`; // 8px gap
+
+                    popover.classList.add('visible');
+                });
+
+                span.addEventListener('mouseout', function() {
+                    popover.classList.remove('visible');
+                });
+            });
+        });
+    </script>
+    
+</body>
+</html>

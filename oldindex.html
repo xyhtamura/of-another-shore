@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Of Another Shore</title>
+	<link rel="shortcut icon" type="image/png" href="img/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600&family=Quicksand:wght@300;400;600&family=Nova+Round&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne+Mono&family=Syne+Tactile&display=swap" rel="stylesheet">
+<style>
+/* Import the dream-like beach theme font */
+@import url('https://fonts.googleapis.com/css2?family=Averia+Sans+Libre&display=swap');
+
+/* Root colors for the dream-like beach theme */
+:root {
+    --bg-color: #f4e2d8; /* Sandy beige */
+    --text-color: #807663; /* Muted taupe */
+    --link-color: #3a8fb7; /* Ocean blue */
+    --link-hover-color: #ffa07a; /* Soft coral */
+    --heading-color-start: #b58191; /* Dusty rose */
+    --heading-color-end: #2c6975; /* Muted teal */
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+	width: 100%;
+    font-family: "Averia Sans Libre", sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+        header {
+            position: relative;
+            top: 20px;
+            left: 0;
+            right: 0;
+            width: 100%;
+            z-index: 1000;
+            pointer-events: none; /* Allow clicks to pass through header */
+        }
+
+h1 {
+    font-family: "Averia Sans Libre", sans-serif;
+    font-size: 3rem;
+    margin: 20px;
+    background: linear-gradient(to right, var(--heading-color-start) 40%, var(--heading-color-end) 60%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    pointer-events: auto; /* Re-enable clicks for the h1 */
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    transition: transform 0.3s ease, text-shadow 0.3s ease;
+}
+
+/* Hover effect */
+h1:hover {
+     text-shadow: 0 4px 15px rgba(58, 243, 183, 0.4); /* Ocean blue and dusty rose glow */
+}
+
+/* Active effect */
+h1:active {
+    text-shadow: 0 3px 10px rgba(255, 160, 122, 0.6); /* Soft coral glow */
+}
+
+
+.section {
+    height: 100vh;
+    width: 100%;
+    display: none; /* Hide all sections initially */
+    justify-content: center;
+    align-items: center;
+    font-size: 1.25rem;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+
+.nav-btn {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: var(--text-color);
+    color: var(--bg-color);
+    border: none;
+    cursor: pointer;
+    z-index: 1000;
+    border-radius: 50px;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Gradient effect on hover */
+.nav-btn:hover {
+    background: linear-gradient(45deg, #ff6b6b, #ff9770, #ffc3a0);
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.6);
+    color: white; /* Ensures text remains visible against the gradient */
+}
+
+/* Gradient effect on active (when clicked) */
+.nav-btn:active {
+    background: linear-gradient(45deg, #ff9770, #ff6b6b, #d96c89);
+    box-shadow: 0 2px 10px rgba(217, 108, 137, 0.5);
+    transform: translateY(-50%) scale(0.95); /* Subtle scale effect */
+}
+
+#leftBtn {
+    left: 20px;
+}
+
+#rightBtn {
+    right: 20px;
+}
+
+/* Background images for sections */
+.section-1, .section-2, .section-3{
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+        .section-1 { background-image: url(''); }
+        .section-2 { background-image: url(''); }
+        .section-3 { background-image: url(''); }
+
+
+.map-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.node {
+    position: absolute;
+    color: var(--link-color);
+    text-decoration: none;
+    font-size: 2rem;
+    font-family: "Averia Sans Libre", sans-serif;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.node::before {
+    /* Create the star using the ★ character */
+    content: "🌘︎";
+    position: absolute;
+    color: #87d9ff; /* Gold color for visibility */
+    font-size: 1.2em; /* Make star slightly larger than text */
+    
+    /* Position star above the node text */
+    left: 50%; /* Center horizontally relative to node */
+    transform: translateX(-50%); /* Offset by half its width for true centering */
+    bottom: 100%; /* Position above the node */
+    margin-bottom: 5px; /* Add some space between star and text */
+}
+
+.node:hover {
+    color: var(--link-hover-color);
+}
+
+/* Styling for each item container */
+.item {
+    margin: 1.5rem 0;
+}
+
+.section-3 {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    background-color: var(--bg-color);
+    overflow: hidden; /* Ensures content doesn't spill out */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image-container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+.image {
+    position: absolute;
+    opacity: 0.9; /* Slightly transparent for an ethereal look */
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+/* Unique animation for Image 1 */
+.image-1 {
+    animation-name: animation1;
+    animation-duration: 55s; /* Slightly shorter loop for variation */
+}
+@keyframes animation1 {
+    0% {
+        transform: translate(0, 0) rotate(-50deg);
+    }
+    20% {
+        transform: translate(30px, -50px) rotate(-30deg);
+    }
+    50% {
+        transform: translate(-50px, 40px) rotate(-70deg);
+    }
+    80% {
+        transform: translate(20px, -30px) rotate(-10deg);
+    }
+    100% {
+        transform: translate(0, 0) rotate(-50deg);
+    }
+}
+
+/* Unique animation for Image 2 */
+.image-2 {
+    animation-name: animation2;
+    animation-duration: 65s; /* Longer loop for more subtle motion */
+}
+@keyframes animation2 {
+    0% {
+        transform: translate(0, 0) rotate(60deg);
+    }
+    25% {
+        transform: translate(-40px, 30px) rotate(45deg);
+    }
+    50% {
+        transform: translate(50px, -20px) rotate(90deg);
+    }
+    75% {
+        transform: translate(-20px, 50px) rotate(30deg);
+    }
+    100% {
+        transform: translate(0, 0) rotate(60deg);
+    }
+}
+
+/* Unique animation for Image 3 */
+.image-3 {
+    animation-name: animation3;
+    animation-duration: 50s; /* Faster loop for more dynamic movement */
+}
+@keyframes animation3 {
+    0% {
+        transform: translate(0, 0) rotate(5deg);
+    }
+    15% {
+        transform: translate(20px, -10px) rotate(-10deg);
+    }
+    40% {
+        transform: translate(-30px, 30px) rotate(15deg);
+    }
+    70% {
+        transform: translate(40px, -40px) rotate(0deg);
+    }
+    100% {
+        transform: translate(0, 0) rotate(5deg);
+    }
+}
+
+
+.image:hover {
+    transform: scale(1.1); /* Slightly enlarge on hover */
+    opacity: 1; /* Fully opaque on hover */
+	mix-blend-mode: exclusion;
+}
+
+.image:active {
+    transform: scale(1.1); /* Slightly enlarge on hover */
+    opacity: 1; /* Fully opaque on hover */
+	mix-blend-mode: exclusion;
+}
+
+
+.text{
+	position: relative;
+}
+/* Styling for main title links */
+.text a.title-link {
+    font-family: "Nova Round", sans-serif;
+    text-decoration: none;
+    color: var(--link-color);
+    font-size: 1.3rem;
+    display: block;
+
+}
+
+.text a.title-link:hover {
+    color: var(--link-hover-color);
+}
+
+/* Specific styling for notes links */
+.text a.notes-link {
+    color: #c07b7b; /* Soft pinkish color for notes links */
+    font-size: 1rem; /* Slightly smaller font size */
+    /* Adds spacing from the main title */
+    font-style: italic; /* Distinct italic style */
+}
+
+.text a.notes-link:hover {
+    color: #ffa07a; /* Coral hover color */
+}
+
+.menu {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+	height 80%;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    z-index: 999; /* Ensure it overlays other sections */
+    scrollbar-color: var(--link-color) var(--bg-color);
+    -webkit-scrollbar-color: var(--link-color) var(--bg-color);
+}
+
+/* Rounded scrollbar styling */
+.menu::-webkit-scrollbar {
+    width: 8px; /* Width of the scrollbar */
+}
+
+.menu::-webkit-scrollbar-track {
+    background: var(--bg-color); /* Track color */
+}
+
+.menu::-webkit-scrollbar-thumb {
+    background-color: var(--link-color);
+    border-radius: 50px; /* Rounded scrollbar thumb */
+    border: 2px solid var(--bg-color); /* Optional: border around the scrollbar */
+}
+
+/* Ethereal hover effect for scrollbar */
+.menu::-webkit-scrollbar-thumb:hover {
+    background-color: var(--link-hover-color);
+}
+
+.sand-grainy {
+  background-color: #f4d03f;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-blend-mode: multiply;
+  opacity: 0.9;
+}
+
+.section-1 {
+    transform: translate(0, 10%);
+    position: absolute;
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+/* Separate styling for section-1-text */
+.section-1-text {
+    position: relative;
+    font-size: 1.5rem;
+    line-height: 1.5;
+    font-family: "Syne Tactile", sans-serif;
+    letter-spacing: 0.5px;
+	/* background-color: var(--text-color);*/
+	/* color: var(--bg-color); */
+	padding-bottom: 1rem;
+    text-shadow: 20px 20px 40px rgba(30, 60, 0, 0.1);
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+    transition: transform 0.3s ease;
+}
+
+/* Hover text styling */
+.section-1-text::after {
+    content: "text generated from Claude and ChatGPT fed the three linked poems, then asked to create their own version based on the three poems. Resulting poem was then handwritten and fed into a OCR, but misrecognition of characters was greatly intensified.";
+    position: absolute;
+    left: 0;
+    top: 100%;
+    width: 100%;
+    font-family: "Averia Sans Libre", sans-serif;
+    font-size: 0.8em;
+    /* Give hover text its own distinct color, not affected by parent gradient */
+    background: none;
+    color: rgba(128, 118, 99, 0.6);
+    text-align: center;
+    padding-top: 10px;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Show the text on hover */
+.section-1-text:hover::after {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Show the text when active */
+.section-1-text:active::after {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Preserve existing link styling */
+.section-1-text a {
+    background: linear-gradient(
+        45deg,
+        #49adb3 0%,
+        #5bbec4 25%,
+        #6dcfd5 50%,
+        #5bbec4 75%,
+        #49adb3 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    text-decoration: none;
+    animation: linkFloat 6s ease-in-out infinite;
+    display: inline-block;
+    padding: 0 4px;
+}
+
+/* Preserve hover effect for non-link text */
+.section-1-text:hover {
+    animation: textGlow 2s ease-in-out infinite;
+}
+
+		
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.section-1 a {
+    background: linear-gradient(
+        45deg,
+        #49adb3 0%,
+        #5bbec4 25%,
+        #6dcfd5 50%,
+        #5bbec4 75%,
+        #49adb3 100%
+    );
+	
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    text-decoration: none;
+    animation: linkFloat 6s ease-in-out infinite;
+    display: inline-block;
+    padding: 0 4px;
+}
+
+.section-1 a:hover {
+    background: linear-gradient(
+        45deg,
+        #aa49b3 0%,
+        #bb5ac4 25%,
+        #cc6bd5 50%,
+        #bb5ac4 75%,
+        #aa49b3 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: linkPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes linkFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-3px);
+    }
+}
+
+@keyframes linkPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Add this hover effect for non-link text */
+.section-1:hover {
+    animation: textGlow 2s ease-in-out infinite;
+}
+
+@keyframes textGlow {
+    0%, 100% {
+        filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.3));
+    }
+    50% {
+        filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+    }
+}
+
+.section-2 a{
+	color: #4d6299;
+	font-family: "Syne Mono", sans-serif;
+}
+
+.section-2 a:hover{
+	color: #4d995c;
+}
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Of Another Shore</h1>
+    </header>
+    <div class="section section-1">
+	<div class="section-1-text">
+d!n0sa#ur t(..t dr1p,s t_h.u th#e c|0k&rsquo;s <a href="memorypalace.html" target="_blank">di_g3st!v3 t7r/ac%t;;</a><br>
+.00.. <a href="sandstoneschistandesite.html" target="_blank">p3t/r!fied</a> b0ot|terf|!es ch@w&amp;i.g (on m00|nbea~~ms~&mdash;<br>
+ur m3--s.ry le@ks p(r!m0rdi@l suP fRom 1!ts po&lt;ke+ts;;<br>
+th3 h?ouse g|ew tt:eeth annd sw@l(ow&amp;ed !+ts o!wn sh@d_0wz&mdash;<br>
+timme ma(c)!h1n*es |aY e66gs !n y3ste<a href="iwantedtothinkabouttimeiwanted.html" target="_blank">rda_y$ t!m_0r</a>0~~sk&yen;...
+</div>
+
+	</div>
+ <div class="section section-2">
+    <div class="map-container">
+        <a href="argence.html" class="node" style="top: 20%; left: 30%;" target="_blank">Oceanus Procellarum</a>
+        <a href="moonmilk.html" class="node" style="top: 70%; left: 40%;" target="_blank">Apollo Basin</a>
+        <a href="dreamwindowreturn.html" class="node" style="top: 40%; left: 70%;" target="_blank">Mare Orientale</a>
+    </div>
+</div>
+
+    <div class="section section-3"><div class="image-container">
+    <a href="dungan.html" target="_blank">
+        <img src="img/egg.png" alt="Image 1" class="image image-1" style="top: 25%; left: 20%; transform: rotate(-50deg); width:400px;">
+    </a>
+    <a href="inmanchuria.html" target="_blank">
+        <img src="img/photograph.png" alt="Image 2" class="image image-2" style="top: 15%; left: 35%; transform: rotate(60deg); width:400px;">
+    </a>
+    <a href="afterwemisrememberthegrains.html" target="_blank">
+        <img src="img/grains.png" alt="Image 3" class="image image-3" style="top: 25%; left: 40%; transform: rotate(5deg); width:300px;">
+    </a>
+</div>
+</div>
+    <button id="leftBtn" class="nav-btn">←</button>
+    <button id="rightBtn" class="nav-btn">→</button>
+	<div class="menu">
+	 <div class="text">
+	 <div class="item">
+    <a href="memorypalace.html" class="title-link" target="_blank">memory palace</a>
+</div>
+<div class="item">
+    <a href="sandstoneschistandesite.html" class="title-link" target="_blank">sandstone, schist, andesite</a>
+</div>
+<div class="item">
+    <a href="argence.html" class="title-link" target="_blank">argence</a>
+</div>
+<div class="item">
+    <a href="iwantedtothinkabouttimeiwanted.html" class="title-link" target="_blank">i wanted to think about time, i wanted</a>
+</div>
+
+<div class="item">
+    <a href="horizons/threefloorhome.html" class="title-link" target="_blank">three floor home</a>
+</div>
+
+<div class="item">
+    <a href="dreamwindowreturn.html" class="title-link" target="_blank">dream window return</a>
+</div>
+
+<div class="item">
+    <a href="horizons/fourbedroomgarden.html" class="title-link" target="_blank">four bedroom garden</a>
+</div>
+
+<div class="item">
+    <a href="horizons/fivehorizonintersection.html" class="title-link" target="_blank">five horizon intersection</a>
+</div>
+
+<div class="item">
+    <a href="nightbus.html" class="title-link" target="_blank">night bus</a>
+</div>
+
+<div class="item">
+    <a href="ediacaranhotline.html" class="title-link" target="_blank">ediacaran hotline</a>
+</div>
+
+<div class="item">
+    <a href="bigboat.html" class="title-link" target="_blank">big boat</a>
+</div>
+
+<div class="item">
+    <a href="sanddollarexchange.html" class="title-link" target="_blank">sand dollar exchange</a>
+</div>
+
+<div class="item">
+    <a href="afterwemisrememberthegrains.html" class="title-link" target="_blank">after we misremember the grains</a>
+</div>
+
+<div class="item">
+    <a href="inmanchuria.html" class="title-link" target="_blank">in Manchuria</a>
+</div>
+
+<div class="item">
+    <a href="quoineconomics.html" class="title-link" target="_blank">quoin (economics)</a>
+</div>
+
+<div class="item">
+    <a href="now.html" class="title-link" target="_blank">now</a>
+</div>
+
+<div class="item">
+    <a href="dungan.html" class="title-link" target="_blank">dungan</a>
+</div>
+
+<div class="item">
+    <a href="whisperhouse.html" class="title-link" target="_blank">whisper house</a>
+</div>
+
+<div class="item">
+    <a href="thingsmyparentsthoughtwheniwasunborn.html" class="title-link" target="_blank">things my parents thought when i was unborn</a>
+</div>
+
+<div class="item">
+    <a href="moonmilk.html" class="title-link" target="_blank">moonmilk</a>
+    <a href="https://youtu.be/27LNfCEGIzA" class="notes-link" target="_blank">video</a>
+</div>
+
+<div class="item">
+    <a href="escarpmentpinks.html" class="title-link" target="_blank">escarpment pinks</a>
+</div>
+
+</div>
+	
+	</div>
+<script>// Initialize current section and images
+let currentSection = Math.floor(Math.random() * 3) + 1;
+const backgroundImages = {
+    1: 'url("path/to/image1.jpg")',
+    2: 'url("img/pinkearth.jpg")',
+    3: 'url("path/to/image3.jpg")'
+};
+
+const blendModes = {
+    1: 'normal',
+    2: 'normal',
+    3: 'normal'
+};
+
+
+// Get DOM elements
+const sections = document.querySelectorAll('.section');
+const leftBtn = document.getElementById('leftBtn');
+const rightBtn = document.getElementById('rightBtn');
+const header = document.querySelector('header');
+const menu = document.querySelector('.menu');
+
+// Set up initial state
+function initializePage() {
+    sections.forEach(section => section.style.display = 'none');
+    sections[currentSection - 1].style.display = 'block';
+    document.body.style.backgroundImage = backgroundImages[currentSection];
+	document.body.style.backgroundBlendMode = blendModes[currentSection];
+    
+    // Add transitions
+    document.body.style.transition = 'background-image 0.5s ease-in-out';
+    sections.forEach(section => {
+        section.style.transition = 'opacity 0.5s ease-in-out';
+        section.style.opacity = '1';
+    });
+    
+    // Initialize menu state
+    menu.style.visibility = 'hidden';
+    menu.style.opacity = '0';
+}
+
+// Navigation function
+function navigateSection(direction) {
+    sections[currentSection - 1].style.opacity = '0';
+    
+    setTimeout(() => {
+        sections[currentSection - 1].style.display = 'none';
+        
+        currentSection = direction === 'next' 
+            ? (currentSection % 3) + 1 
+            : (currentSection - 2 + 3) % 3 + 1;
+        
+        sections[currentSection - 1].style.display = 'block';
+        document.body.style.backgroundImage = backgroundImages[currentSection];
+        
+        setTimeout(() => {
+            sections[currentSection - 1].style.opacity = '1';
+        }, 50);
+    }, 500);
+}
+
+// Event Listeners
+leftBtn.addEventListener('click', () => navigateSection('prev'));
+rightBtn.addEventListener('click', () => navigateSection('next'));
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') navigateSection('prev');
+    if (e.key === 'ArrowRight') navigateSection('next');
+});
+
+// Touch navigation
+let touchStartX = 0;
+let touchEndX = 0;
+
+document.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+});
+
+document.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    const diff = touchStartX - touchEndX;
+    
+    if (Math.abs(diff) > 50) { // Minimum swipe distance
+        if (diff > 0) navigateSection('next');
+        else navigateSection('prev');
+    }
+});
+
+// Menu toggle with improved visibility handling
+header.addEventListener('click', () => {
+    if (menu.style.visibility === 'hidden') {
+        menu.style.visibility = 'visible';
+        menu.style.opacity = '1';
+        
+        // Hide other elements
+        sections.forEach(section => section.style.visibility = 'hidden');
+        leftBtn.style.visibility = 'hidden';
+        rightBtn.style.visibility = 'hidden';
+    } else {
+        menu.style.opacity = '0';
+        setTimeout(() => {
+            menu.style.visibility = 'hidden';
+            
+            // Show other elements
+            sections.forEach(section => section.style.visibility = 'visible');
+            leftBtn.style.visibility = 'visible';
+            rightBtn.style.visibility = 'visible';
+        }, 300); // Match transition duration
+    }
+});
+
+// Initialize page on load
+window.addEventListener('load', initializePage);
+
+// Add necessary CSS
+const style = document.createElement('style');
+style.textContent = `
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+		overflow: hidden;
+    }
+    .section {
+        opacity: 0;
+        position: absolute;
+        top: 100px; /* Adjust based on header height */
+        left: 0;
+        right: 0;
+        overflow: hidden;
+        transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+    }
+    
+    .menu {
+        position: relative;
+        top: 120px; /* Adjust based on header height */
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--bg-color);
+		height: 80%;
+        z-index: 1000;
+        visibility: hidden;
+		overflow-y: scroll;
+        opacity: 0.2;
+        transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    }
+    
+    .nav-btn {
+        position: fixed;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 500;
+        visibility: visible;
+        transition: visibility 0.3s ease-in-out;
+    }
+    
+    #leftBtn {
+        left: 20px;
+    }
+    
+    #rightBtn {
+        right: 20px;
+    }
+    
+    header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1500;
+        cursor: pointer;
+    }
+`;
+document.head.appendChild(style);
+</script>
+
+</body>
+</html>
