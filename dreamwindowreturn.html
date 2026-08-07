@@ -5,142 +5,407 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>dream window return</title>
     <style>
-	
-	
-@import url('https://fonts.googleapis.com/css2?family=Averia+Sans+Libre&display=swap');
-        /* Colors inspired by a cooler, serene beach theme */
-		:root {
-			--bg-color: #d1ebe8; /* Misty blue, like a calm sky meeting the ocean */
-			--text-color: #6b617a; /* Soft eucalyptus green, grounding and natural */
-			--link-color: #7e825f; /* Sage green, like seafoam on the shore */
-			--link-hover-color: #ffb88c; /* Light peach, evoking warm sunlight at sunset */
-			--highlight-color: #a59393; /* Muted rosewood, adding a subtle nostalgic tone */
-			--small-text-color: #8f837a; /* Soft greige, understated and organic */
-		}
+        @import url('https://fonts.googleapis.com/css2?family=Averia+Sans+Libre:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=VT323&display=swap');
 
- body {
-    background-color: var(--bg-color);
-    font-family: "Averia Sans Libre", sans-serif;
-    color: var(--text-color);
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Full viewport height */
-}
+        :root {
+            --bg-color: #cbe6e3;
+            --bg-gradient: radial-gradient(circle at 50% 20%, #eff9f8 0%, #c5e5e1 50%, #afcfca 100%);
+            --window-bg: rgba(244, 250, 249, 0.65);
+            --window-border: rgba(255, 255, 255, 0.7);
+            --text-color: #4f475a;
+            --text-muted: #736b7c;
+            --link-color: #536955;
+            --link-hover-color: #df7b56;
+            --highlight-color: #9d5d67;
+            --small-text-color: #726861;
+            --orient-red: #bb3434;
+            --shadow-color: rgba(54, 76, 73, 0.1);
+        }
 
-.poem {
-    aspect-ratio: 15/16; /* Maintain aspect ratio */
-    width: 80vw; /* Adjust width relative to viewport */
-    max-width: 500px; /* Maximum width on larger screens */
-    max-height: 80vh; /* Ensure it doesn't overflow the screen */
-    margin: 0;
-    line-height: 1.3;
-    padding: 20px;
-    box-sizing: border-box;
-    position: relative; /* Positioning for .text-75 */
-    overflow: auto; /* Scroll in case the text overflows */
-}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-.italic {
-    font-style: italic;
-}
+        body {
+            background: var(--bg-color);
+            background-image: var(--bg-gradient);
+            background-attachment: fixed;
+            font-family: "Averia Sans Libre", cursive, sans-serif;
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 4rem 1.5rem;
+            overflow-x: hidden;
+        }
 
-.cyan {
-    color: var(--link-color);
-    text-decoration: none;
-}
+        /* The Vertical Dream Window Garden Canvas */
+        .window-frame {
+            position: relative;
+            width: 100%;
+            max-width: 640px;
+            background: var(--window-bg);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid var(--window-border);
+            border-radius: 20px;
+            box-shadow: 
+                0 25px 50px var(--shadow-color),
+                inset 0 1px 2px rgba(255, 255, 255, 0.85);
+            padding: 3.5rem 2.5rem;
+        }
 
-.small {
-    font-size: 0.8rem;
-    color: var(--small-text-color); /* Muted taupe */
-}
+        /* Window System Bar (Post-Y2K homage) */
+        .window-titlebar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'VT323', monospace;
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            border-bottom: 1px dashed rgba(115, 107, 124, 0.3);
+            padding-bottom: 0.75rem;
+            margin-bottom: 2.5rem;
+            user-select: none;
+        }
 
-.farewell {
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: var(--highlight-color); /* Dusty rose for emphasis */
-}
+        .window-controls span {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-left: 6px;
+            background: #cbd3d0;
+        }
+        .window-controls span:nth-child(1) { background: #e8958c; }
+        .window-controls span:nth-child(2) { background: #e6c875; }
+        .window-controls span:nth-child(3) { background: #96c7a3; }
 
-.free-pitch {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--highlight-color); /* Dusty rose for contrast */
-}
+        /* Sparse Zen Garden Grid */
+        .poem-canvas {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            row-gap: 2.2rem;
+            align-items: center;
+            position: relative;
+            width: 100%;
+        }
 
-.oriental {
-    color: #c21f1f;
-}
+        /* Poetic Text Fragments */
+        .frag {
+            grid-column: var(--start, 1) / span var(--span, 12);
+            text-align: var(--align, left);
+            transform: rotate(var(--rot, 0deg)) translateY(var(--y, 0px));
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
+            font-size: var(--size, 1.05rem);
+            line-height: 1.5;
+            letter-spacing: var(--ls, 0.02em);
+        }
 
-.align-left-right {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    position: relative;
-}
+        .frag:hover {
+            transform: rotate(0deg) translateY(-2px) scale(1.01);
+            color: #2e263a;
+        }
 
-.left-text {
-    text-align: left;
-    flex: 1;
-}
+        /* Haphazardly Placed Garden Images */
+        .garden-img {
+            grid-column: var(--start, 1) / span var(--span, 6);
+            transform: rotate(var(--rot, 0deg)) translateY(var(--y, 0px));
+            transition: transform 0.5s ease, box-shadow 0.4s ease;
+            z-index: 2;
+            text-align: center;
+        }
 
-.right-text {
-    text-align: right;
-    flex: 1;
-}
+        .garden-img img {
+            width: 100%;
+            max-width: var(--maxw, 200px);
+            height: auto;
+            border-radius: 8px;
+            border: 3px solid rgba(255, 255, 255, 0.85);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            background: #fff;
+            padding: 4px;
+        }
 
-.center-text {
-    text-align: center;
-    width: 100%;
-}
+        .garden-img:hover {
+            transform: rotate(0deg) scale(1.05);
+            z-index: 10;
+        }
 
-.text-75 {
-    position: absolute;
-    left: 75%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    max-width: 25%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+        .garden-img:hover img {
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.15);
+        }
 
+        .img-caption {
+            font-family: 'VT323', monospace;
+            font-size: 0.85rem;
+            color: var(--small-text-color);
+            margin-top: 4px;
+            letter-spacing: 0.05em;
+        }
+
+        /* Typography Variants & Hyperlinks */
+        .italic {
+            font-style: italic;
+            font-family: "Cormorant Garamond", Georgia, serif;
+            font-size: 1.15em;
+        }
+
+        .oriental {
+            color: var(--orient-red);
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        .ext-link {
+            color: var(--link-color);
+            text-decoration: none;
+            border-bottom: 1px dashed rgba(83, 105, 85, 0.4);
+            padding-bottom: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .ext-link:hover {
+            color: var(--link-hover-color);
+            border-bottom-color: var(--link-hover-color);
+            text-shadow: 0 0 10px rgba(223, 123, 86, 0.25);
+        }
+
+        .free-pitch {
+            font-size: 1.65rem;
+            font-weight: 700;
+            color: var(--highlight-color);
+            letter-spacing: -0.01em;
+            display: inline-block;
+        }
+
+        .sys-fragment {
+            font-family: 'VT323', monospace;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.4);
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            display: inline-block;
+        }
+
+        .jp-title {
+            font-family: "Cormorant Garamond", serif;
+            font-size: 1.3rem;
+            color: var(--orient-red);
+            letter-spacing: 0.15em;
+        }
+
+        .freud-quote {
+            font-style: italic;
+            color: var(--highlight-color);
+            font-weight: 600;
+        }
+
+        .small {
+            font-size: 0.85rem;
+            color: var(--small-text-color);
+        }
+
+        .farewell {
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--highlight-color);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .farewell a {
+            color: inherit;
+            text-decoration: none;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .farewell a:hover {
+            color: var(--link-hover-color);
+        }
+
+        /* Ambient Sunset Light Accent */
+        .window-frame::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle, rgba(255, 215, 185, 0.4) 0%, rgba(255, 255, 255, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 1.5rem 0.75rem;
+            }
+            .window-frame {
+                padding: 2rem 1.2rem;
+            }
+            .poem-canvas {
+                row-gap: 1.8rem;
+            }
+            .garden-img img {
+                max-width: 140px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="poem">
-        <p class="align-left-right">
-            <span class="left-text">room salmon <span class="italic">Thunnus <span class="oriental">orient</span>alis</span></span>
-        </p>
-        <p class="center-text"><a href="#" class="cyan">&lt;a cyan</a></p>
-        <p class="align-left-right">
-            <span class="left-text free-pitch">pitch: free</span>
-            <span class="right-text">; “ ”</span>
-        </p>
-        <p class="center-text">Polyvinyl forget. Squash </p>
-        <p class="align-left-right">
-            <span class="left-text">dies fast opening</span>
-            <span class="right-text italic">déjà-jamais rêvé</span>
-        </p>
-        <p class="center-text">of another</p>
-        <p class="align-left-right">
-            <span class="left-text">short</span>
-            <span class="right-text">it’s not-any season</span>
-        </p>
-        <p class="center-text">a p(recip[i)ce] at the roundabout</p>
-        <p class="align-left-right">
-            <span class="left-text">tangled, antediluvian</span>
-            <span class="right-text small">no really? 再会</span>
-        </p>
-        <p class="center-text farewell">fare|<a href="nightbus.html"  target="_blank">sick</a></p>
-        <p class="align-left-right">
-            <span class="left-text">when uláyhon nga again</span>
-            <span class="text-75">wheren’t.</span>
-        </p>
-        <p class="center-text">vu rebate</p>
-        <p class="align-left-right">
-			<span class="text-75">a new</span>
-		</p>
+    <div class="window-frame">
+        <!-- Post-Y2K Window Titlebar -->
+        <div class="window-titlebar">
+            <span>dreamwindowreturn.exe :: <span class="jp-title">夢の窓再発</span></span>
+            <div class="window-controls">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+
+        <div class="poem-canvas">
+            
+            <!-- Fragment: Dream Window Return -->
+            <div class="frag" style="--start: 1; --span: 8; --rot: -0.6deg; --size: 1.25rem;">
+                <strong>Dream Window Return ⏎</strong>
+            </div>
+
+            <!-- Fragment: Resizable Movable Windows -->
+            <div class="frag" style="--start: 7; --span: 6; --align: right; --rot: 0.8deg;">
+                <span class="sys-fragment">Resizable, Movable Windows.</span>
+            </div>
+
+            <!-- Image: an absent photograph, held by its reverse -->
+            <div class="garden-img" style="--start: 8; --span: 5; --rot: 2.5deg; --y: -10px; --maxw: 210px;">
+                <img src="img/dreamwindowreturn/photograph-verso.webp" alt="Reverse of an old photograph with torn hinges, a tide mark, and silvering">
+                <div class="img-caption">fig. 1 :: verso</div>
+            </div>
+
+            <!-- Fragment: room salmon Thunnus orientalis -->
+            <div class="frag" style="--start: 1; --span: 7; --rot: -0.4deg;">
+                room salmon <a href="https://en.wikipedia.org/wiki/Pacific_bluefin_tuna" target="_blank" class="ext-link"><span class="italic">Thunnus <span class="oriental">orient</span>alis</span></a>
+            </div>
+
+            <!-- Image: an empty tenancy caught in a grid -->
+            <div class="garden-img" style="--start: 1; --span: 5; --rot: -3deg; --y: 5px; --maxw: 170px;">
+                <img src="img/dreamwindowreturn/exuvia-grid.webp" alt="A pale shed insect shell clinging to oxidized wire mesh">
+                <div class="img-caption">fig. 2 :: tenancy</div>
+            </div>
+
+            <!-- Fragment: <a cyan -->
+            <div class="frag" style="--start: 6; --span: 5; --align: center; --rot: 1.1deg;">
+                <a href="https://en.wikipedia.org/wiki/Cyan" target="_blank" class="ext-link">&lt;a cyan</a>
+            </div>
+
+            <!-- Fragment: pitch: free ; " " -->
+            <div class="frag" style="--start: 1; --span: 7; --rot: -0.9deg;">
+                <a href="https://en.wikipedia.org/wiki/Aleatoric_music" target="_blank" class="ext-link free-pitch">pitch: free</a>
+            </div>
+            <div class="frag" style="--start: 9; --span: 4; --align: right; --rot: 1.4deg;">
+                ; “ ”
+            </div>
+
+            <!-- Fragment: sending an e-mail -->
+            <div class="frag" style="--start: 3; --span: 8; --rot: -0.5deg; --ls: 0.03em;">
+                <span class="sys-fragment">sending an e-mail: the other day</span>
+            </div>
+
+            <!-- Fragment: Polyvinyl forget. Squash -->
+            <div class="frag" style="--start: 2; --span: 9; --align: center; --rot: 0.3deg;">
+                Polyvinyl forget. Squash
+            </div>
+
+            <!-- Image: time recorded in an unidentified increment -->
+            <div class="garden-img" style="--start: 7; --span: 6; --rot: -2deg; --maxw: 220px;">
+                <img src="img/dreamwindowreturn/otolith-rings.webp" alt="A translucent otolith micrograph with fine concentric growth rings">
+                <div class="img-caption">fig. 3 :: increments</div>
+            </div>
+
+            <!-- Fragment: dies fast opening / déjà-jamais rêvé -->
+            <div class="frag" style="--start: 1; --span: 6; --rot: 0.5deg;">
+                dies fast opening
+            </div>
+            <div class="frag" style="--start: 7; --span: 6; --align: right; --rot: -0.8deg;">
+                <a href="https://en.wikipedia.org/wiki/D%C3%A9j%C3%A0_vu" target="_blank" class="ext-link italic">déjà-jamais rêvé</a>
+            </div>
+
+            <!-- Fragment: waiting for them to get back -->
+            <div class="frag" style="--start: 4; --span: 8; --align: center; --rot: -0.2deg;">
+                <span class="small" style="font-style: italic;">waiting for them to get back</span>
+            </div>
+
+            <!-- Fragment: of another -->
+            <div class="frag" style="--start: 5; --span: 4; --align: center; --rot: 0.2deg;">
+                of another
+            </div>
+
+            <!-- Fragment: short / it's not-any season -->
+            <div class="frag" style="--start: 1; --span: 4; --rot: -0.7deg;">
+                short
+            </div>
+            <div class="frag" style="--start: 6; --span: 7; --align: right; --rot: 0.6deg;">
+                it’s not-any season
+            </div>
+
+            <!-- Fragment: leaving it on is safer for hard drive memory -->
+            <div class="frag" style="--start: 2; --span: 10; --rot: 0.4deg;">
+                <a href="https://en.wikipedia.org/wiki/Hard_disk_drive_failure" target="_blank" class="ext-link sys-fragment">leaving it on is safer for hard drive memory</a>
+            </div>
+
+            <!-- Fragment: a p(recip[i)ce] at the roundabout -->
+            <div class="frag" style="--start: 1; --span: 11; --align: center; --rot: -0.3deg;">
+                a p(recip[i)ce] at the roundabout
+            </div>
+
+            <!-- Fragment: tangled, antediluvian / no really? 再会 -->
+            <div class="frag" style="--start: 1; --span: 7; --rot: 0.8deg;">
+                tangled, antediluvian
+            </div>
+            <div class="frag" style="--start: 8; --span: 5; --align: right; --rot: -0.6deg;">
+                <span class="small">no really? <a href="https://en.wikipedia.org/wiki/T%C5%8Dry_Takemitsu" target="_blank" class="ext-link">再会</a></span>
+            </div>
+
+            <!-- Image: an archive whose name has gone missing -->
+            <div class="garden-img" style="--start: 2; --span: 5; --rot: 3deg; --y: 5px; --maxw: 160px;">
+                <img src="img/dreamwindowreturn/unaccessioned-sleeve.webp" alt="An unidentified branching specimen in a worn plastic sleeve beside a blank label">
+                <div class="img-caption">fig. 4 :: unaccessioned</div>
+            </div>
+
+            <!-- Fragment: Sigmund Freud: Analyze This (Madonna Link) -->
+            <div class="frag" style="--start: 7; --span: 6; --align: right; --rot: -1.2deg;">
+                <a href="https://en.wikipedia.org/wiki/Die_Another_Day_(song)" target="_blank" class="ext-link freud-quote">“Sigmund Freud: Analyze This”</a>
+            </div>
+
+            <!-- Fragment: farewell / sick link -->
+            <div class="frag" style="--start: 4; --span: 6; --align: center; --rot: -0.4deg;">
+                <span class="farewell">fare|<a href="nightbus.html" target="_blank">sick</a></span>
+            </div>
+
+            <!-- Fragment: when uláyhon nga again / wheren't. -->
+            <div class="frag" style="--start: 1; --span: 8; --rot: -0.5deg;">
+                when uláyhon nga again
+            </div>
+            <div class="frag" style="--start: 9; --span: 4; --align: right; --rot: 1.2deg;">
+                wheren’t.
+            </div>
+
+            <!-- Fragment: vu rebate -->
+            <div class="frag" style="--start: 4; --span: 5; --align: center; --rot: -0.7deg;">
+                <a href="https://en.wikipedia.org/wiki/Rebate_(woodworking)" target="_blank" class="ext-link">vu rebate</a>
+            </div>
+
+            <!-- Fragment: a new -->
+            <div class="frag" style="--start: 8; --span: 5; --align: right; --rot: 0.9deg;">
+                a new
+            </div>
+
+        </div>
     </div>
 </body>
 </html>
