@@ -44,3 +44,17 @@ refreshing conditions completed, and the console contained no errors. At a
 `390 × 844` viewport, the document had no horizontal overflow and no ellipsis
 was stranded as a separate text node. The parent repository's `DEVNOTES.md`
 remained deleted in the existing working tree and was not restored.
+
+2026-09-05 — Codex — Reworked the v3 page as a compact weather-relay window.
+Pearl and lavender translucency, narrow desktop chrome, a fictional address
+field, underlined version links, beveled controls, and a tiled screen texture
+combine glass-era and old-web references. The low-radius window, restrained
+palette, single reading field, and status-bar layout separate it from
+`bodyclocks.html`, which uses saturated aqua and lime, large rounded glass
+cards, and a calendar-dashboard composition. The verse data and selection
+logic did not change. Verified the complete page in the in-app browser at
+`http://localhost:8000/of-another-shore/cloudconference/v3/cloudconference.html`.
+At a `390 × 844` viewport, the document had no horizontal overflow. Selecting
+the Manila phrase changed its text, and **Refresh conditions** completed with
+stored weather when the live request was unavailable. The restored v1 and v2
+files and the existing `DEVNOTES.md` deletion remained untouched.

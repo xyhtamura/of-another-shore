@@ -7,11 +7,16 @@
   <title>cloud conference v3 — of another shore</title>
   <style>
     :root {
-      --paper: #fffaf3;
-      --ink: #5a5a89;
-      --accent: #8a68aa;
-      --muted: #8c8496;
-      --rule: rgba(90, 90, 137, .22);
+      --desktop: #929bc5;
+      --desktop-dark: #747dab;
+      --glass: rgba(240, 244, 255, .72);
+      --glass-bright: rgba(255, 255, 255, .78);
+      --ink: #33325c;
+      --accent: #774f9a;
+      --link: #244fa0;
+      --muted: #6d6b8a;
+      --edge: rgba(45, 51, 100, .66);
+      --hairline: rgba(55, 58, 105, .25);
     }
 
     * { box-sizing: border-box; }
@@ -21,26 +26,195 @@
       margin: 0;
       display: grid;
       place-items: center;
+      padding: clamp(18px, 5vw, 58px) 0;
       overflow-x: hidden;
       color: var(--ink);
       background:
-        linear-gradient(rgba(255, 250, 243, .92), rgba(255, 250, 243, .96)),
-        repeating-linear-gradient(90deg, transparent 0 12vw, rgba(90, 90, 137, .08) 12vw calc(12vw + 1px));
-      font-family: Georgia, "Times New Roman", serif;
+        radial-gradient(circle at 22% 18%, rgba(255, 255, 255, .72) 0 1px, transparent 2px),
+        radial-gradient(circle at 77% 66%, rgba(255, 255, 255, .34) 0 1px, transparent 2px),
+        linear-gradient(135deg, rgba(236, 225, 250, .72), transparent 42%),
+        linear-gradient(180deg, #bac6df 0%, var(--desktop) 62%, var(--desktop-dark) 100%);
+      background-size: 37px 37px, 53px 53px, auto, auto;
+      font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+
+    body::before {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      content: "";
+      pointer-events: none;
+      background:
+        repeating-linear-gradient(0deg, rgba(24, 31, 77, .03) 0 1px, transparent 1px 4px),
+        linear-gradient(90deg, transparent, rgba(255, 255, 255, .16), transparent);
+    }
+
+    .browser-window {
+      width: min(790px, calc(100% - 30px));
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, .9);
+      border-radius: 9px 9px 5px 5px;
+      outline: 1px solid var(--edge);
+      background: var(--glass);
+      box-shadow:
+        2px 3px 0 rgba(48, 51, 91, .28),
+        0 20px 54px rgba(39, 43, 81, .32),
+        inset 0 0 0 1px rgba(255, 255, 255, .32);
+      backdrop-filter: blur(10px) saturate(1.08);
+    }
+
+    .title-bar {
+      min-height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 5px 4px 10px;
+      border-bottom: 1px solid #555e92;
+      color: #fff;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .58) 0 8%, transparent 9% 50%, rgba(45, 53, 112, .18) 51%),
+        linear-gradient(90deg, #7587b9, #9f90bd 72%, #8197c4);
+      font: 700 .69rem/1 Tahoma, Verdana, sans-serif;
+      letter-spacing: .025em;
+      text-shadow: 0 1px 1px #394271;
+    }
+
+    .window-controls {
+      display: flex;
+      gap: 3px;
+    }
+
+    .window-controls i {
+      width: 18px;
+      height: 18px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(44, 49, 96, .64);
+      border-radius: 3px;
+      color: #303661;
+      background: linear-gradient(#f7f8ff, #afb9d8);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .66);
+      font: normal 700 10px/1 Arial, sans-serif;
+      text-shadow: 0 1px #fff;
+    }
+
+    .address-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 8px;
+      border-bottom: 1px solid var(--hairline);
+      color: var(--muted);
+      background: rgba(247, 248, 255, .76);
+      font: .64rem/1.4 Tahoma, Verdana, sans-serif;
+    }
+
+    .address-label { flex: 0 0 auto; }
+
+    .address-field {
+      min-width: 0;
+      flex: 1;
+      padding: 2px 7px;
+      overflow: hidden;
+      border: 1px solid rgba(62, 67, 116, .38);
+      background: rgba(255, 255, 255, .67);
+      box-shadow: inset 1px 1px 2px rgba(48, 51, 91, .12);
+      color: #4e4d73;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .version-links {
+      display: flex;
+      flex: 0 0 auto;
+      gap: 6px;
+    }
+
+    .version-links a {
+      color: var(--link);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .version-links a[aria-current="page"] {
+      color: var(--accent);
+      font-weight: 700;
+      text-decoration-style: double;
     }
 
     main {
-      width: min(760px, calc(100% - 36px));
-      padding: 70px 0 54px;
+      position: relative;
+      min-height: 520px;
+      display: grid;
+      align-content: center;
+      padding: clamp(52px, 9vw, 82px) clamp(22px, 7vw, 68px) clamp(50px, 8vw, 72px);
+      border-bottom: 1px solid var(--hairline);
+      background:
+        linear-gradient(rgba(255, 255, 255, .4), rgba(233, 233, 249, .5)),
+        repeating-linear-gradient(90deg, transparent 0 95px, rgba(72, 71, 124, .035) 95px 96px);
+    }
+
+    main::before {
+      position: absolute;
+      top: 13px;
+      left: 14px;
+      content: "room 07  /  weather relay";
+      color: rgba(75, 74, 117, .68);
+      font: .59rem/1 "Courier New", monospace;
+      letter-spacing: .09em;
+      text-transform: uppercase;
     }
 
     h1 {
-      margin: 0 0 52px;
+      margin: 0 0 clamp(38px, 6vw, 54px);
       color: var(--accent);
-      font: 700 clamp(1.65rem, 5vw, 2.5rem)/1 Arial, sans-serif;
+      font: normal clamp(1.55rem, 4vw, 2.25rem)/1 Georgia, "Times New Roman", serif;
       text-align: center;
       text-transform: lowercase;
-      letter-spacing: -.045em;
+      letter-spacing: -.025em;
+      text-shadow: 1px 1px rgba(255, 255, 255, .9);
+    }
+
+    h1::before,
+    h1::after {
+      color: #6f80ad;
+      font-family: "Courier New", monospace;
+      font-size: .72em;
+      letter-spacing: -.15em;
+    }
+
+    h1::before { content: "< "; }
+    h1::after { content: " >"; }
+
+    .signal {
+      width: min(330px, 86%);
+      margin: -30px auto 33px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: #777493;
+      font: .57rem/1.2 "Courier New", monospace;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .signal::before,
+    .signal::after {
+      height: 1px;
+      flex: 1;
+      content: "";
+      background: linear-gradient(90deg, transparent, rgba(77, 75, 125, .3));
+    }
+
+    .signal::after { transform: rotate(180deg); }
+
+    .online-dot {
+      width: 6px;
+      height: 6px;
+      border: 1px solid #55765c;
+      border-radius: 50%;
+      background: #b8e6a7;
+      box-shadow: 0 0 5px rgba(120, 196, 119, .75);
     }
 
     .verse {
@@ -50,6 +224,7 @@
       font-size: clamp(1.18rem, 3.2vw, 1.72rem);
       line-height: 1.52;
       text-align: center;
+      text-shadow: 0 1px rgba(255, 255, 255, .88);
     }
 
     .line { margin: 0; }
@@ -59,62 +234,81 @@
       margin: 0;
       padding: 0 .06em .05em;
       border: 0;
-      border-bottom: 1px dotted currentColor;
+      border-bottom: 1px solid currentColor;
       color: var(--phrase-color, #3d8eb9);
       background: transparent;
       font: inherit;
-      font-weight: 700;
+      font-weight: 600;
       line-height: inherit;
       text-align: inherit;
       cursor: pointer;
       transition: color .7s ease, opacity .7s ease, filter .35s ease;
     }
 
-    .weather-phrase:hover { color: var(--accent); }
+    .weather-phrase:hover { color: var(--link); }
     .weather-phrase:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
     .weather-phrase.changing { filter: blur(4px); opacity: .3; }
 
     .controls {
-      display: flex;
-      justify-content: center;
+      min-height: 28px;
+      display: grid;
+      grid-template-columns: auto minmax(15ch, 1fr) auto auto;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 10px 16px;
-      margin-top: 48px;
-      padding-top: 14px;
-      border-top: 1px solid var(--rule);
+      gap: 6px;
+      padding: 4px 6px;
       color: var(--muted);
-      font: .68rem/1.5 "Courier New", Courier, monospace;
-      letter-spacing: .07em;
+      background: rgba(238, 240, 250, .82);
+      font: .6rem/1.35 Tahoma, Verdana, sans-serif;
+      letter-spacing: .025em;
       text-transform: lowercase;
     }
 
-    .controls button,
-    .return {
-      border: 0;
-      padding: 2px 0;
-      color: inherit;
-      background: transparent;
+    .controls button {
+      border: 1px solid rgba(61, 66, 113, .53);
+      border-radius: 2px;
+      padding: 3px 7px;
+      color: #47496e;
+      background: linear-gradient(#fff, #cdd2e4);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .75);
       font: inherit;
       letter-spacing: inherit;
-      text-decoration: underline;
-      text-decoration-style: dotted;
-      text-underline-offset: 3px;
       cursor: pointer;
     }
 
     .controls button:hover,
-    .controls button:focus-visible,
+    .controls button:focus-visible { background: linear-gradient(#fff, #e4dcf0); }
+
+    .return {
+      color: var(--link);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
     .return:hover,
-    .return:focus-visible { color: var(--accent); outline: 0; }
+    .return:focus-visible { color: var(--accent); }
 
-    #status { min-width: 17ch; }
+    #status {
+      min-width: 0;
+      padding: 3px 7px;
+      overflow: hidden;
+      border: 1px inset rgba(80, 82, 125, .22);
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
 
-    @media (max-width: 520px) {
-      main { width: min(100% - 26px, 760px); padding-top: 42px; }
-      h1 { margin-bottom: 38px; }
+    .hint { white-space: nowrap; }
+
+    @media (max-width: 600px) {
+      body { padding: 10px 0; }
+      .browser-window { width: calc(100% - 18px); }
+      .address-label { display: none; }
+      .version-links { gap: 4px; }
+      main { min-height: 0; padding: 56px 18px 48px; }
+      h1 { margin-bottom: 36px; }
+      .signal { margin-top: -24px; margin-bottom: 28px; }
       .verse { gap: .85em; line-height: 1.48; }
-      .controls { align-items: flex-start; flex-direction: column; }
+      .controls { grid-template-columns: auto minmax(0, 1fr) auto; }
+      .hint { display: none; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -123,26 +317,40 @@
   </style>
 </head>
 <body>
-  <main>
-    <h1>cloud conference</h1>
-
-    <div class="verse" aria-label="A changing verse made from weather and network conditions">
-      <p class="line">...haven't felt this since <button class="weather-phrase" type="button" data-line="memory" aria-label="Change the Manila fragment">the bells grew weather and nobody rang them</button>...</p>
-      <p class="line">...and i'm soul sleep <button class="weather-phrase" type="button" data-line="soul-sleep" aria-label="Change the Honolulu fragment">like a hotel key returned to the wrong wave</button> in Honolulu...</p>
-      <p class="line">...waiting for a shipment of <button class="weather-phrase" type="button" data-line="shipment" aria-label="Change the Tokyo fragment">barometric plum blossoms</button>...</p>
-      <p class="line">...<button class="weather-phrase" type="button" data-line="weather-statement" aria-label="Change the Iloilo fragment">the pressure is wearing my auntie's house dress</button>...</p>
-      <p class="line">...California dreaming of <button class="weather-phrase" type="button" data-line="california" aria-label="Change the Los Angeles fragment">a fog with a spare room</button>...</p>
-      <p class="line">...dust in Shenyang <button class="weather-phrase" type="button" data-line="shenyang-dust" aria-label="Change the Shenyang fragment">queues politely for weather</button>...</p>
-      <p class="line">...where is my <button class="weather-phrase" type="button" data-line="internet-weather" aria-label="Change the internet-weather fragment">weather report from a discontinued tab</button> in this sea of dream-islands...</p>
+  <div class="browser-window">
+    <div class="title-bar">
+      <span>cloudconference_v3.html — weather relay</span>
+      <span class="window-controls" aria-hidden="true"><i>_</i><i>□</i><i>×</i></span>
     </div>
+
+    <div class="address-bar">
+      <span class="address-label">address:</span>
+      <span class="address-field">weather://dream-islands/conference/07</span>
+      <span class="version-links" aria-label="Earlier versions"><a href="../v1/cloudconference.html">v1</a> · <a href="../v2/cloudconference.html">v2</a> · <a href="cloudconference.html" aria-current="page">v3</a></span>
+    </div>
+
+    <main>
+      <h1>cloud conference</h1>
+      <div class="signal" aria-hidden="true"><span class="online-dot"></span> receiving fragments</div>
+
+      <div class="verse" aria-label="A changing verse made from weather and network conditions">
+        <p class="line">...haven't felt this since <button class="weather-phrase" type="button" data-line="memory" aria-label="Change the Manila fragment">the bells grew weather and nobody rang them</button>...</p>
+        <p class="line">...and i'm soul sleep <button class="weather-phrase" type="button" data-line="soul-sleep" aria-label="Change the Honolulu fragment">like a hotel key returned to the wrong wave</button> in Honolulu...</p>
+        <p class="line">...waiting for a shipment of <button class="weather-phrase" type="button" data-line="shipment" aria-label="Change the Tokyo fragment">barometric plum blossoms</button>...</p>
+        <p class="line">...<button class="weather-phrase" type="button" data-line="weather-statement" aria-label="Change the Iloilo fragment">the pressure is wearing my auntie's house dress</button>...</p>
+        <p class="line">...California dreaming of <button class="weather-phrase" type="button" data-line="california" aria-label="Change the Los Angeles fragment">a fog with a spare room</button>...</p>
+        <p class="line">...dust in Shenyang <button class="weather-phrase" type="button" data-line="shenyang-dust" aria-label="Change the Shenyang fragment">queues politely for weather</button>...</p>
+        <p class="line">...where is my <button class="weather-phrase" type="button" data-line="internet-weather" aria-label="Change the internet-weather fragment">weather report from a discontinued tab</button> in this sea of dream-islands...</p>
+      </div>
+    </main>
 
     <div class="controls">
       <button id="refresh" type="button">refresh conditions</button>
       <span id="status" role="status">reading weather</span>
-      <span>select a colored phrase to change it</span>
+      <span class="hint">select a colored phrase to change it</span>
       <a class="return" href="../../index.html#sky">return to sky</a>
     </div>
-  </main>
+  </div>
 
   <script src="cloudconference.js?v=3.2"></script>
 </body>
