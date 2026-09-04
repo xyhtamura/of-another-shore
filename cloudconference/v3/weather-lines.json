@@ -1,0 +1,337 @@
+{
+  "_guide": {
+    "matching": "Rules are tested from top to bottom. Every field inside one when object must match. The first matching rule supplies the phrase.",
+    "ranges": "Use min and max for numbers, equals for text or true/false. Omit either end of a range when it is not needed.",
+    "templates": "A phrase can include {{temperature}}, {{humidity}}, {{windSpeed}}, {{cloudCover}}, {{rtt}}, {{downlink}}, {{effectiveType}}, or {{requestTime}}.",
+    "weatherMetrics": "temperature is °C, humidity and cloudCover are %, precipitation is mm, windSpeed is km/h, and windDirection is degrees.",
+    "internetMetrics": "rtt is the browser's rounded millisecond estimate; downlink is estimated Mb/s; requestTime is the measured duration of the weather fetch. Some browsers omit rtt and downlink, so requestTime supplies the live fallback."
+  },
+  "cities": {
+    "Manila": {
+      "latitude": 14.5995,
+      "longitude": 120.9842,
+      "fallback": { "temperature": 29, "humidity": 78, "precipitation": 0, "cloudCover": 62, "windSpeed": 9, "windDirection": 90 }
+    },
+    "Honolulu": {
+      "latitude": 21.3099,
+      "longitude": -157.8581,
+      "fallback": { "temperature": 27, "humidity": 69, "precipitation": 0, "cloudCover": 45, "windSpeed": 18, "windDirection": 70 }
+    },
+    "Tokyo": {
+      "latitude": 35.6762,
+      "longitude": 139.6503,
+      "fallback": { "temperature": 24, "humidity": 68, "precipitation": 0, "cloudCover": 55, "windSpeed": 8, "windDirection": 170 }
+    },
+    "Iloilo": {
+      "latitude": 10.7202,
+      "longitude": 122.5621,
+      "fallback": { "temperature": 28, "humidity": 82, "precipitation": 0.2, "cloudCover": 78, "windSpeed": 10, "windDirection": 230 }
+    },
+    "Los Angeles": {
+      "latitude": 34.0522,
+      "longitude": -118.2437,
+      "fallback": { "temperature": 22, "humidity": 58, "precipitation": 0, "cloudCover": 35, "windSpeed": 7, "windDirection": 250 }
+    },
+    "Shenyang": {
+      "latitude": 41.8057,
+      "longitude": 123.4315,
+      "fallback": { "temperature": 19, "humidity": 55, "precipitation": 0, "cloudCover": 40, "windSpeed": 12, "windDirection": 330 }
+    }
+  },
+  "lines": [
+    {
+      "id": "memory",
+      "source": "Manila",
+      "prefix": "...haven't felt this since ",
+      "suffix": "...",
+      "rules": [
+        {
+          "when": { "humidity": { "min": 80 }, "temperature": { "min": 28 } },
+          "options": [
+            "the Quiapo bells sweated green before anyone touched the rope",
+            "the church fans turned at once and blew noon into the street"
+          ]
+        },
+        {
+          "when": { "precipitation": { "min": 0.1 }, "cloudCover": { "min": 75 } },
+          "options": [
+            "the Pasig sent all the dining chairs upstairs",
+            "the rain held a second meeting inside every jeepney"
+          ]
+        },
+        {
+          "when": { "cloudCover": { "min": 80 } },
+          "options": [
+            "the Taal ash made noon happen twice",
+            "Manila misplaced the sun between two announcements"
+          ]
+        },
+        {
+          "when": {},
+          "options": [
+            "the bells grew weather and nobody rang them",
+            "a dry afternoon borrowed somebody else's thunder"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "soul-sleep",
+      "source": "Honolulu",
+      "prefix": "...and i'm soul sleep ",
+      "suffix": " in Honolulu...",
+      "rules": [
+        {
+          "when": { "humidity": { "min": 75 }, "temperature": { "min": 25 } },
+          "options": [
+            "like an ʻopelu in a dry bucket",
+            "with my good shirt still damp inside me"
+          ]
+        },
+        {
+          "when": { "windSpeed": { "min": 18 } },
+          "options": [
+            "one slipper downwind from myself",
+            "while the trade winds look for the rest of my sentence"
+          ]
+        },
+        {
+          "when": { "precipitation": { "min": 0.1 } },
+          "options": [
+            "under a towel that remembers the ocean",
+            "with every shirt still speaking from the line"
+          ]
+        },
+        {
+          "when": {},
+          "options": [
+            "like a hotel key returned to the wrong wave",
+            "under the trade wind's out-of-office reply"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shipment",
+      "source": "Tokyo",
+      "prefix": "...waiting for a shipment of ",
+      "suffix": "...",
+      "rules": [
+        {
+          "when": { "precipitation": { "min": 0.1 }, "cloudCover": { "min": 70 } },
+          "options": [
+            "rain with one umbrella missing",
+            "low clouds packed in convenience-store ice"
+          ]
+        },
+        {
+          "when": { "windSpeed": { "min": 16 } },
+          "options": [
+            "easterlies, lightly used, return address washed off",
+            "wind receipts from the far side of the Pacific"
+          ]
+        },
+        {
+          "when": { "temperature": { "max": 8 } },
+          "options": [
+            "snow from a vending machine that accepts old names",
+            "cold fronts folded to commuter size"
+          ]
+        },
+        {
+          "when": {},
+          "options": [
+            "barometric plum blossoms",
+            "weather marked HANDLE LATER"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "weather-statement",
+      "source": "Iloilo",
+      "prefix": "...",
+      "suffix": "...",
+      "rules": [
+        {
+          "when": { "precipitation": { "min": 0.1 }, "humidity": { "min": 78 } },
+          "options": [
+            "the habagat left another voice note under the door",
+            "la niña says she is five minutes away and already wet"
+          ]
+        },
+        {
+          "when": { "temperature": { "min": 29 }, "humidity": { "min": 72 } },
+          "options": [
+            "el niño is eating mangoes during roll call",
+            "the warm pool has put its feet on the conference table"
+          ]
+        },
+        {
+          "when": { "windSpeed": { "min": 16 } },
+          "options": [
+            "somebody's sending winds west again, no signature",
+            "the easterlies keep forwarding the same blue attachment"
+          ]
+        },
+        {
+          "when": {},
+          "options": [
+            "the pressure is wearing my auntie's house dress",
+            "a small monsoon is asleep beside the rice cooker"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "california",
+      "source": "Los Angeles",
+      "prefix": "...California dreaming of ",
+      "suffix": "...",
+      "rules": [
+        {
+          "when": { "cloudCover": { "min": 70 }, "humidity": { "min": 65 } },
+          "options": [
+            "a marine layer with no login",
+            "fog thick enough to return a rented name"
+          ]
+        },
+        {
+          "when": { "precipitation": { "min": 0.1 } },
+          "options": [
+            "rain that misses its exit",
+            "a wet freeway remembering it was a river"
+          ]
+        },
+        {
+          "when": { "windSpeed": { "min": 18 } },
+          "options": [
+            "a palm tree returning a missed call",
+            "Santa Ana mailing the heat back unopened"
+          ]
+        },
+        {
+          "when": {},
+          "options": [
+            "a fog with a spare room",
+            "clouds that forgot to appoint a representative"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shenyang-dust",
+      "source": "Shenyang",
+      "prefix": "...dust in Shenyang ",
+      "suffix": "...",
+      "rules": [
+        {
+          "when": { "windSpeed": { "min": 16 }, "humidity": { "max": 55 } },
+          "options": [
+            "applies for a southbound visa",
+            "keeps translating the Gobi into courtyards"
+          ]
+        },
+        {
+          "when": { "precipitation": { "min": 0.1 }, "temperature": { "max": 12 } },
+          "options": [
+            "practices being soup",
+            "sticks one wet dynasty to another"
+          ]
+        },
+        {
+          "when": { "humidity": { "min": 72 } },
+          "options": [
+            "will not come off the family name",
+            "sleeps in the cuffs of the siberian high"
+          ]
+        },
+        {
+          "when": {},
+          "options": [
+            "queues politely for weather",
+            "forgets which century inhaled it"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "internet-weather",
+      "source": "internet",
+      "prefix": "...where is my ",
+      "suffix": " in this sea of dream-islands...",
+      "rules": [
+        {
+          "when": { "online": { "equals": false } },
+          "options": [
+            "offline pressure",
+            "weather from a disconnected address"
+          ]
+        },
+        {
+          "when": { "effectiveType": { "equals": "slow-2g" } },
+          "options": [
+            "very long packet season",
+            "one-bar typhoon"
+          ]
+        },
+        {
+          "when": { "rtt": { "min": 500 } },
+          "options": [
+            "{{rtt}} ms long-ping monsoon",
+            "buffering weather with {{rtt}} tiny shores"
+          ]
+        },
+        {
+          "when": { "rtt": { "min": 200 } },
+          "options": [
+            "{{rtt}} ms packet squall",
+            "lag with a low-pressure center"
+          ]
+        },
+        {
+          "when": { "downlink": { "max": 1.5 } },
+          "options": [
+            "narrowband drizzle",
+            "small-data habagat"
+          ]
+        },
+        {
+          "when": { "rtt": { "max": 75 } },
+          "options": [
+            "clear-cache breeze",
+            "fast little cloud with nowhere to buffer"
+          ]
+        },
+        {
+          "when": { "requestTime": { "min": 1200 } },
+          "options": [
+            "{{requestTime}} ms weather-fetch fog",
+            "slow packets carrying seven damp postcards"
+          ]
+        },
+        {
+          "when": { "requestTime": { "min": 450 } },
+          "options": [
+            "{{requestTime}} ms packet drizzle",
+            "medium-late rain from the weather server"
+          ]
+        },
+        {
+          "when": { "requestTime": { "max": 449 } },
+          "options": [
+            "{{requestTime}} ms quick little cloud",
+            "a fast weather packet looking for an island"
+          ]
+        },
+        {
+          "when": {},
+          "options": [
+            "weather report from a discontinued tab",
+            "packet rain with no island selected"
+          ]
+        }
+      ]
+    }
+  ]
+}

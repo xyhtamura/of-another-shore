@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Fragments overheard from a conference whose weather keeps changing.">
+  <title>cloud conference v3 — of another shore</title>
+  <style>
+    :root {
+      --paper: #fffaf3;
+      --ink: #5a5a89;
+      --accent: #8a68aa;
+      --muted: #8c8496;
+      --rule: rgba(90, 90, 137, .22);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      overflow-x: hidden;
+      color: var(--ink);
+      background:
+        linear-gradient(rgba(255, 250, 243, .92), rgba(255, 250, 243, .96)),
+        repeating-linear-gradient(90deg, transparent 0 12vw, rgba(90, 90, 137, .08) 12vw calc(12vw + 1px));
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    main {
+      width: min(760px, calc(100% - 36px));
+      padding: 70px 0 54px;
+    }
+
+    h1 {
+      margin: 0 0 52px;
+      color: var(--accent);
+      font: 700 clamp(1.65rem, 5vw, 2.5rem)/1 Arial, sans-serif;
+      text-align: center;
+      text-transform: lowercase;
+      letter-spacing: -.045em;
+    }
+
+    .verse {
+      display: flex;
+      flex-direction: column;
+      gap: .62em;
+      font-size: clamp(1.18rem, 3.2vw, 1.72rem);
+      line-height: 1.52;
+      text-align: center;
+    }
+
+    .line { margin: 0; }
+
+    .weather-phrase {
+      display: inline;
+      margin: 0;
+      padding: 0 .06em .05em;
+      border: 0;
+      border-bottom: 1px dotted currentColor;
+      color: var(--phrase-color, #3d8eb9);
+      background: transparent;
+      font: inherit;
+      font-weight: 700;
+      line-height: inherit;
+      text-align: inherit;
+      cursor: pointer;
+      transition: color .7s ease, opacity .7s ease, filter .35s ease;
+    }
+
+    .weather-phrase:hover { color: var(--accent); }
+    .weather-phrase:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .weather-phrase.changing { filter: blur(4px); opacity: .3; }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      margin-top: 48px;
+      padding-top: 14px;
+      border-top: 1px solid var(--rule);
+      color: var(--muted);
+      font: .68rem/1.5 "Courier New", Courier, monospace;
+      letter-spacing: .07em;
+      text-transform: lowercase;
+    }
+
+    .controls button,
+    .return {
+      border: 0;
+      padding: 2px 0;
+      color: inherit;
+      background: transparent;
+      font: inherit;
+      letter-spacing: inherit;
+      text-decoration: underline;
+      text-decoration-style: dotted;
+      text-underline-offset: 3px;
+      cursor: pointer;
+    }
+
+    .controls button:hover,
+    .controls button:focus-visible,
+    .return:hover,
+    .return:focus-visible { color: var(--accent); outline: 0; }
+
+    #status { min-width: 17ch; }
+
+    @media (max-width: 520px) {
+      main { width: min(100% - 26px, 760px); padding-top: 42px; }
+      h1 { margin-bottom: 38px; }
+      .verse { gap: .85em; line-height: 1.48; }
+      .controls { align-items: flex-start; flex-direction: column; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .weather-phrase { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>cloud conference</h1>
+
+    <div class="verse" aria-label="A changing verse made from weather and network conditions">
+      <p class="line">...haven't felt this since <button class="weather-phrase" type="button" data-line="memory" aria-label="Change the Manila fragment">the bells grew weather and nobody rang them</button>...</p>
+      <p class="line">...and i'm soul sleep <button class="weather-phrase" type="button" data-line="soul-sleep" aria-label="Change the Honolulu fragment">like a hotel key returned to the wrong wave</button> in Honolulu...</p>
+      <p class="line">...waiting for a shipment of <button class="weather-phrase" type="button" data-line="shipment" aria-label="Change the Tokyo fragment">barometric plum blossoms</button>...</p>
+      <p class="line">...<button class="weather-phrase" type="button" data-line="weather-statement" aria-label="Change the Iloilo fragment">the pressure is wearing my auntie's house dress</button>...</p>
+      <p class="line">...California dreaming of <button class="weather-phrase" type="button" data-line="california" aria-label="Change the Los Angeles fragment">a fog with a spare room</button>...</p>
+      <p class="line">...dust in Shenyang <button class="weather-phrase" type="button" data-line="shenyang-dust" aria-label="Change the Shenyang fragment">queues politely for weather</button>...</p>
+      <p class="line">...where is my <button class="weather-phrase" type="button" data-line="internet-weather" aria-label="Change the internet-weather fragment">weather report from a discontinued tab</button> in this sea of dream-islands...</p>
+    </div>
+
+    <div class="controls">
+      <button id="refresh" type="button">refresh conditions</button>
+      <span id="status" role="status">reading weather</span>
+      <span>select a colored phrase to change it</span>
+      <a class="return" href="../../index.html#sky">return to sky</a>
+    </div>
+  </main>
+
+  <script src="cloudconference.js?v=3.2"></script>
+</body>
+</html>
