@@ -126,6 +126,12 @@ export default {
   // How often each part of the path is the one operated on.
   segments: { name: 6, house: 2, island: 3 },
 
+  // Desktop icons. An empty string uses the placeholder drawn in
+  // namefile.html. Otherwise give an image path relative to that page, e.g.
+  // "img/namefile/house.png". Record the licence of anything added here; see
+  // ../ASSETS.md.
+  icons: { name: "", house: "", island: "" },
+
   // Optional authored verse, shown above the listing. {name}, {house}, and
   // {island} show the current state of each segment.
   lines: []

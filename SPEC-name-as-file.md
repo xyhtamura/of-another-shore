@@ -312,3 +312,38 @@ All in the Browser pane at `http://localhost:8000/of-another-shore/namefile.html
   This record is here for that reason.
 - Open question 1 (listing, version-control log, or plain verse) is still open.
   The build is the listing.
+
+2026-10-08 — Claude Code — desktop view.
+
+Xyh, after the first build: make it more graphic, icons that multiply on a
+desktop, scrolling down as in `ephemeralrenders/cinderella stairs`; placeholder
+icons for now; opening a house like a folder can come later.
+
+- **The page is now a desktop that scrolls down.** Each step puts one icon on
+  it, following a sine down the page with one phase per branch. The page follows
+  the newest icon. The listing is still built and is behind "Show listing".
+- **The icon is of the segment the step touched**: a file for the name, a house,
+  or an island, labelled with that segment's new text. Fork, lose, and restore
+  show the name. Clicking an icon selects it and puts its path, operation, and
+  owner in the taskbar.
+- **Each operation changes the picture.** A copy leaves four earlier paintings
+  behind it. Mojibake skews and recolours. A flip inverts one square, placed by
+  the bit and byte. Truncate cuts the icon short. A lost row is grey and struck.
+  A conflict shows two icons overlapped. A search that changed the text carries
+  a magnifier. The island's flag colour is computed from the owner's name.
+- **Icons are placeholders drawn as inline SVG** in `namefile.html`, so nothing
+  needs a licence. `icons` in the data file takes an image path per segment to
+  replace them. Tango is the public-domain set already checked in
+  [../ASSETS.md](../ASSETS.md).
+- Labels are clamped to two lines, as on a desktop, and open in full on hover,
+  focus, or selection. The whole text is in the DOM either way.
+
+Verified in the Browser pane: `?test` still 17 of 17; seed `00000e` drew 21
+icons for 21 rows with no console error; with reduced motion overridden the
+page scrolled to keep the newest icon centred (`scrollY` 467 at step 10);
+clicking an icon selected it and filled the taskbar line; "Show listing" swapped
+the two views (read from the `hidden` properties, the screenshot lagged).
+
+Not done: the desktop was not checked at phone width. Long labels on adjacent
+steps can overlap when opened. One icon per step is sparse next to the stairs
+reel; multiplying faster is a design choice still open. Houses do not open.

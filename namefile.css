@@ -1,5 +1,6 @@
-/* namefile — colours and typeface follow dungan.html. The window frame is
-   drawn in CSS; no icon or font files ship with it. */
+/* namefile — colours and typeface follow dungan.html. The desktop, taskbar,
+   window frame, and placeholder icons are drawn in CSS and inline SVG; no
+   icon or font files ship with it. */
 
 :root {
     --ground: #c5c8db;
@@ -9,49 +10,139 @@
     --green: #2f6e2c;
     --rule: rgba(33, 12, 14, 0.18);
     --mono: ui-monospace, "Cascadia Mono", Consolas, "Noto Sans Mono CJK JP", "MS Gothic", monospace;
+    --bar: 5.5rem;       /* room kept clear for the taskbar */
+    --row: 84px;         /* vertical distance between one step and the next */
 }
 
 * { box-sizing: border-box; }
 
 body {
     margin: 0;
-    padding: 20px;
     min-height: 100vh;
     font-family: "Averia Sans Libre", sans-serif;
-    background-color: var(--ground);
     color: var(--ink);
     line-height: 1.5;
+    background: linear-gradient(#c5c8db, #a9b4d0 60%, #8fa6c4) fixed;
 }
+
+main { padding-bottom: var(--bar); }
+
+.defs { position: absolute; width: 0; height: 0; }
+
+.verse:empty { display: none; }
+.verse { padding: 16px; font-size: 1.2em; text-align: center; }
+.verse p { margin: 0; overflow-wrap: anywhere; }
+
+/* ---- desktop ---- */
+
+.desktop {
+    position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    /* --count is set by the page: the number of steps laid out so far */
+    height: calc((var(--count, 1) + 1) * var(--row) + 40vh);
+    overflow: hidden;
+}
+
+.icon {
+    position: absolute;
+    left: var(--x);
+    top: calc(var(--step) * var(--row) + 24px);
+    width: 132px;
+    transform: translateX(-50%);
+    text-align: center;
+}
+
+.icon button {
+    display: block;
+    width: 100%;
+    padding: 2px;
+    border: 1px dotted transparent;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
+
+.glyphs {
+    position: relative;
+    display: block;
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 2px;
+}
+
+.glyph {
+    position: absolute;
+    inset: 0;
+    width: 48px;
+    height: 48px;
+    image-rendering: pixelated;
+}
+
+/* A copy leaves earlier paintings of itself behind it. */
+.glyph.ghost { left: calc(var(--n) * -7px); top: calc(var(--n) * -6px); opacity: calc(1 - var(--n) * 0.17); }
+/* The second side of a conflict sits on top of the first. */
+.glyph.theirs { left: 14px; top: 8px; }
+
+.flag { fill: var(--flag, #b0413e); }
+
+.badge { position: absolute; right: -8px; bottom: -4px; width: 22px; height: 22px; }
+
+.label {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    line-height: 1.25;
+    padding: 0 2px;
+}
+
+/* The whole label shows when the icon is pointed at, focused, or selected. */
+.icon button:hover .label,
+.icon button:focus-visible .label,
+.icon.selected .label { display: block; }
+
+.icon:hover, .icon:focus-within, .icon.selected { z-index: 5; }
+.icon button:focus-visible { outline: none; border-color: var(--ink); }
+.icon.selected .label { background: var(--red); color: var(--paper); }
+.icon.selected .glyphs { filter: drop-shadow(0 0 0 var(--red)) brightness(0.85); }
+
+/* What each mechanical operation does to the picture. */
+.icon.op-mojibake .glyph:not(.ghost) { filter: hue-rotate(150deg) saturate(2.2); transform: skewX(-14deg) scaleX(1.15); }
+.icon.op-truncate .glyph { clip-path: inset(0 0 46% 0); }
+.icon.op-form .glyph { filter: grayscale(1) contrast(1.4); }
+.icon.op-flip .glyphs::after {
+    content: "";
+    position: absolute;
+    left: calc(var(--bit, 0) * 6px);
+    top: calc(var(--byte, 0) * 6px);
+    width: 6px;
+    height: 6px;
+    background: #fff;
+    mix-blend-mode: difference;
+}
+.icon.struck .glyphs { filter: grayscale(1); opacity: 0.45; }
+.icon.struck .label { text-decoration: line-through; }
+
+/* ---- listing window ---- */
 
 .window {
     max-width: 62rem;
-    margin: 0 auto;
+    margin: 20px auto;
     background: var(--paper);
     border: 1px solid var(--ink);
     box-shadow: 4px 4px 0 rgba(33, 12, 14, 0.25);
 }
 
-.titlebar {
-    background: var(--red);
-    color: var(--paper);
-    padding: 4px 10px;
-}
+.titlebar { background: var(--red); color: var(--paper); padding: 4px 10px; }
+.titlebar h2 { margin: 0; font-size: 1rem; font-weight: 700; }
 
-.titlebar h1 {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 700;
-}
-
-.verse:empty { display: none; }
-.verse { padding: 16px 10px 4px; font-size: 1.2em; }
-.verse p { margin: 0; overflow-wrap: anywhere; }
-
-.listing {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-}
+.listing { width: 100%; border-collapse: collapse; table-layout: fixed; }
 
 .listing th {
     text-align: left;
@@ -86,27 +177,34 @@ body {
 
 .row.mechanical .op { color: var(--red); }
 .row.fetched .op { color: var(--green); }
-
 .row.struck .path { text-decoration: line-through; }
 .row.struck td { opacity: 0.6; }
 
-.statusbar {
+/* ---- taskbar ---- */
+
+.taskbar {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 10;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
+    gap: 4px 12px;
     padding: 6px 10px;
     border-top: 1px solid var(--ink);
     background: var(--ground);
     font-size: 0.85rem;
 }
 
-.statusbar p { margin: 0; overflow-wrap: anywhere; min-width: 0; }
+.readout { min-width: 0; flex: 1 1 16rem; }
+.readout p { margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#detail { font-family: var(--mono); }
+#detail:empty::before { content: "\00a0"; }
 
 .controls { display: flex; flex-wrap: wrap; gap: 6px; }
 
-button {
+.taskbar button {
     font: inherit;
     color: var(--ink);
     background: var(--paper);
@@ -115,9 +213,10 @@ button {
     cursor: pointer;
 }
 
-button:hover:not(:disabled) { background: var(--red); color: var(--paper); }
-button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
-button:disabled { opacity: 0.5; cursor: default; }
+.taskbar button:hover:not(:disabled) { background: var(--red); color: var(--paper); }
+.taskbar button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+.taskbar button:disabled { opacity: 0.5; cursor: default; }
+.taskbar button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
 
 #tests { margin: 0; padding: 10px 10px 10px 30px; font-family: var(--mono); font-size: 0.9rem; }
 #tests .fail { color: var(--red); font-weight: 700; }
@@ -130,9 +229,10 @@ button:disabled { opacity: 0.5; cursor: default; }
     white-space: nowrap;
 }
 
-/* Narrow screens: each row becomes a block, path first. */
 @media (max-width: 640px) {
-    body { padding: 16px; }
+    :root { --bar: 8.5rem; }
+    .window { margin: 16px; }
+    .icon { width: 112px; }
     .listing thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
     .listing, .listing tbody { display: block; }
     .listing tr { display: flex; flex-wrap: wrap; gap: 0 12px; padding: 4px 10px; border-bottom: 1px solid var(--rule); }

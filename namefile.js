@@ -167,7 +167,7 @@ export async function run({ lex, seed, forks = [], captures = {}, search = null,
   const emit = async row => { rows.push(row); await onRow(row, st); };
   const base = (b, op, extra) => ({
     step: st.step, branch: b.id, depth: b.depth, op, detail: '', kind: 'authored',
-    seg: null, path: pathOf(b), owner: b.owner, date: null, struck: false, ...extra
+    seg: null, path: pathOf(b), name: b.seg.name.v, owner: b.owner, date: null, struck: false, ...extra
   });
 
   const claim = pick(lex.island.claims, rng);
@@ -421,18 +421,85 @@ function rowElement(row) {
   const now = document.createElement('span');
   now.textContent = show(row.path);
   path.append(now);
-  cell('op', row.detail ? `${row.op} ${row.detail}` : row.op);
+  cell('op', opText(row));
   cell('owner', row.owner);
   cell('date', row.date || (row.kind === 'authored' ? '—' : stamp()));
   return tr;
+}
+
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+// One picture of a segment: the placeholder symbol in namefile.html, or the
+// file named for that segment under "icons" in the data file.
+function glyph(kind, cls, src) {
+  if (src) {
+    const img = new Image();
+    img.src = src; img.alt = ''; img.className = `glyph ${cls}`;
+    return img;
+  }
+  const svg = document.createElementNS(SVG_NS, 'svg');
+  svg.setAttribute('class', `glyph ${cls}`);
+  svg.setAttribute('aria-hidden', 'true');
+  const use = document.createElementNS(SVG_NS, 'use');
+  use.setAttribute('href', `#i-${kind}`);
+  svg.append(use);
+  return svg;
+}
+
+const hueOf = s => [...s].reduce((h, c) => (h * 31 + c.codePointAt(0)) % 360, 0);
+const opText = row => (row.detail ? `${row.op} ${row.detail}` : row.op);
+
+// The desktop icon for one row. The icon is of the segment the operation
+// touched, labelled with that segment's new text; an operation on the whole
+// path (fork, lose, restore) shows the name.
+function iconElement(row, phase, icons, onPick) {
+  const hit = row.joined?.[0];
+  const kind = row.seg || hit?.seg || 'name';
+  const text = row.seg ? row.after : hit ? hit.after : row.name;
+  const li = document.createElement('li');
+  li.className = `icon ${row.kind} op-${row.op}${row.struck ? ' struck' : ''}`;
+  // A sine down the page, one phase per branch, as a dragged window leaves a trail.
+  const x = 50 + 30 * Math.sin(row.step * 0.62 + phase + row.branch * 2.1);
+  li.style.setProperty('--x', `${x.toFixed(2)}%`);
+  li.style.setProperty('--step', row.step);
+  li.style.setProperty('--flag', `hsl(${hueOf(row.owner)} 60% 45%)`);
+  if (row.op === 'flip') {
+    li.style.setProperty('--bit', row.params.bit);
+    li.style.setProperty('--byte', row.params.byte % 8);
+  }
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  const glyphs = document.createElement('span');
+  glyphs.className = 'glyphs';
+  const src = icons?.[kind];
+  if (row.op === 'copy') for (let n = 4; n >= 1; n--) {
+    const g = glyph(kind, 'ghost', src);
+    g.style.setProperty('--n', n);
+    glyphs.append(g);
+  }
+  glyphs.append(glyph(kind, '', src));
+  if (hit) glyphs.append(glyph(kind, 'theirs', src));
+  if (row.kind === 'fetched' && row.after !== row.before) glyphs.append(glyph('search', 'badge'));
+  const label = document.createElement('span');
+  label.className = 'label';
+  label.textContent = show(text);
+  const more = document.createElement('span');
+  more.className = 'sr-only';
+  more.textContent = `, ${kind}, ${opText(row)}, owner ${row.owner}`;
+  btn.append(glyphs, label, more);
+  btn.onclick = () => onPick(li, row);
+  li.append(btn);
+  return li;
 }
 
 let current = 0;   // token of the running lineage; a newer one cancels the older
 
 async function start(lex) {
   const token = ++current;
-  const rowsEl = $('rows'), status = $('status'), verse = $('verse');
-  rowsEl.replaceChildren(); verse.replaceChildren();
+  const rowsEl = $('rows'), status = $('status'), verse = $('verse'), desk = $('desktop'), detail = $('detail');
+  rowsEl.replaceChildren(); verse.replaceChildren(); desk.replaceChildren(); detail.textContent = '';
+  desk.style.setProperty('--count', 1);
+  scrollTo(0, 0);
   const gone = missing(lex);
   if (gone.length) {
     status.textContent = `The lexicon is empty. Add entries to namefile.data.js: ${gone.join(', ')}.`;
@@ -458,6 +525,15 @@ async function start(lex) {
   };
 
   const say = text => { status.textContent = `${text} Seed ${hex(frag.seed)}.`; };
+  const phase = (frag.seed % 628) / 100;
+  const describe = row => `${show(row.path)} — ${opText(row)} — ${row.owner}`;
+  let picked = null;
+  const onPick = (li, row) => {
+    picked?.classList.remove('selected');
+    picked = li;
+    li.classList.add('selected');
+    detail.textContent = describe(row);
+  };
 
   await run({
     lex, seed: frag.seed, forks: frag.forks, captures: frag.captures, search: wikiSearch,
@@ -465,6 +541,12 @@ async function start(lex) {
       if (token !== current) return;
       step = row.step;
       rowsEl.append(rowElement(row));
+      const icon = iconElement(row, phase, lex.icons, onPick);
+      desk.append(icon);
+      desk.style.setProperty('--count', row.step + 1);
+      if (!picked) detail.textContent = describe(row);
+      // Follow the newest icon down the page, unless everything arrives at once.
+      if (!still && !desk.hidden) icon.scrollIntoView({ block: 'center', behavior: row.step <= replayed ? 'auto' : 'smooth' });
       if ((lex.lines || []).length) {
         const b = st.branches.find(x => !x.lost && !x.merged) || st.branches[0];
         verse.replaceChildren(...lex.lines.map(line => {
@@ -511,6 +593,7 @@ async function showTests(lex) {
     ul.append(li);
   }
   document.querySelector('.listing').replaceWith(ul);
+  $('listing').hidden = false; $('desktop').hidden = true;
   $('status').textContent = `${results.filter(r => r.pass).length} of ${results.length} tests pass.`;
   document.querySelectorAll('.controls button').forEach(b => { b.disabled = true; });
 }
@@ -526,6 +609,11 @@ if (typeof document !== 'undefined') {
       catch { $('status').textContent = `Copy this link: ${location.href}`; }
     };
     $('new').onclick = () => { location.hash = `#s=${hex(newSeed())}`; };
+    $('view').onclick = () => {
+      const toListing = $('listing').hidden;
+      $('listing').hidden = !toListing; $('desktop').hidden = toListing;
+      $('view').textContent = toListing ? 'Show desktop' : 'Show listing';
+    };
     addEventListener('hashchange', () => start(lex));
     start(lex);
   }
