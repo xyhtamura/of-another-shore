@@ -347,3 +347,35 @@ the two views (read from the `hidden` properties, the screenshot lagged).
 Not done: the desktop was not checked at phone width. Long labels on adjacent
 steps can overlap when opened. One icon per step is sparse next to the stairs
 reel; multiplying faster is a design choice still open. Houses do not open.
+
+2026-10-08 — Claude Code — moving desktop.
+
+Xyh: an autoscrolling fake desktop, like a screensaver. Files pop up, copy, and
+fork downwards; files that leave the window are removed; wallpapers can come
+from public-domain images later.
+
+- **The desktop fills the window and does not scroll by hand.** The icons slide
+  up one row per step. A new icon pops in 72% of the way down (`ANCHOR`), and an
+  icon that has passed the top is removed from the page. The listing keeps every
+  row, so the text of the whole lineage is still there.
+- **A copy pops two to five more icons**, stepping down and to the right. This
+  replaces the ghost trail. The count comes from the step number, so a link
+  replays it. `copy` is weighted 5, up from 3.
+- **Wallpapers.** `wallpapers` in the data file takes image paths; each instance
+  shows one, chosen by its seed. Empty leaves the gradient.
+- **Reduced motion** keeps the earlier behaviour: nothing moves, every icon is
+  laid out on a tall page, and nothing is removed. `?motion` in the query string
+  forces the moving desktop.
+- The lineage still stops at the step limit, and the desktop stops with it.
+
+Verified in the Browser pane with `?motion#s=00000f`: `?test` 17 of 17; at step
+15 the page held 15 icons for 16 rows and 7 copy extras, so icons past the top
+had been removed; the document did not scroll (`scrollHeight` equal to the
+window height); no console error; a screenshot showed the cascade and the newest
+icon near the anchor.
+
+Not done: not watched from start to stop by eye, and not checked at phone width.
+The pane was hidden for part of the run, where transitions do not advance, so
+the smoothness of the movement is unconfirmed. No wallpaper image has been
+tried. Whether it should loop like a screensaver instead of stopping is Xyh's
+call.

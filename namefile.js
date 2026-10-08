@@ -5,6 +5,8 @@ import LEXICON from './namefile.data.js';
 
 const STEP_MS = 2600;            // reading pace, one step
 const STEP_LIMIT = 32;           // rows after the first
+const ROW_PX = 84;               // the desktop moves up this far each step
+const ANCHOR = 0.72;             // a new icon appears this far down the desktop
 const MAX_BRANCHES = 3;
 const MAX_LEN = 60;              // operations that lengthen a segment stop here
 const SEARCH_MAX_LEN = 40;
@@ -449,10 +451,11 @@ function glyph(kind, cls, src) {
 const hueOf = s => [...s].reduce((h, c) => (h * 31 + c.codePointAt(0)) % 360, 0);
 const opText = row => (row.detail ? `${row.op} ${row.detail}` : row.op);
 
-// The desktop icon for one row. The icon is of the segment the operation
-// touched, labelled with that segment's new text; an operation on the whole
-// path (fork, lose, restore) shows the name.
-function iconElement(row, phase, icons, onPick) {
+// The desktop icons for one row: the icon itself, then, for a copy, two to
+// five more of it stepping down and to the right. The icon is of the segment
+// the operation touched, labelled with that segment's new text; an operation
+// on the whole path (fork, lose, restore) shows the name.
+function iconElements(row, phase, icons, onPick) {
   const hit = row.joined?.[0];
   const kind = row.seg || hit?.seg || 'name';
   const text = row.seg ? row.after : hit ? hit.after : row.name;
@@ -472,11 +475,6 @@ function iconElement(row, phase, icons, onPick) {
   const glyphs = document.createElement('span');
   glyphs.className = 'glyphs';
   const src = icons?.[kind];
-  if (row.op === 'copy') for (let n = 4; n >= 1; n--) {
-    const g = glyph(kind, 'ghost', src);
-    g.style.setProperty('--n', n);
-    glyphs.append(g);
-  }
   glyphs.append(glyph(kind, '', src));
   if (hit) glyphs.append(glyph(kind, 'theirs', src));
   if (row.kind === 'fetched' && row.after !== row.before) glyphs.append(glyph('search', 'badge'));
@@ -489,16 +487,29 @@ function iconElement(row, phase, icons, onPick) {
   btn.append(glyphs, label, more);
   btn.onclick = () => onPick(li, row);
   li.append(btn);
-  return li;
+  const out = [li];
+  if (row.op === 'copy') for (let n = 1; n <= 2 + row.step % 4; n++) {
+    const extra = li.cloneNode(true);
+    extra.classList.add('extra');
+    extra.setAttribute('aria-hidden', 'true');
+    extra.querySelector('button').tabIndex = -1;
+    extra.style.setProperty('--n', n);
+    extra.style.setProperty('--step', row.step + n * 0.42);
+    out.push(extra);
+  }
+  return out;
 }
 
 let current = 0;   // token of the running lineage; a newer one cancels the older
 
 async function start(lex) {
   const token = ++current;
-  const rowsEl = $('rows'), status = $('status'), verse = $('verse'), desk = $('desktop'), detail = $('detail');
-  rowsEl.replaceChildren(); verse.replaceChildren(); desk.replaceChildren(); detail.textContent = '';
+  const rowsEl = $('rows'), status = $('status'), verse = $('verse'), desk = $('desktop'), world = $('world'), detail = $('detail');
+  rowsEl.replaceChildren(); verse.replaceChildren(); world.replaceChildren(); detail.textContent = '';
   desk.style.setProperty('--count', 1);
+  desk.style.setProperty('--row', `${ROW_PX}px`);
+  world.style.transition = 'none';
+  world.style.transform = '';
   scrollTo(0, 0);
   const gone = missing(lex);
   if (gone.length) {
@@ -512,7 +523,12 @@ async function start(lex) {
     frag = { seed: newSeed(), forks: [], captures: {} };
     history.replaceState(null, '', fragmentOf(frag));
   }
-  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // With reduced motion the desktop does not move: the whole lineage is laid
+  // out at once on a page the reader scrolls. "?motion" overrides that.
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches && !new URLSearchParams(location.search).has('motion');
+  document.documentElement.classList.toggle('moving', !still);
+  const pics = [].concat(lex.wallpapers || []).filter(Boolean);
+  desk.style.backgroundImage = pics.length ? `url("${encodeURI(pics[frag.seed % pics.length])}")` : '';
   const replayed = frag.forks.length ? Math.max(...frag.forks.map(f => f.at)) : -1;
   let paused = false, step = 0, held = Object.keys(frag.captures).length;
   $('pause').textContent = 'Pause';
@@ -541,12 +557,27 @@ async function start(lex) {
       if (token !== current) return;
       step = row.step;
       rowsEl.append(rowElement(row));
-      const icon = iconElement(row, phase, lex.icons, onPick);
-      desk.append(icon);
+      world.append(...iconElements(row, phase, lex.icons, onPick));
       desk.style.setProperty('--count', row.step + 1);
       if (!picked) detail.textContent = describe(row);
-      // Follow the newest icon down the page, unless everything arrives at once.
-      if (!still && !desk.hidden) icon.scrollIntoView({ block: 'center', behavior: row.step <= replayed ? 'auto' : 'smooth' });
+      if (!still) {
+        // The desktop moves up one row per step, so this icon appears at the
+        // anchor and the next one will too. Icons that have left the top are
+        // removed; the listing keeps every row.
+        const at = row.step * ROW_PX - desk.clientHeight * ANCHOR;
+        for (const li of [...world.children]) {
+          if ((parseFloat(li.style.getPropertyValue('--step')) + 2) * ROW_PX < at) li.remove();
+        }
+        if (row.step === 0 || row.step <= replayed) {
+          world.style.transition = 'none';
+          world.style.transform = `translateY(${-at}px)`;
+          world.getBoundingClientRect();     // apply the jump before the move below
+        }
+        if (row.step >= replayed) {
+          world.style.transition = `transform ${STEP_MS}ms linear`;
+          world.style.transform = `translateY(${-(at + ROW_PX)}px)`;
+        }
+      }
       if ((lex.lines || []).length) {
         const b = st.branches.find(x => !x.lost && !x.merged) || st.branches[0];
         verse.replaceChildren(...lex.lines.map(line => {

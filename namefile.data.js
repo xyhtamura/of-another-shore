@@ -118,7 +118,7 @@ export default {
   weights: {
     rename: 4, transliterate: 3, mishear: 3, translate: 4, chown: 3,
     fork: 2, merge: 2,
-    copy: 3, mojibake: 3, truncate: 1, form: 1, flip: 2,
+    copy: 5, mojibake: 3, truncate: 1, form: 1, flip: 2,
     lose: 1, restore: 1,
     search: 2
   },
@@ -131,6 +131,10 @@ export default {
   // "img/namefile/house.png". Record the licence of anything added here; see
   // ../ASSETS.md.
   icons: { name: "", house: "", island: "" },
+
+  // Desktop wallpapers: image paths relative to the page. Each instance shows
+  // one, chosen by its seed. Empty uses the plain gradient. Same licence rule.
+  wallpapers: [],
 
   // Optional authored verse, shown above the listing. {name}, {house}, and
   // {island} show the current state of each segment.
