@@ -379,3 +379,14 @@ The pane was hidden for part of the run, where transitions do not advance, so
 the smoothness of the movement is unconfirmed. No wallpaper image has been
 tried. Whether it should loop like a screensaver instead of stopping is Xyh's
 call.
+
+2026-10-08 — Claude Code — engine opened to another page.
+
+`ephemeralrenders/cinderella stairs/desktop.html` is an offline experiment that
+draws the lineage as files on a Windows XP desktop, using an asset pack that
+cannot be published. It imports `run`, `mulberry32`, and `wikiSearch` from
+`namefile.js`. For that: a segment weighted 0 in `segments` is now left alone
+entirely; a fork row carries `from` and a merge row carries `with`, the other
+branch's id; and the page code at the bottom of `namefile.js` runs only where
+the listing table exists. `?test` still passes 17 of 17. `namefile.html` itself
+is unchanged in behaviour.

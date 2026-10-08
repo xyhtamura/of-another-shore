@@ -79,7 +79,9 @@ function options(b, st, ctx) {
   const W = lex.weights || {}, SW = lex.segments || {};
   const out = [];
   const add = (op, seg, apply) => {
-    if (W[op] > 0) out.push({ op, seg, w: seg ? (SW[seg] ?? 1) : 1, apply });
+    // A segment weighted 0 is left alone entirely.
+    const w = seg ? (SW[seg] ?? 1) : 1;
+    if (W[op] > 0 && w > 0) out.push({ op, seg, w, apply });
   };
   const authored = (after, detail, date, owner) =>
     ({ kind: 'authored', after, detail, date: date || null, owner });
@@ -220,7 +222,7 @@ export async function run({ lex, seed, forks = [], captures = {}, search = null,
         seg: Object.fromEntries(SEGS.map(k => [k, { ...b.seg[k] }]))
       };
       st.branches.push(nb);
-      await emit(base(nb, 'fork', { detail: `of branch ${b.id}` }));
+      await emit(base(nb, 'fork', { detail: `of branch ${b.id}`, from: b.id }));
     } else if (res.structural === 'merge') {
       const [ours, theirs] = b.id < res.with.id ? [b, res.with] : [res.with, b];
       const joined = [];
@@ -239,7 +241,7 @@ export async function run({ lex, seed, forks = [], captures = {}, search = null,
       const labels = owners[0] !== owners[1] ? owners : [`branch ${ours.id}`, `branch ${theirs.id}`];
       await emit(base(ours, 'merge', {
         detail: joined.length ? `branch ${theirs.id}, conflict` : `branch ${theirs.id}`,
-        joined,
+        joined, with: theirs.id,
         conflict: joined.length
           ? [`<<<<<<< ${labels[0]}`, before[0], '=======', before[1], `>>>>>>> ${labels[1]}`]
           : null
@@ -265,7 +267,7 @@ export async function run({ lex, seed, forks = [], captures = {}, search = null,
 
 // Wikipedia, keyless and CORS-open. A spelling suggestion wins; otherwise one
 // of the first five titles, chosen by the roll.
-async function wikiSearch(q, roll) {
+export async function wikiSearch(q, roll) {
   const host = /[぀-ヿ㐀-鿿]/.test(q) ? 'ja' : 'en';
   const url = `https://${host}.wikipedia.org/w/api.php?action=query&list=search&srlimit=5`
     + `&srinfo=suggestion&srprop=&format=json&origin=*&srsearch=${encodeURIComponent(q)}`;
@@ -629,7 +631,8 @@ async function showTests(lex) {
   document.querySelectorAll('.controls button').forEach(b => { b.disabled = true; });
 }
 
-if (typeof document !== 'undefined') {
+// Only on namefile.html. Another page may import the engine above.
+if (typeof document !== 'undefined' && document.getElementById('rows')) {
   const q = new URLSearchParams(location.search);
   const EMPTY = { name: { variants: [] }, house: { variants: [] }, island: { claims: [] }, weights: {}, lines: [] };
   const lex = q.has('empty') ? EMPTY : LEXICON;
