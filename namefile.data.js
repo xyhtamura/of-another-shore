@@ -114,6 +114,104 @@ export default {
     ]
   },
 
+  // Other things that are versioned the way the name is, one of each kind.
+  // Each has the same shape as "name" without "parts". DRAFT by Claude Code,
+  // 2026-10-08; Xyh to check, cut, or replace. Every entry is a name the thing
+  // has really had, except the mishearings, which are marked by who "heard" it.
+  //   andesite  — named for the Andes; 安山岩 writes "Andes" as 安山.
+  //   milkfish  — Chanos chanos, first described as Mugil chanos (Forsskål, 1775).
+  //   ILOVEYOU  — the 2000 worm released from Manila, and what vendors and the
+  //               press called it. The attachment's filename is the fourth entry.
+  //   Gopher    — the protocol the web displaced: RFC 1436, port 70. Veronica
+  //               and Jughead were its search tools.
+  things: [
+    {
+      kind: "geology",
+      variants: [
+        { text: "andesite", script: "latin" },
+        { text: "andésite", script: "latin" },
+        { text: "Andesit", script: "latin" },
+        { text: "andesita", script: "latin" },
+        { text: "安山岩", script: "kanji" }
+      ],
+      mishearings: [
+        { text: "and a site", by: "a listener" },
+        { text: "anthracite", by: "a student" }
+      ],
+      translations: [
+        { from: "andesite", to: "Andes", lang: "etymology" },
+        { from: "Andes", to: "安山", lang: "kanji" },
+        { from: "安山", to: "安山岩", lang: "ja" },
+        { from: "安山岩", to: "andesite", lang: "ja→en" }
+      ]
+    },
+    {
+      kind: "species",
+      variants: [
+        { text: "milkfish", script: "latin" },
+        { text: "bangus", script: "latin" },
+        { text: "bangús", script: "latin" },
+        { text: "Chanos chanos", script: "latin" },
+        { text: "Mugil chanos", script: "latin" },
+        { text: "awa", script: "latin" },
+        { text: "ikan bandeng", script: "latin" },
+        { text: "サバヒー", script: "kana" },
+        { text: "虱目魚", script: "kanji" }
+      ],
+      mishearings: [
+        { text: "Chaos chaos", by: "a typist" },
+        { text: "bang us", by: "a spellchecker" }
+      ],
+      translations: [
+        { from: "bangus", to: "milkfish", lang: "tl→en" },
+        { from: "milkfish", to: "bangus", lang: "en→tl" },
+        { from: "milkfish", to: "サバヒー", lang: "en→ja" },
+        { from: "サバヒー", to: "虱目魚", lang: "ja→zh" },
+        { from: "虱目魚", to: "milkfish", lang: "zh→en" },
+        { from: "milkfish", to: "awa", lang: "en→haw" }
+      ]
+    },
+    {
+      kind: "virus",
+      variants: [
+        { text: "ILOVEYOU", script: "latin" },
+        { text: "Love Bug", script: "latin" },
+        { text: "Love Letter", script: "latin" },
+        { text: "LOVE-LETTER-FOR-YOU.TXT.vbs", script: "latin" },
+        { text: "VBS/LoveLetter", script: "latin" },
+        { text: "VBS.LoveLetter.A", script: "latin" },
+        { text: "I-Worm.LoveLetter", script: "latin" }
+      ],
+      mishearings: [
+        { text: "LOVE-LETTER-FOR-YOU.TXT", by: "a mail client" },
+        { text: "I love you", by: "a recipient" }
+      ],
+      translations: [
+        { from: "I love you", to: "mahal kita", lang: "en→tl" },
+        { from: "mahal kita", to: "I love you", lang: "tl→en" },
+        { from: "I love you", to: "愛してる", lang: "en→ja" },
+        { from: "愛してる", to: "I love you", lang: "ja→en" }
+      ]
+    },
+    {
+      kind: "protocol",
+      variants: [
+        { text: "Gopher", script: "latin" },
+        { text: "gopher://", script: "latin" },
+        { text: "RFC 1436", script: "latin" },
+        { text: "port 70", script: "latin" },
+        { text: "Gopherspace", script: "latin" },
+        { text: "Veronica", script: "latin" },
+        { text: "Jughead", script: "latin" }
+      ],
+      mishearings: [
+        { text: "gofer", by: "its authors" },
+        { text: "go for", by: "its authors" }
+      ],
+      translations: []
+    }
+  ],
+
   // How often each operation is chosen, relative to the others. 0 turns one off.
   weights: {
     rename: 4, transliterate: 3, mishear: 3, translate: 4, chown: 3,

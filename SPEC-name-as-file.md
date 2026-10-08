@@ -390,3 +390,11 @@ entirely; a fork row carries `from` and a merge row carries `with`, the other
 branch's id; and the page code at the bottom of `namefile.js` runs only where
 the listing table exists. `?test` still passes 17 of 17. `namefile.html` itself
 is unchanged in behaviour.
+
+2026-10-08 — Claude Code — `things` added to `namefile.data.js`: andesite,
+milkfish, ILOVEYOU, and Gopher, each with the shape of `name`. Xyh asked for
+geology, a species, a virus, and a protocol, one of each, as alternate-world
+versions. The entries are a draft by Claude Code, from memory and not checked
+against a source; the one I am least sure of is `Andes` → `安山` as the origin
+of 安山岩. Only the offline XP desktop page reads `things`. `namefile.html`
+ignores it.
