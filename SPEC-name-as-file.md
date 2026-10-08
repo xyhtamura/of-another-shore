@@ -398,3 +398,26 @@ versions. The entries are a draft by Claude Code, from memory and not checked
 against a source; the one I am least sure of is `Andes` → `安山` as the origin
 of 安山岩. Only the offline XP desktop page reads `things`. `namefile.html`
 ignores it.
+
+2026-10-08 — Claude Code — own icons, first trial.
+
+Xyh asked for a trial of three icons in semi-pixel art, to replace the XP pack
+in a version that can be published. `namefile-icons/icons.txt` holds a
+15-colour palette and six grids: the name file, the house, and the island, each
+at 16×16 and 32×32. One character is one pixel. `scripts/pixel_icons.py` turns
+the file into `img/namefile/<name>.png` and a `preview.png`:
+
+```bash
+python scripts/pixel_icons.py namefile-icons/icons.txt --out img/namefile
+```
+
+The 16×16 grids were written by hand. The 32×32 grids were first laid out by a
+throwaway script and are text from then on; the house door and window were
+fixed by editing letters. The palette starts from the colours of `dungan.html`.
+Own work, no third-party artwork, so nothing to record in an `ASSETS.md`.
+
+Checked by building and viewing `preview.png`: all six read as what they are at
+8× and at actual size. Not done: no page uses them yet. `namefile.html` draws
+its glyphs at 48 px, which is 1.5× a 32 px icon and would blur the grid; it
+needs 32 or 64. The island's flag is fixed red, where the placeholder SVG took
+its colour from the owner.
