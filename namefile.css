@@ -1,0 +1,141 @@
+/* namefile — colours and typeface follow dungan.html. The window frame is
+   drawn in CSS; no icon or font files ship with it. */
+
+:root {
+    --ground: #c5c8db;
+    --paper: #eff1fe;
+    --ink: #210c0e;
+    --red: #b0413e;
+    --green: #2f6e2c;
+    --rule: rgba(33, 12, 14, 0.18);
+    --mono: ui-monospace, "Cascadia Mono", Consolas, "Noto Sans Mono CJK JP", "MS Gothic", monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+    font-family: "Averia Sans Libre", sans-serif;
+    background-color: var(--ground);
+    color: var(--ink);
+    line-height: 1.5;
+}
+
+.window {
+    max-width: 62rem;
+    margin: 0 auto;
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    box-shadow: 4px 4px 0 rgba(33, 12, 14, 0.25);
+}
+
+.titlebar {
+    background: var(--red);
+    color: var(--paper);
+    padding: 4px 10px;
+}
+
+.titlebar h1 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.verse:empty { display: none; }
+.verse { padding: 16px 10px 4px; font-size: 1.2em; }
+.verse p { margin: 0; overflow-wrap: anywhere; }
+
+.listing {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.listing th {
+    text-align: left;
+    font-weight: 400;
+    font-size: 0.85rem;
+    padding: 3px 10px;
+    border-bottom: 1px solid var(--ink);
+    background: var(--ground);
+}
+
+.listing th:nth-child(1) { width: 52%; }
+.listing th:nth-child(2) { width: 20%; }
+.listing th:nth-child(3) { width: 14%; }
+.listing th:nth-child(4) { width: 14%; }
+
+.listing td {
+    padding: 3px 10px;
+    vertical-align: top;
+    border-bottom: 1px solid var(--rule);
+    overflow-wrap: anywhere;
+    font-size: 0.85rem;
+}
+
+.listing td.path {
+    font-family: var(--mono);
+    font-size: 1rem;
+    padding-left: calc(10px + var(--depth, 0) * 0.4rem);
+}
+
+.tree { color: var(--red); }
+.marker { color: var(--red); }
+
+.row.mechanical .op { color: var(--red); }
+.row.fetched .op { color: var(--green); }
+
+.row.struck .path { text-decoration: line-through; }
+.row.struck td { opacity: 0.6; }
+
+.statusbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 10px;
+    border-top: 1px solid var(--ink);
+    background: var(--ground);
+    font-size: 0.85rem;
+}
+
+.statusbar p { margin: 0; overflow-wrap: anywhere; min-width: 0; }
+
+.controls { display: flex; flex-wrap: wrap; gap: 6px; }
+
+button {
+    font: inherit;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    padding: 2px 10px;
+    cursor: pointer;
+}
+
+button:hover:not(:disabled) { background: var(--red); color: var(--paper); }
+button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+button:disabled { opacity: 0.5; cursor: default; }
+
+#tests { margin: 0; padding: 10px 10px 10px 30px; font-family: var(--mono); font-size: 0.9rem; }
+#tests .fail { color: var(--red); font-weight: 700; }
+
+.sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+/* Narrow screens: each row becomes a block, path first. */
+@media (max-width: 640px) {
+    body { padding: 16px; }
+    .listing thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+    .listing, .listing tbody { display: block; }
+    .listing tr { display: flex; flex-wrap: wrap; gap: 0 12px; padding: 4px 10px; border-bottom: 1px solid var(--rule); }
+    .listing td { border: 0; padding: 0; }
+    .listing td.path { flex: 0 0 100%; padding-left: calc(var(--depth, 0) * 0.4rem); }
+}

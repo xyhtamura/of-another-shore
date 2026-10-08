@@ -1,7 +1,9 @@
 # Spec: a name handled as a file
 
-2026-10-08 — Claude Code. Spec only. Nothing is built. Working filename
-`namefile.html`; the title is Xyh's to give.
+2026-10-08 — Claude Code. Built the same day as `namefile.html`,
+`namefile.js`, `namefile.css`, and `namefile.data.js`. The title is Xyh's to
+give. Where the build departs from this spec, the [build record](#build-record)
+at the end is the current statement.
 
 ## What it is
 
@@ -227,3 +229,86 @@ Check the thing, not that it ran.
 2. Does the house have an owner too, or only the island?
 3. Should a lost branch be able to come back? The suite has the dead
    returning; a `restore` operation would be the file-system form of it.
+
+## Build record
+
+2026-10-08 — Claude Code — first build.
+
+Xyh's direction for the build, 2026-10-08: the source for the name is the essay
+"Why I am Shifting My Name"; the nickname `futatabi-san` (from 再び) goes in;
+corruptions are welcome; the land should be one that has been contested, and its
+name should be corrupted too; internet search can be drawn in, as in `cutline/`.
+
+### What changed from the spec
+
+- **`search` is a new operation, and the piece now makes network calls.** It
+  sends the current text of one segment to Wikipedia (`en`, or `ja` when the
+  text has kana or kanji) and replaces the segment with what comes back: the
+  "did you mean" suggestion if there is one, otherwise one of the first five
+  titles. No results and no connection each leave the segment unchanged and say
+  so in the operation column. This replaces "No network calls" under
+  Constraints. Machine translation and transliteration by rule are still out.
+- **Search results are a third kind of state**, beside authored and mechanical.
+  A name can therefore become a stranger's name. That is the web's answer, not
+  the engine's, and the row is marked `search`.
+- **Search results are held in the link.** After each search the page writes the
+  result into the fragment as `&w=`. A link with `w` replays without asking
+  Wikipedia again. A bare `#s=` link replays the same choices but asks again, so
+  it can drift as Wikipedia changes.
+- **The island is Pag-asa (Thitu) in the Spratlys.** Seven claims: Philippines,
+  China, Taiwan, Vietnam, Tomás Cloma's Freedomland, the Hokkien fishers' 鐵峙,
+  and the chart name Thitu. Names and dates are from the English Wikipedia
+  article, read 2026-10-08. Draft choice; Xyh to confirm.
+- **`restore` is in** (open question 3). A lost branch can come back.
+- **The house has no owner of its own** (open question 2). The owner column is
+  the island's claimant.
+- **The lexicon is filled, not shipped empty.** The name entries come from the
+  essay. The house entries are a draft by Claude Code.
+- **Weights apply to operations, then segments.** An operation is chosen by its
+  weight alone; the segment it acts on is chosen second, by `segments`.
+- **A conflict freezes its segment for authored operations and for search.**
+  Mechanical operations still apply, to both sides at once as one string. The
+  two sides are shown joined by `|` on later rows.
+- **Date column.** An authored date where the entry has one, `—` where it does
+  not, and the reader's clock for mechanical and search rows. The clock time is
+  not part of the replayed poem.
+- **`?test` and `?empty`** in the query string run the self-tests and an empty
+  lexicon.
+
+### Verified, and how
+
+All in the Browser pane at `http://localhost:8000/of-another-shore/namefile.html`.
+
+- `?test`: 17 of 17 pass. Covers each mechanical operation against a known
+  answer, one seed twice, two seeds, replay from held search results with no
+  network, fork head and divergence, the step limit, every weighted operation
+  occurring, and "nothing invented" over 300 lineages (9,692 rows, 0 name states
+  unaccounted for). Search is stubbed in the tests.
+- Live search: read the DOM of a full run. Wikipedia returned suggestions and
+  titles and the fragment gained `&w=`.
+- Paced mode with the pane hidden (`document.hidden` true): rows arrived about
+  every 3 s. The first version counted 100 ms ticks and stalled at one row; it
+  now waits to a wall-clock deadline.
+- Reduced motion: this pane reports it, and the whole lineage rendered at once.
+- "Fork from this row": the first 12 rows were unchanged after the click.
+- `?empty`: the status line names the three missing lists; no console error.
+- 375 px wide: no horizontal scroll (`scrollWidth` 375).
+
+### Not done
+
+- `index.html` does not link to the piece. It has someone else's uncommitted
+  changes.
+- No authored verse. `lines` in the data file is empty.
+- Nothing is pushed. Before it is: Xyh reads `namefile.data.js` as a public
+  file. It holds `Cye`, `Cy Tamura`, `Cye Tamura`, the middle initial `G.`, and
+  the nickname. It does not hold the friend's handle or the name Gumban.
+- The Japanese wartime name for the island is left out. 三角島 could not be
+  confirmed; only the group name 新南群島 was.
+- `Thih-tu` → `Thitu` is not an authored hop. The article gives the Hokkien
+  reading and the chart name but does not say one came from the other.
+- Pause and "Copy link" were not clicked in testing. "New instance" was
+  exercised only through the same `hashchange` path the fork button uses.
+- `DEVNOTES.md` is deleted in the working tree, uncommitted, by someone else.
+  This record is here for that reason.
+- Open question 1 (listing, version-control log, or plain verse) is still open.
+  The build is the listing.

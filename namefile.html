@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>namefile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Averia+Sans+Libre:wght@300;400;700&display=swap">
+    <link rel="stylesheet" href="namefile.css">
+</head>
+<body>
+    <main class="window">
+        <header class="titlebar">
+            <h1>namefile</h1>
+        </header>
+
+        <div id="verse" class="verse"></div>
+
+        <table class="listing">
+            <caption class="sr-only">History of one path. Each row is one operation.</caption>
+            <thead>
+                <tr>
+                    <th scope="col">Path</th>
+                    <th scope="col">Operation</th>
+                    <th scope="col">Owner</th>
+                    <th scope="col">Date</th>
+                </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+        </table>
+
+        <footer class="statusbar">
+            <p id="status"></p>
+            <div class="controls">
+                <button type="button" id="pause">Pause</button>
+                <button type="button" id="share">Copy link</button>
+                <button type="button" id="fork">Fork from this row</button>
+                <button type="button" id="new">New instance</button>
+            </div>
+        </footer>
+    </main>
+    <noscript>This page needs JavaScript to run.</noscript>
+    <script type="module" src="namefile.js"></script>
+</body>
+</html>
