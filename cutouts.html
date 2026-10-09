@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Of Another Shore — cutouts</title>
+    <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+<style>
+/* Section 3 of oldindex.html on its own page. Positions and drift animations
+   are unchanged. What differs: a cutout reacts and links out only where its
+   own pixels are opaque — see the script at the bottom. */
+
+:root {
+    --bg-color: #f4e2d8; /* Sandy beige */
+    --text-color: #807663; /* Muted taupe */
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.section-3 {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    background-color: var(--bg-color);
+    overflow: hidden; /* Ensures content doesn't spill out */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.image-container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+.image {
+    position: absolute;
+    opacity: 0.9; /* Slightly transparent for an ethereal look */
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+/* Once the alpha maps are loaded, the rectangle stops receiving the pointer.
+   Only the one cutout whose opaque pixel is under the pointer gets it back. */
+.alpha-ready .image {
+    pointer-events: none;
+}
+.alpha-ready .image.hit {
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+/* Unique animation for Image 1 */
+.image-1 {
+    animation-name: animation1;
+    animation-duration: 55s;
+}
+@keyframes animation1 {
+    0%   { transform: translate(0, 0) rotate(-50deg); }
+    20%  { transform: translate(30px, -50px) rotate(-30deg); }
+    50%  { transform: translate(-50px, 40px) rotate(-70deg); }
+    80%  { transform: translate(20px, -30px) rotate(-10deg); }
+    100% { transform: translate(0, 0) rotate(-50deg); }
+}
+
+/* Unique animation for Image 2 */
+.image-2 {
+    animation-name: animation2;
+    animation-duration: 65s;
+}
+@keyframes animation2 {
+    0%   { transform: translate(0, 0) rotate(60deg); }
+    25%  { transform: translate(-40px, 30px) rotate(45deg); }
+    50%  { transform: translate(50px, -20px) rotate(90deg); }
+    75%  { transform: translate(-20px, 50px) rotate(30deg); }
+    100% { transform: translate(0, 0) rotate(60deg); }
+}
+
+/* Unique animation for Image 3 */
+.image-3 {
+    animation-name: animation3;
+    animation-duration: 50s;
+}
+@keyframes animation3 {
+    0%   { transform: translate(0, 0) rotate(5deg); }
+    15%  { transform: translate(20px, -10px) rotate(-10deg); }
+    40%  { transform: translate(-30px, 30px) rotate(15deg); }
+    70%  { transform: translate(40px, -40px) rotate(0deg); }
+    100% { transform: translate(0, 0) rotate(5deg); }
+}
+
+/* The hover look from oldindex.html, without the scale. Before the alpha maps
+   load (or if they cannot be read) it falls back to plain rectangle hover. */
+.image.hit,
+.image-container:not(.alpha-ready) .image:hover,
+a:focus-visible .image {
+    opacity: 1;
+    mix-blend-mode: exclusion;
+}
+
+a:focus-visible {
+    outline: none;
+}
+</style>
+</head>
+<body>
+    <div class="section section-3"><div class="image-container">
+    <a href="dungan.html" target="_blank">
+        <img src="img/egg.png" alt="dungan" class="image image-1" style="top: 25%; left: 20%; transform: rotate(-50deg); width:400px;">
+    </a>
+    <a href="inmanchuria.html" target="_blank">
+        <img src="img/photograph.png" alt="in Manchuria" class="image image-2" style="top: 15%; left: 35%; transform: rotate(60deg); width:400px;">
+    </a>
+    <a href="afterwemisrememberthegrains.html" target="_blank">
+        <img src="img/grains.png" alt="after we misremember the grains" class="image image-3" style="top: 25%; left: 40%; transform: rotate(5deg); width:300px;">
+    </a>
+</div>
+</div>
+
+<script>
+(function () {
+    // A pixel counts as paper when its alpha is at least this (0–255).
+    // 16 is about 6%: below it the pixel is not visible against the page.
+    const ALPHA_MIN = 16;
+
+    const container = document.querySelector('.image-container');
+    const images = Array.from(container.querySelectorAll('.image'));
+    const alphaMaps = new Map(); // img -> { w, h, data: Uint8Array of alpha }
+
+    let pointer = null; // last known pointer position in client coordinates
+    let current = null; // the image that currently has .hit
+
+    function readAlpha(img) {
+        const w = img.naturalWidth, h = img.naturalHeight;
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        ctx.drawImage(img, 0, 0);
+        const rgba = ctx.getImageData(0, 0, w, h).data; // throws on file://
+        const data = new Uint8Array(w * h);
+        for (let i = 0; i < data.length; i++) data[i] = rgba[i * 4 + 3];
+        return { w, h, data };
+    }
+
+    // Alpha of the image pixel under a client-space point, or 0 if the point
+    // is outside the image. Inverts the image's current transform, so it
+    // follows the drift animation frame by frame.
+    function alphaAt(img, clientX, clientY) {
+        const map = alphaMaps.get(img);
+        const box = container.getBoundingClientRect();
+        const left = box.left + container.clientLeft + img.offsetLeft;
+        const top = box.top + container.clientTop + img.offsetTop;
+        const w = img.offsetWidth, h = img.offsetHeight;
+        const cx = left + w / 2, cy = top + h / 2; // transform-origin: center
+
+        const t = getComputedStyle(img).transform;
+        const m = new DOMMatrix(t === 'none' ? undefined : t).inverse();
+        const p = m.transformPoint(new DOMPoint(clientX - cx, clientY - cy));
+
+        const px = Math.floor((p.x + w / 2) / w * map.w);
+        const py = Math.floor((p.y + h / 2) / h * map.h);
+        if (px < 0 || py < 0 || px >= map.w || py >= map.h) return 0;
+        return map.data[py * map.w + px];
+    }
+
+    // The topmost image with paper under the point. Later in the DOM is on top.
+    function imageAt(clientX, clientY) {
+        for (let i = images.length - 1; i >= 0; i--) {
+            if (alphaAt(images[i], clientX, clientY) >= ALPHA_MIN) return images[i];
+        }
+        return null;
+    }
+
+    function update() {
+        const next = pointer ? imageAt(pointer.x, pointer.y) : null;
+        if (next === current) return;
+        if (current) current.classList.remove('hit');
+        if (next) next.classList.add('hit');
+        current = next;
+    }
+
+    function track(e) {
+        pointer = { x: e.clientX, y: e.clientY };
+        update();
+    }
+
+    function start() {
+        try {
+            for (const img of images) alphaMaps.set(img, readAlpha(img));
+        } catch (err) {
+            // Opened from file://, the canvas is tainted and alpha is unreadable.
+            console.warn('Alpha maps unavailable; cutouts use rectangle hit areas.', err);
+            return;
+        }
+        container.classList.add('alpha-ready');
+
+        window.addEventListener('pointermove', track);
+        window.addEventListener('pointerdown', track);
+        document.documentElement.addEventListener('pointerleave', () => {
+            pointer = null;
+            update();
+        });
+
+        // A cutout can drift under a pointer that is not moving, so the test
+        // is repeated every frame as well as on every move.
+        (function frame() {
+            if (pointer) update();
+            requestAnimationFrame(frame);
+        })();
+
+        // A press that began before its cutout was marked lands on the
+        // container instead of the image. Follow the link from here.
+        container.addEventListener('click', (e) => {
+            if (e.target.closest('a')) return;
+            const img = imageAt(e.clientX, e.clientY);
+            if (img) img.closest('a').click();
+        });
+    }
+
+    // Waits on load events, not img.decode(): decode() does not settle while
+    // the tab is hidden, and these links open in background tabs.
+    Promise.all(images.map((img) => img.complete ? null : new Promise((done) => {
+        img.addEventListener('load', done, { once: true });
+        img.addEventListener('error', done, { once: true });
+    }))).then(start);
+})();
+</script>
+</body>
+</html>
