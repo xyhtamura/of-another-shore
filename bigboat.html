@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>big boat</title>
+    <link rel="stylesheet" href="reading.css">
     <style>
 body, html {
     margin: 0;
     padding: 0;
-    height: 100%;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -24,6 +25,7 @@ body, html {
     align-items: center;
     width: 95vw;           /* Width close to full viewport */
     max-width: 1200px;     /* Set a maximum width for larger screens */
+    padding: 20px 0;
 }
 
 .video-title {
@@ -57,6 +59,13 @@ body, html {
     <div class="video-container">
         <iframe src="bigboat.mp4" allowfullscreen></iframe>
     </div>
+    <nav class="related-reading" aria-labelledby="reading-title">
+        <h2 id="reading-title">Related reading (external)</h2>
+        <ul>
+            <li><a href="https://pids.gov.ph/details/human-capital-investment-could-improve-it-bpm-sector-in-ph-says-bsp-researcher">BPO, English proficiency, and labor costs in the Philippines (PIDS, 2021)</a></li>
+            <li><a href="https://www.ilo.org/resource/news/ilo-book-sheds-light-working-conditions-remote-work-industry">Offshoring and working conditions: call centers, night work, and monitoring (ILO, 2010)</a></li>
+        </ul>
+    </nav>
 </div>
 
 

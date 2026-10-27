@@ -1,0 +1,40 @@
+.related-reading {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 46rem;
+    margin: 2rem auto 1rem;
+    padding: 1rem 0;
+    border-top: 1px solid currentColor;
+    color: inherit;
+    font: 1rem/1.6 system-ui, sans-serif;
+    text-align: left;
+}
+
+.related-reading h2 {
+    margin: 0 0 .5rem;
+    color: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.related-reading ul {
+    margin: 0;
+    padding-left: 1.25rem;
+}
+
+.related-reading li + li {
+    margin-top: .5rem;
+}
+
+.related-reading a {
+    color: inherit;
+    font-weight: 400;
+    text-decoration: underline;
+    text-underline-offset: .15em;
+    overflow-wrap: anywhere;
+}
+
+.related-reading a:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+}
