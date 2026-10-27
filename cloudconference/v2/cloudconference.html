@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Six weather systems hold a meeting across the Pacific.">
+  <title>cloud conference — of another shore</title>
+  <style>
+    :root {
+      --paper: #e7e2d7;
+      --ink: #202833;
+      --faint: #5d6875;
+      --rule: rgba(32, 40, 51, .25);
+      --signal: #b85c3f;
+      --sky-top: #8ea6b5;
+      --sky-bottom: #d8d3c6;
+    }
+
+    * { box-sizing: border-box; }
+    html { min-height: 100%; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background:
+        repeating-linear-gradient(0deg, transparent 0 3px, rgba(255,255,255,.035) 3px 4px),
+        linear-gradient(165deg, var(--sky-top), var(--sky-bottom) 72%, #aaa495);
+      font-family: "Courier New", Courier, monospace;
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      z-index: -1;
+      width: 58vw;
+      height: 58vw;
+      border: 1px solid rgba(255,255,255,.28);
+      border-radius: 48% 52% 46% 54%;
+      animation: drift 48s linear infinite;
+    }
+
+    body::before { top: -31vw; left: -7vw; }
+    body::after { right: -22vw; bottom: -36vw; animation-direction: reverse; }
+    @keyframes drift { to { transform: rotate(360deg); } }
+
+    .page {
+      width: min(1080px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 22px 0 54px;
+    }
+
+    .masthead,
+    .meeting,
+    .weather-strip {
+      border: 1px solid var(--rule);
+      background: rgba(231, 226, 215, .88);
+      box-shadow: 7px 7px 0 rgba(32, 40, 51, .09);
+      backdrop-filter: blur(4px);
+    }
+
+    .masthead {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 22px;
+      padding: 18px 20px 16px;
+      border-bottom: 0;
+    }
+
+    h1 {
+      margin: 0;
+      font: 700 clamp(1.45rem, 4vw, 2.7rem)/.95 Arial, sans-serif;
+      letter-spacing: -.06em;
+      text-transform: lowercase;
+    }
+
+    .kicker,
+    .folio,
+    .label,
+    .participant-meta,
+    .speaker,
+    .controls,
+    .return {
+      font-size: .68rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .kicker { margin: 8px 0 0; color: var(--faint); }
+    .folio { text-align: right; line-height: 1.6; }
+
+    .weather-strip {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      padding: 0;
+      border-bottom: 0;
+    }
+
+    .participant {
+      position: relative;
+      min-height: 108px;
+      padding: 12px 10px 10px;
+      border: 0;
+      border-right: 1px solid var(--rule);
+      color: inherit;
+      background: transparent;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .participant:last-child { border-right: 0; }
+    .participant:hover,
+    .participant:focus-visible { background: rgba(255,255,255,.32); outline: 0; }
+
+    .participant::after {
+      content: "";
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      right: -22px;
+      bottom: -30px;
+      border: 1px solid currentColor;
+      border-radius: 52% 48% 44% 56%;
+      opacity: calc(.13 + (var(--humidity, 50) * .002));
+      transform: rotate(calc(var(--humidity, 50) * 1deg));
+    }
+
+    .participant-name { display: block; margin-bottom: 25px; font-weight: 700; }
+    .participant-meta { display: block; line-height: 1.45; color: var(--faint); }
+    .participant[data-state="speaking"] { color: var(--signal); }
+    .participant[data-state="speaking"]::before {
+      content: "transmitting";
+      position: absolute;
+      top: 34px;
+      left: 10px;
+      font-size: .58rem;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+    }
+
+    .meeting {
+      display: grid;
+      grid-template-columns: 2.25fr .75fr;
+      min-height: 470px;
+    }
+
+    .transcript { padding: clamp(22px, 5vw, 52px); }
+
+    .label {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--rule);
+      color: var(--faint);
+    }
+
+    #turn {
+      display: grid;
+      grid-template-columns: minmax(90px, .28fr) 1fr;
+      gap: 22px;
+      min-height: 225px;
+      padding: 44px 0 28px;
+      align-items: start;
+    }
+
+    .speaker { color: var(--signal); line-height: 1.6; }
+
+    .utterance {
+      margin: 0;
+      max-width: 28ch;
+      font: 400 clamp(1.55rem, 4vw, 2.65rem)/1.16 Georgia, serif;
+      text-wrap: balance;
+    }
+
+    .utterance.entering { animation: receive .55s ease-out; }
+
+    @keyframes receive {
+      from { opacity: 0; filter: blur(7px); transform: translateY(8px); }
+      to { opacity: 1; filter: blur(0); transform: translateY(0); }
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--rule);
+      color: var(--faint);
+    }
+
+    button {
+      appearance: none;
+      border: 1px solid var(--ink);
+      padding: 10px 12px;
+      color: var(--ink);
+      background: transparent;
+      font: inherit;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    button:hover,
+    button:focus-visible { color: var(--paper); background: var(--ink); outline: 0; }
+
+    .minutes {
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid var(--rule);
+      padding: 18px;
+    }
+
+    .minutes-list {
+      flex: 1;
+      margin: 16px 0 24px;
+      padding: 0;
+      list-style: none;
+      color: var(--faint);
+      font-size: .72rem;
+      line-height: 1.45;
+    }
+
+    .minutes-list li {
+      padding: 7px 0;
+      border-bottom: 1px dotted var(--rule);
+      animation: receive .35s ease-out;
+    }
+
+    .minutes-list li::before { content: attr(data-time) " / "; color: var(--signal); }
+    .return { color: var(--ink); text-decoration: none; }
+    .return:hover { text-decoration: underline; }
+    .status { min-width: 7em; }
+    .weather-note { margin: 8px 0 0; font-size: .62rem; color: var(--faint); }
+
+    @media (max-width: 760px) {
+      .weather-strip { grid-template-columns: repeat(3, 1fr); }
+      .participant:nth-child(3) { border-right: 0; }
+      .participant:nth-child(-n+3) { border-bottom: 1px solid var(--rule); }
+      .meeting { grid-template-columns: 1fr; }
+      .minutes { min-height: 190px; border-top: 1px solid var(--rule); border-left: 0; }
+      #turn { grid-template-columns: 1fr; gap: 12px; min-height: 270px; }
+    }
+
+    @media (max-width: 440px) {
+      .masthead { grid-template-columns: 1fr; }
+      .folio { text-align: left; }
+      .weather-strip { grid-template-columns: repeat(2, 1fr); }
+      .participant:nth-child(3) { border-right: 1px solid var(--rule); }
+      .participant:nth-child(2n) { border-right: 0; }
+      .participant:nth-child(4) { border-bottom: 1px solid var(--rule); }
+      .transcript { padding: 22px 18px; }
+      .controls { align-items: flex-start; flex-direction: column; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="masthead">
+      <div>
+        <h1>cloud conference</h1>
+        <p class="kicker">extraordinary session / minutes received out of order</p>
+      </div>
+      <div class="folio">enso session<br>quorum: conditional</div>
+    </header>
+
+    <section class="weather-strip" aria-label="Participants and their weather">
+      <button class="participant" type="button" data-city="Manila" aria-label="Request an interjection from Manila">
+        <span class="participant-name">Manila</span><span class="participant-meta">warm pool<br>humidity —</span>
+      </button>
+      <button class="participant" type="button" data-city="Honolulu" aria-label="Request an interjection from Honolulu">
+        <span class="participant-name">Honolulu</span><span class="participant-meta">trade wind<br>humidity —</span>
+      </button>
+      <button class="participant" type="button" data-city="Tokyo" aria-label="Request an interjection from Tokyo">
+        <span class="participant-name">Tokyo</span><span class="participant-meta">walker cell<br>humidity —</span>
+      </button>
+      <button class="participant" type="button" data-city="Iloilo" aria-label="Request an interjection from Iloilo">
+        <span class="participant-name">Iloilo</span><span class="participant-meta">rainband<br>humidity —</span>
+      </button>
+      <button class="participant" type="button" data-city="Los Angeles" aria-label="Request an interjection from Los Angeles">
+        <span class="participant-name">Los Angeles</span><span class="participant-meta">upwelling<br>humidity —</span>
+      </button>
+      <button class="participant" type="button" data-city="Shenyang" aria-label="Request an interjection from Shenyang">
+        <span class="participant-name">Shenyang</span><span class="participant-meta">winter high<br>humidity —</span>
+      </button>
+    </section>
+
+    <section class="meeting" aria-label="Conference transcript">
+      <div class="transcript">
+        <div class="label"><span>unverified transcript</span><span id="counter">00 / 22</span></div>
+        <div id="turn" aria-live="polite">
+          <div class="speaker" id="speaker">system<br>connection test</div>
+          <p class="utterance" id="utterance">Six weather systems have joined the meeting. El Niño and La Niña have sent their names.</p>
+        </div>
+        <div class="controls">
+          <button id="next" type="button">receive next transmission</button>
+          <button id="sound" type="button" aria-pressed="false">unmute room</button>
+          <span class="status" id="status">live weather pending</span>
+        </div>
+        <p class="weather-note">Space or → advances. Participant channels interrupt.</p>
+      </div>
+
+      <aside class="minutes" aria-label="Meeting minutes">
+        <span class="label">minutes retained</span>
+        <ol class="minutes-list" id="minutes"></ol>
+        <a class="return" href="../index.html#sky">← return to sky</a>
+      </aside>
+    </section>
+  </main>
+
+  <script src="cloudconference.js?v=3"></script>
+</body>
+</html>
