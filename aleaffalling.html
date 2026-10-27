@@ -74,9 +74,9 @@ even a second ago.</pre>
   const landing = document.querySelector('.landing');
   const motion = matchMedia('(prefers-reduced-motion: reduce)');
   const leaves = [
-    { element: document.querySelector('.letter-f'), distance: 1 },
-    { element: document.querySelector('.letter-a'), distance: .75 },
-    { element: document.querySelector('.letter-e'), distance: .25 }
+    { element: document.querySelector('.letter-f'), distance: 1, chance: 1 },
+    { element: document.querySelector('.letter-a'), distance: .75, chance: .75 },
+    { element: document.querySelector('.letter-e'), distance: .25, chance: .25 }
   ];
   const random = (min, max) => min + Math.random() * (max - min);
   let animations = [];
@@ -89,6 +89,8 @@ even a second ago.</pre>
       const schedule = [];
       let start = 1800;
       for (const leaf of leaves) {
+        // Draw independently each loop; skipped letters stay in the word.
+        if (Math.random() >= leaf.chance) continue;
         const duration = random(2200, 3100);
         schedule.push({ ...leaf, start, duration });
         start += duration + 300;

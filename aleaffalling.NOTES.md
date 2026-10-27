@@ -19,3 +19,16 @@ changed page and this note. Pacing and drift still need Xyh's review.
 
 Kept this record beside the poem because `DEVNOTES.md` was already deleted in
 the working tree. The deletion and other pre-existing changes were left alone.
+
+## 2026-10-27 — Codex — Fall chances
+
+Added independent per-loop fall chances: `f` 100%, `a` 75%, and `e` 25%.
+The existing distances still apply. A skipped letter stays in the word, and
+selected letters retain the `f`, `a`, `e` release order without waiting for a
+skipped letter's turn.
+
+Checked four controlled executions of the page script: all three letters fall,
+only `f` falls, `f` and `a` fall, and `e` falls when `a` stays. The threshold
+draws skip correctly, and selected letters fall sequentially. Watched a full
+sequence and reset in the browser. `git diff --check` passed. Pacing and drift
+still need Xyh's review.
