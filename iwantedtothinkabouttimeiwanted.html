@@ -137,12 +137,13 @@ a:hover {
     }
 }
     </style>
+<link rel="stylesheet" href="inline-reading.css">
 </head>
 <body>
     <h1>i wanted to think about time; i wanted</h1>
     <div class="playground">
         <div class="draggable" style="top: 50px; left: 50px;">
-            <p>The launch of the first iPhone in 2007. Cleopatra reigned from 51-30 BCE. Cleopatra lived closer in time to this year than to the building of the Great Pyramid, which was completed around 2560 BCE.</p>
+            <p>The launch of the first iPhone in 2007. <a class="reference-link" href="https://en.wikipedia.org/wiki/Cleopatra" title="Wikipedia: Cleopatra">Cleopatra</a> reigned from 51-30 BCE. Cleopatra lived closer in time to this year than to the building of the <a class="reference-link" href="https://en.wikipedia.org/wiki/Great_Pyramid_of_Giza" title="Wikipedia: Great Pyramid of Giza">Great Pyramid</a>, which was completed around 2560 BCE.</p>
             <p>The map of the world I learned is no longer the map today.</p>
             <h2>my body remembers, but I do not:</h2>
             <p>The scar in the middle of my tongue.</p>
@@ -155,28 +156,28 @@ a:hover {
             <p>Our tongues were named, classified, codified, and filed under “Filipino.”</p>
             <h2>events that shaped today's species:</h2>
             <p>The Cagebird Trade, resulting in Asian songbirds having shorter songs, to be less detectable.</p>
-            <p>The transfer of the brown tree snake to Guam during WWII.</p>
+            <p>The transfer of the <a class="reference-link" href="https://en.wikipedia.org/wiki/Brown_tree_snake" title="Wikipedia: Brown tree snake">brown tree snake</a> to Guam during WWII.</p>
             <p>The Building of Cities.</p>
         </div>
 
         <div class="draggable" style="top: 300px; left: 100px;">
             <h2>when a type of future was replaced by another:</h2>
-            <p>1997 Asian Financial Crisis.</p>
+            <p><a class="reference-link" href="https://en.wikipedia.org/wiki/1997_Asian_financial_crisis" title="Wikipedia: 1997 Asian financial crisis">1997 Asian Financial Crisis</a>.</p>
             <p>China’s entry into the WTO in 2001.</p>
             <p>My parents’ choice between Philippines, Japan, or Hawai’i.</p>
-            <p>CRISPR.</p>
-            <p>DC over AC.</p>
+            <p><a class="reference-link" href="https://en.wikipedia.org/wiki/CRISPR" title="Wikipedia: CRISPR">CRISPR</a>.</p>
+            <p><a class="reference-link" href="https://en.wikipedia.org/wiki/War_of_the_currents" title="Wikipedia: War of the currents">DC over AC</a>.</p>
         </div>
 
         <div class="draggable" style="top: 400px; left: 400px;">
-            <p>The Great Oxygenation Event.</p>
-            <p>神奈川条約 Kanagawa Jōyaku.</p>
-            <p>The Toba Supervolcano eruption.</p>
-            <p>Chicxulub.</p>
+            <p>The <a class="reference-link" href="https://en.wikipedia.org/wiki/Great_Oxidation_Event" title="Wikipedia: Great Oxidation Event">Great Oxygenation Event</a>.</p>
+            <p><a class="reference-link" href="https://en.wikipedia.org/wiki/Treaty_of_Kanagawa" title="Wikipedia: Treaty of Kanagawa">神奈川条約 Kanagawa Jōyaku</a>.</p>
+            <p>The <a class="reference-link" href="https://en.wikipedia.org/wiki/Toba_catastrophe_theory" title="Wikipedia: Toba catastrophe theory">Toba Supervolcano eruption</a>.</p>
+            <p><a class="reference-link" href="https://en.wikipedia.org/wiki/Chicxulub_crater" title="Wikipedia: Chicxulub crater">Chicxulub</a>.</p>
             <h2>things about the timeline I try to remember:</h2>
-            <p>The pyramids were completed around 2560 BCE, while the last known population of woolly mammoths existed on Wrangel Island until about 1650 BCE.</p>
+            <p>The pyramids were completed around 2560 BCE, while the last known population of woolly mammoths existed on <a class="reference-link" href="https://en.wikipedia.org/wiki/Wrangel_Island" title="Wikipedia: Wrangel Island">Wrangel Island</a> until about 1650 BCE.</p>
             <p>Confucius died around 479 BCE, while <a href="bigboat.html" target="_blank">Buddha</a> is believed to have lived from approximately 563 to 483 BCE.</p>
-            <p>The Moon landing (1969) is closer to the Wright brothers' first flight (1903) than to today.</p>
+            <p>The Moon landing (1969) is closer to the <a class="reference-link" href="https://en.wikipedia.org/wiki/Wright_brothers" title="Wikipedia: Wright brothers">Wright brothers' first flight</a> (1903) than to today.</p>
         </div>
     </div>
 
@@ -185,6 +186,7 @@ const draggables = document.querySelectorAll('.draggable');
 
 draggables.forEach(draggable => {
     const startDrag = (e) => {
+        if (e.target.closest('a')) return;
         const isTouch = e.type === 'touchstart';
         const startX = isTouch ? e.touches[0].clientX : e.clientX;
         const startY = isTouch ? e.touches[0].clientY : e.clientY;

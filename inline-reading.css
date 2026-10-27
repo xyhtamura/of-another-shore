@@ -1,0 +1,30 @@
+a.reference-link,
+a.reference-link:visited,
+a.reference-link:hover {
+    color: inherit;
+    font-weight: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: .06em;
+    text-underline-offset: .16em;
+}
+
+a.reference-link:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+}
+
+.tooltip:focus-within .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+.tooltip[tabindex]:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+}
+
+/* The poem's animated text fill is transparent; give links their own ink. */
+.section .text a.reference-link {
+    color: #49344b;
+    -webkit-text-fill-color: currentColor;
+}
