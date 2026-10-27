@@ -32,3 +32,18 @@ only `f` falls, `f` and `a` fall, and `e` falls when `a` stays. The threshold
 draws skip correctly, and selected letters fall sequentially. Watched a full
 sequence and reset in the browser. `git diff --check` passed. Pacing and drift
 still need Xyh's review.
+
+## 2026-10-27 — Codex — Sequential regrowth
+
+Changed the reset so fallen letters fade out, return to their positions while
+invisible, and fade in in `e`, `a`, `f` order. Each fade-in takes 650 ms, with
+180 ms between letters. Letters that did not fall stay visible. The complete
+word holds before the next fall sequence.
+
+Checked all four fall combinations by executing the page script with
+controlled draws: `fae` returns as `eaf`, `fa` as `af`, `fe` as `ef`, and `f`
+alone returns alone. Checked ordered keyframe offsets, invisible repositioning,
+and non-overlapping fade-ins. In the browser, sampled the letters' computed
+opacity and position through a reset: `e` finished fading in at its original
+position before `f` began, while the skipped `a` remained visible. Ran
+`git diff --check`. Timing still needs Xyh's review.

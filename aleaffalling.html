@@ -97,8 +97,12 @@ even a second ago.</pre>
       }
       const fade = start + 2000;
       const reset = fade + 650;
-      const total = reset + 800;
-      animations = schedule.map(({ element, distance, start, duration }) => {
+      const regrowDuration = 650;
+      const regrowStep = regrowDuration + 180;
+      const total = reset + 200 + schedule.length * regrowStep + 400;
+      animations = schedule.map(({ element, distance, start, duration }, index) => {
+        // Reverse the fall order so missing letters grow outward from l.
+        const regrowStart = reset + 200 + (schedule.length - 1 - index) * regrowStep;
         const drift = random(-.65, .65) * size;
         const sway = random(.65, 1.35) * size;
         const turns = random(1.1, 2.1);
@@ -120,6 +124,8 @@ even a second ago.</pre>
           { offset: fade / total, transform: lastTransform, opacity: 1 },
           { offset: reset / total, transform: lastTransform, opacity: 0 },
           { offset: (reset + 1) / total, transform: 'none', opacity: 0 },
+          { offset: regrowStart / total, transform: 'none', opacity: 0 },
+          { offset: (regrowStart + regrowDuration) / total, transform: 'none', opacity: 1 },
           { offset: 1, transform: 'none', opacity: 1 }
         );
         return element.animate(frames, { duration: total, easing: 'linear', fill: 'forwards' });
